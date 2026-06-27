@@ -11,8 +11,14 @@
   <component name="ChangeListManager">
     <list default="true" id="a073774c-33ca-43ae-ac94-72e927984d9d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.framework-backend/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.framework-backend/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework-backend.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/framework-backend.csproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/obj/Debug/net8.0/framework-backend.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net8.0/framework-backend.AssemblyInfo.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/obj/Debug/net8.0/framework-backend.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net8.0/framework-backend.AssemblyInfoInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/framework-backend.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/framework-backend.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/project.assets.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/project.packagespec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/obj/rider.project.restore.info" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,7 +26,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="8" />
+    <option name="cachedIndexableFilesCount" value="38" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="FileTemplateManagerImpl">
@@ -33,18 +39,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "darketomaly"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;darketomaly&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/darketomaly/framework-backend.git",
-    "accountId": "e9a051af-930c-43de-82cd-e0ed83e1f3f2"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/darketomaly/framework-backend.git&quot;,
+    &quot;accountId&quot;: &quot;e9a051af-930c-43de-82cd-e0ed83e1f3f2&quot;
   }
-}]]></component>
+}</component>
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
@@ -52,23 +58,23 @@
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0721717801785333" />
-      <entry key="MS500" value="1.851203089250555" />
-      <entry key="S2" value="4.065115161255544" />
-      <entry key="S5" value="6.8740840584578216" />
-      <entry key="S10" value="9.166202954025318" />
-      <entry key="S30" value="13.205832764270225" />
-      <entry key="S60" value="15.20429839057508" />
-      <entry key="M2" value="16.603983911174222" />
-      <entry key="M5" value="20.374646234692424" />
-      <entry key="M10" value="27.159754028760986" />
-      <entry key="M15" value="31.881387309271112" />
-      <entry key="M30" value="39.03033874102333" />
-      <entry key="H1" value="43.921732003504744" />
-      <entry key="H2" value="46.79473864228118" />
-      <entry key="H4" value="48.35336915824376" />
-      <entry key="D1" value="49.719228188123175" />
-      <entry key="W1" value="49.9597316515638" />
+      <entry key="MS100" value="1.0219444511834062" />
+      <entry key="MS500" value="1.4658710768827876" />
+      <entry key="S2" value="1.8769988834668958" />
+      <entry key="S5" value="2.3865007541501426" />
+      <entry key="S10" value="2.9216314204434575" />
+      <entry key="S30" value="3.552771177887425" />
+      <entry key="S60" value="3.7630681183290884" />
+      <entry key="M2" value="3.8780016048445765" />
+      <entry key="M5" value="3.995114530726009" />
+      <entry key="M10" value="5.248460848383119" />
+      <entry key="M15" value="8.128782291761048" />
+      <entry key="M30" value="18.06574292734074" />
+      <entry key="H1" value="30.370585493059718" />
+      <entry key="H2" value="40.25989718193298" />
+      <entry key="H4" value="46.564091242693465" />
+      <entry key="D1" value="52.673663912673234" />
+      <entry key="W1" value="53.808272819697805" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -90,29 +96,29 @@
       <entry key="W1" value="0.0" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="1.0299272167314555" />
-      <entry key="MS500" value="1.8375373620610647" />
-      <entry key="S2" value="4.040482398285395" />
-      <entry key="S5" value="6.850069438335019" />
-      <entry key="S10" value="9.149265027609824" />
-      <entry key="S30" value="13.198142380773998" />
-      <entry key="S60" value="15.200034617702517" />
-      <entry key="M2" value="16.60164006098007" />
-      <entry key="M5" value="20.37288767080906" />
-      <entry key="M10" value="27.15801723890806" />
-      <entry key="M15" value="31.879826262782245" />
-      <entry key="M30" value="39.02925069876211" />
-      <entry key="H1" value="43.92108207004819" />
-      <entry key="H2" value="46.79438244468889" />
-      <entry key="H4" value="48.353182568948135" />
-      <entry key="D1" value="49.71919584804457" />
-      <entry key="W1" value="49.95972700028945" />
+      <entry key="MS100" value="0.9669627647691289" />
+      <entry key="MS500" value="1.4503430158495942" />
+      <entry key="S2" value="1.8720956643763134" />
+      <entry key="S5" value="2.3840147180792597" />
+      <entry key="S10" value="2.920111185701632" />
+      <entry key="S30" value="3.552155347616024" />
+      <entry key="S60" value="3.7627420255959505" />
+      <entry key="M2" value="3.877833590621649" />
+      <entry key="M5" value="3.9950422088013906" />
+      <entry key="M10" value="5.2483449735987096" />
+      <entry key="M15" value="8.128556303262412" />
+      <entry key="M30" value="18.065339057492437" />
+      <entry key="H1" value="30.3701894412148" />
+      <entry key="H2" value="40.25961827212063" />
+      <entry key="H4" value="46.563925545740176" />
+      <entry key="D1" value="52.67363201190709" />
+      <entry key="W1" value="53.80826814813992" />
     </decayedShown>
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 8,
-  "fromUser": false
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8,
+  &quot;fromUser&quot;: false
+}</component>
   <component name="ProjectId" id="3Fif5ensWahS3aR643Vf9lCOW1x" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -122,18 +128,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Launch Settings Profile.framework-backend: IIS Express">
     <configuration name="framework-backend: IIS Express" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/framework-backend.csproj" />
@@ -206,7 +212,8 @@
     <MESSAGE value="Removed railway.json" />
     <MESSAGE value="Addd dockerignore" />
     <MESSAGE value="Primitive plastic discord relay" />
-    <option name="LAST_COMMIT_MESSAGE" value="Primitive plastic discord relay" />
+    <MESSAGE value="Updated .net sdk" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated .net sdk" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
