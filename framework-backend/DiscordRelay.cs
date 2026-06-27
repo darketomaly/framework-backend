@@ -96,7 +96,7 @@ public static class DiscordRelay
                 var email = GetJsonPropertyString(json, "PLASTIC_USER");
                 var branch = GetJsonPropertyString(json, "PLASTIC_FULL_BRANCH_NAME");
                 var comment = GetJsonPropertyString(json, "PLASTIC_COMMENT");
-                var label = GetJsonPropertyString(json, "LABEL_NAME");
+                var label = GetJsonPropertyString(json, "PLASTIC_LABEL_NAME");
 
                 var userName = email switch
                 {
