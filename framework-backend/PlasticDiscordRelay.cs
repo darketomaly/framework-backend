@@ -5,8 +5,7 @@ namespace framework_backend;
 
 public static class PlasticDiscordRelay
 {
-    // Put your Discord Channel ID here (right click channel → Copy ID)
-    private static readonly ulong TargetChannelId = 1234567890123456789; 
+    private static readonly ulong TargetChannelId = 1517147424982958281; 
 
     public static void Configure(WebApplication app, DiscordSocketClient client)
     {
