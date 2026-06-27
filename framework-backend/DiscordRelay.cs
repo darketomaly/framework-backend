@@ -67,8 +67,15 @@ public static class DiscordRelay
     {
         element.TryGetProperty(propertyName, out var queriedElement);
 
-        var parsedStr = queriedElement.GetString();
-        return string.IsNullOrEmpty(parsedStr) ? string.Empty : parsedStr;
+        if (queriedElement.ValueKind is JsonValueKind.String)
+        {
+            var parsedStr = queriedElement.GetString();
+            return string.IsNullOrEmpty(parsedStr) ? string.Empty : parsedStr;
+        }
+        else
+        {
+            return string.Empty;
+        }
     }
 
     private static void PlasticMap(WebApplication app, DiscordSocketClient client)
