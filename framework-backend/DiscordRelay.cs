@@ -158,7 +158,7 @@ public static class DiscordRelay
                 {
                     description = $"`{changesetId}`\n{description}";
                 }
-                else if (string.IsNullOrEmpty(changesetNumber))
+                else if (!string.IsNullOrEmpty(changesetNumber))
                 {
                     description = $"`{changesetNumber}`\n{description}";
                 }
