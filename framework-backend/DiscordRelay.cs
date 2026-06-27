@@ -9,7 +9,6 @@ public static class DiscordRelay
     private const ulong ChannelIdPlastic = 1517147424982958281;
     private const ulong ChannelIdJira = 1518976935277891594;
 
-
     public static void Configure(WebApplication app, DiscordSocketClient client)
     {
         JiraMap(app, client);
