@@ -106,13 +106,15 @@ public static class DiscordRelay
 
                 var embed = new EmbedBuilder();
                 
-                // To do
-                // Switch statement, depending on type of webhook (checkin, merge, branch created etc) is the title/description
-
                 if (content.StartsWith("New checkin"))
                 {
                     embed.WithTitle($":arrow_up: New checkin to {branch}");
                     embed.WithDescription(comment);
+                    
+                    // To do
+                    // Merge from
+                    // Subtractive merge
+                    // Cherry pick
                 }
                 else if (content.StartsWith("New branch"))
                 {
@@ -128,6 +130,9 @@ public static class DiscordRelay
                 {
                     embed.WithTitle($"Unknown");
                     embed.WithDescription($"Please define what type of webhook this is: \n{body}");
+                    
+                    // To do
+                    // New repo
                 }
 
                 // --- 
