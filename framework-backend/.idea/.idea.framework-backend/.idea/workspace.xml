@@ -10,22 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a073774c-33ca-43ae-ac94-72e927984d9d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/framework-backend.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/framework-backend.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/global.json" beforeDir="false" afterPath="$PROJECT_DIR$/global.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Debug/net10.0/framework-backend.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net10.0/framework-backend.AssemblyInfo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Debug/net10.0/framework-backend.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net10.0/framework-backend.AssemblyInfoInputs.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Debug/net10.0/framework-backend.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net10.0/framework-backend.assets.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Debug/net10.0/framework-backend.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net10.0/framework-backend.csproj.AssemblyReference.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Debug/net8.0/framework-backend.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net8.0/framework-backend.AssemblyInfo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Debug/net8.0/framework-backend.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net8.0/framework-backend.AssemblyInfoInputs.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Debug/net8.0/framework-backend.GeneratedMSBuildEditorConfig.editorconfig" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net8.0/framework-backend.GeneratedMSBuildEditorConfig.editorconfig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Debug/net8.0/framework-backend.GlobalUsings.g.cs" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net8.0/framework-backend.GlobalUsings.g.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Debug/net8.0/framework-backend.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net8.0/framework-backend.assets.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/framework-backend.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/framework-backend.csproj.nuget.dgspec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/project.assets.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/project.nuget.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/project.packagespec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/obj/rider.project.restore.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.framework-backend/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.framework-backend/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,23 +50,23 @@
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0219444511834062" />
-      <entry key="MS500" value="1.4658710768827876" />
-      <entry key="S2" value="1.8769988834668958" />
-      <entry key="S5" value="2.3865007541501426" />
-      <entry key="S10" value="2.9216314204434575" />
-      <entry key="S30" value="3.552771177887425" />
-      <entry key="S60" value="3.7630681183290884" />
-      <entry key="M2" value="3.8780016048445765" />
-      <entry key="M5" value="3.995114530726009" />
-      <entry key="M10" value="5.248460848383119" />
-      <entry key="M15" value="8.128782291761048" />
-      <entry key="M30" value="18.06574292734074" />
-      <entry key="H1" value="30.370585493059718" />
-      <entry key="H2" value="40.25989718193298" />
-      <entry key="H4" value="46.564091242693465" />
-      <entry key="D1" value="52.673663912673234" />
-      <entry key="W1" value="53.808272819697805" />
+      <entry key="MS100" value="1.0319141027161733" />
+      <entry key="MS500" value="1.6636792129097002" />
+      <entry key="S2" value="3.376083803976799" />
+      <entry key="S5" value="5.407954058150373" />
+      <entry key="S10" value="7.44113801046914" />
+      <entry key="S30" value="10.072528306949716" />
+      <entry key="S60" value="11.605521693208937" />
+      <entry key="M2" value="14.027194242012968" />
+      <entry key="M5" value="17.613913983373767" />
+      <entry key="M10" value="20.482598088715314" />
+      <entry key="M15" value="23.731922205234834" />
+      <entry key="M30" value="33.95935218604673" />
+      <entry key="H1" value="46.752325113794626" />
+      <entry key="H2" value="57.221597440933365" />
+      <entry key="H4" value="63.97147468641359" />
+      <entry key="D1" value="70.56298199510181" />
+      <entry key="W1" value="71.79214441556331" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -103,23 +88,23 @@
       <entry key="W1" value="0.0" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.9669627647691289" />
-      <entry key="MS500" value="1.4503430158495942" />
-      <entry key="S2" value="1.8720956643763134" />
-      <entry key="S5" value="2.3840147180792597" />
-      <entry key="S10" value="2.920111185701632" />
-      <entry key="S30" value="3.552155347616024" />
-      <entry key="S60" value="3.7627420255959505" />
-      <entry key="M2" value="3.877833590621649" />
-      <entry key="M5" value="3.9950422088013906" />
-      <entry key="M10" value="5.2483449735987096" />
-      <entry key="M15" value="8.128556303262412" />
-      <entry key="M30" value="18.065339057492437" />
-      <entry key="H1" value="30.3701894412148" />
-      <entry key="H2" value="40.25961827212063" />
-      <entry key="H4" value="46.563925545740176" />
-      <entry key="D1" value="52.67363201190709" />
-      <entry key="W1" value="53.80826814813992" />
+      <entry key="MS100" value="0.9963389630227381" />
+      <entry key="MS500" value="1.6505140122150466" />
+      <entry key="S2" value="3.368890582342012" />
+      <entry key="S5" value="5.403130962361532" />
+      <entry key="S10" value="7.437724922713938" />
+      <entry key="S30" value="10.070934047398605" />
+      <entry key="S60" value="11.604455276302527" />
+      <entry key="M2" value="14.026342975128816" />
+      <entry key="M5" value="17.61336547718655" />
+      <entry key="M10" value="20.48220590366097" />
+      <entry key="M15" value="23.73151759672789" />
+      <entry key="M30" value="33.95886785788521" />
+      <entry key="H1" value="46.75188692824689" />
+      <entry key="H2" value="57.221294449952886" />
+      <entry key="H4" value="63.97129557075579" />
+      <entry key="D1" value="70.56294759054104" />
+      <entry key="W1" value="71.79213937858674" />
     </decayedShown>
   </component>
   <component name="ProblemsViewState">
@@ -224,7 +209,8 @@
     <MESSAGE value="Primitive plastic discord relay" />
     <MESSAGE value="Updated .net sdk" />
     <MESSAGE value="Added netcord" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added netcord" />
+    <MESSAGE value="Removed netcord, downgraded back sdk" />
+    <option name="LAST_COMMIT_MESSAGE" value="Removed netcord, downgraded back sdk" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
