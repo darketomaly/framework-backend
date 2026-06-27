@@ -63,6 +63,14 @@ public static class DiscordRelay
         });
     }
 
+    private static string GetJsonPropertyString(JsonElement element, string propertyName)
+    {
+        element.TryGetProperty(propertyName, out var queriedElement);
+
+        var parsedStr = queriedElement.GetString();
+        return string.IsNullOrEmpty(parsedStr) ? string.Empty : parsedStr;
+    }
+
     private static void PlasticMap(WebApplication app, DiscordSocketClient client)
     {
         // Plastic
@@ -76,10 +84,11 @@ public static class DiscordRelay
                 // -------
                 using var doc = JsonDocument.Parse(body);
                 var json = doc.RootElement;
-                var email = json.GetProperty("PLASTIC_USER").GetString();
-                var content = json.GetProperty("content").GetString();
-                var comment = json.GetProperty("PLASTIC_COMMENT").GetString();
-                var branch = json.GetProperty("PLASTIC_FULL_BRANCH_NAME").GetString();
+                
+                var content = GetJsonPropertyString(json, "content");
+                var email = GetJsonPropertyString(json, "PLASTIC_USER");
+                var branch = GetJsonPropertyString(json, "PLASTIC_FULL_BRANCH_NAME");
+                var comment = GetJsonPropertyString(json, "PLASTIC_COMMENT");
 
                 var userName = email switch
                 {
