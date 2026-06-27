@@ -81,6 +81,12 @@ public static class DiscordRelay
                 var comment = json.GetProperty("PLASTIC_COMMENT").GetString();
                 var branch = json.GetProperty("PLASTIC_FULL_BRANCH_NAME").GetString();
 
+                user = user switch
+                {
+                    "create@darketomaly.hk" => "Darketomaly",
+                    _ => user
+                };
+
                 var embed = new EmbedBuilder();
                 
                 // To do
