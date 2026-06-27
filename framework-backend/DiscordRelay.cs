@@ -109,12 +109,26 @@ public static class DiscordRelay
                 if (content.StartsWith("New checkin"))
                 {
                     embed.WithTitle($":arrow_up: New checkin to {branch}");
-                    embed.WithDescription(comment);
                     
-                    // To do
-                    // Merge from
-                    // Subtractive merge
-                    // Cherry pick
+                    if (!string.IsNullOrEmpty(comment))
+                    {
+                        var emoji = string.Empty;
+                        
+                        if (comment.StartsWith("Merge from"))
+                        {
+                            emoji = ":arrows_clockwise:";
+                        }
+                        else if (comment.StartsWith("Subtractive merge"))
+                        {
+                            emoji = ":leftwards_arrow_with_hook:";
+                        }
+                        else if (comment.StartsWith("Cherry pick"))
+                        {
+                            emoji = ":cherries:";
+                        }
+                        
+                        embed.WithDescription($"{emoji} {comment}");
+                    }
                 }
                 else if (content.StartsWith("New branch"))
                 {
@@ -123,13 +137,13 @@ public static class DiscordRelay
                 }
                 else if (content.StartsWith("New label"))
                 {
-                    embed.WithTitle($":twisted_rightwards_arrows: New label {label} created");
+                    embed.WithTitle($":label: New label {label} created");
                     embed.WithDescription(comment);
                 }
                 else
                 {
                     embed.WithTitle($"Unknown");
-                    embed.WithDescription($"Please define what type of webhook this is: \n{body}");
+                    embed.WithDescription($"Please define what type of webhook this is: \n\n{body}");
                     
                     // To do
                     // New repo
@@ -139,7 +153,6 @@ public static class DiscordRelay
                 
                 embed.WithFooter(userName, GravatarHelper.GetGravatarUrl(email));
                 embed.WithColor(2303786);
-                
                 
                 // -------
 
