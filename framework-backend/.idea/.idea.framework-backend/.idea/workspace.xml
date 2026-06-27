@@ -11,7 +11,8 @@
   <component name="ChangeListManager">
     <list default="true" id="a073774c-33ca-43ae-ac94-72e927984d9d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.framework-backend/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.framework-backend/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../railway.json" beforeDir="false" afterPath="$PROJECT_DIR$/../railway.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net8.0/framework-backend.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net8.0/framework-backend.AssemblyInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net8.0/framework-backend.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net8.0/framework-backend.AssemblyInfoInputs.cache" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,23 +52,23 @@
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0000151883421127" />
-      <entry key="MS500" value="1.140930524245104" />
-      <entry key="S2" value="1.99796323217352" />
-      <entry key="S5" value="2.510323822972671" />
-      <entry key="S10" value="2.7375151291053013" />
-      <entry key="S30" value="3.13652744724251" />
-      <entry key="S60" value="4.264507165769123" />
-      <entry key="M2" value="6.640266253845491" />
-      <entry key="M5" value="11.175565094297127" />
-      <entry key="M10" value="14.479612578496242" />
-      <entry key="M15" value="16.000511974376707" />
-      <entry key="M30" value="17.81653833744318" />
-      <entry key="H1" value="18.857108167134378" />
-      <entry key="H2" value="19.415038566790955" />
-      <entry key="H4" value="19.704044856695788" />
-      <entry key="D1" value="19.95018323513687" />
-      <entry key="W1" value="19.992871186569346" />
+      <entry key="MS100" value="1.0721717801785333" />
+      <entry key="MS500" value="1.851203089250555" />
+      <entry key="S2" value="4.065115161255544" />
+      <entry key="S5" value="6.8740840584578216" />
+      <entry key="S10" value="9.166202954025318" />
+      <entry key="S30" value="13.205832764270225" />
+      <entry key="S60" value="15.20429839057508" />
+      <entry key="M2" value="16.603983911174222" />
+      <entry key="M5" value="20.374646234692424" />
+      <entry key="M10" value="27.159754028760986" />
+      <entry key="M15" value="31.881387309271112" />
+      <entry key="M30" value="39.03033874102333" />
+      <entry key="H1" value="43.921732003504744" />
+      <entry key="H2" value="46.79473864228118" />
+      <entry key="H4" value="48.35336915824376" />
+      <entry key="D1" value="49.719228188123175" />
+      <entry key="W1" value="49.9597316515638" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -89,23 +90,23 @@
       <entry key="W1" value="0.0" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="1.8840388401296094E-4" />
-      <entry key="MS500" value="0.3167850885424063" />
-      <entry key="S2" value="1.6445347235538244" />
-      <entry key="S5" value="2.3500810895798105" />
-      <entry key="S10" value="2.653860281826032" />
-      <entry key="S30" value="3.107787433369096" />
-      <entry key="S60" value="4.249953526546331" />
-      <entry key="M2" value="6.632763429969378" />
-      <entry key="M5" value="11.172063937941552" />
-      <entry key="M10" value="14.477560059042874" />
-      <entry key="M15" value="15.999035108375825" />
-      <entry key="M30" value="17.815730027337334" />
-      <entry key="H1" value="18.856682921630153" />
-      <entry key="H2" value="19.414820146540222" />
-      <entry key="H4" value="19.703934126497522" />
-      <entry key="D1" value="19.950164562730127" />
-      <entry key="W1" value="19.992868513675937" />
+      <entry key="MS100" value="1.0299272167314555" />
+      <entry key="MS500" value="1.8375373620610647" />
+      <entry key="S2" value="4.040482398285395" />
+      <entry key="S5" value="6.850069438335019" />
+      <entry key="S10" value="9.149265027609824" />
+      <entry key="S30" value="13.198142380773998" />
+      <entry key="S60" value="15.200034617702517" />
+      <entry key="M2" value="16.60164006098007" />
+      <entry key="M5" value="20.37288767080906" />
+      <entry key="M10" value="27.15801723890806" />
+      <entry key="M15" value="31.879826262782245" />
+      <entry key="M30" value="39.02925069876211" />
+      <entry key="H1" value="43.92108207004819" />
+      <entry key="H2" value="46.79438244468889" />
+      <entry key="H4" value="48.353182568948135" />
+      <entry key="D1" value="49.71919584804457" />
+      <entry key="W1" value="49.95972700028945" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo"><![CDATA[{
@@ -200,7 +201,12 @@
     <MESSAGE value="Web api template" />
     <MESSAGE value="Added railway.json" />
     <MESSAGE value="Fixed encoding" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed encoding" />
+    <MESSAGE value="Added start command" />
+    <MESSAGE value="Dockerfile" />
+    <MESSAGE value="Removed railway.json" />
+    <MESSAGE value="Addd dockerignore" />
+    <MESSAGE value="Primitive plastic discord relay" />
+    <option name="LAST_COMMIT_MESSAGE" value="Primitive plastic discord relay" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
