@@ -96,6 +96,7 @@ public static class DiscordRelay
                 var email = GetJsonPropertyString(json, "PLASTIC_USER");
                 var branch = GetJsonPropertyString(json, "PLASTIC_FULL_BRANCH_NAME");
                 var comment = GetJsonPropertyString(json, "PLASTIC_COMMENT");
+                var label = GetJsonPropertyString(json, "LABEL_NAME");
 
                 var userName = email switch
                 {
@@ -116,6 +117,11 @@ public static class DiscordRelay
                 else if (content.StartsWith("New branch"))
                 {
                     embed.WithTitle($":twisted_rightwards_arrows: New branch {branch} created");
+                    embed.WithDescription(comment);
+                }
+                else if (content.StartsWith("New label"))
+                {
+                    embed.WithTitle($":twisted_rightwards_arrows: New label {label} created");
                     embed.WithDescription(comment);
                 }
                 else
