@@ -36,36 +36,41 @@ public static class PlasticDiscordRelay
         {
             using var reader = new StreamReader(context.Request.Body);
             string body = await reader.ReadToEndAsync();
-            
+
             try
             {
                 using var doc = JsonDocument.Parse(body);
                 var embedJson = doc.RootElement.GetProperty("embeds")[0];
-                var footer = embedJson.GetProperty("footer");
+                var footerJson = embedJson.GetProperty("footer");
 
-                var embedBuilder = new EmbedBuilder()
+                string iconUrl = footerJson.GetProperty("icon_url").GetString()?.Trim() ?? "";
+
+                var embed = new EmbedBuilder()
                     .WithTitle(embedJson.GetProperty("title").GetString())
                     .WithDescription(embedJson.GetProperty("description").GetString())
-                    .WithFooter(footer.GetProperty("text").GetString(), footer.GetProperty("icon_url").GetString())
-                    .WithColor(2303786);
-
-                var embed = embedBuilder.Build();
+                    .WithColor(2303786)
+                    .WithFooter(footer =>
+                    {
+                        footer.Text = footerJson.GetProperty("text").GetString();
+                        if (!string.IsNullOrEmpty(iconUrl))
+                            footer.IconUrl = iconUrl;
+                    })
+                    .Build();
 
                 var channel = await client.GetChannelAsync(ChannelIdJira) as IMessageChannel;
-                
                 if (channel == null)
                 {
                     Console.WriteLine("Jira channel not found");
                     return Results.Problem("Channel not found");
                 }
-            
+
                 await channel.SendMessageAsync(embed: embed);
                 return Results.Ok();
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                Console.WriteLine($"Error processing Jira webhook: {e}");
+                return Results.Problem("Failed to process embed");
             }
         });
     }
