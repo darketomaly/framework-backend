@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using System.Text.Json;
+using Discord;
 using Discord.WebSocket;
 
 namespace framework_backend;
@@ -35,21 +36,33 @@ public static class PlasticDiscordRelay
         {
             using var reader = new StreamReader(context.Request.Body);
             string body = await reader.ReadToEndAsync();
-
-            var embedBuilder = new EmbedBuilder()
-                .WithTitle("hello");
-
-            var embed = embedBuilder.Build();
-
-            var channel = await client.GetChannelAsync(ChannelIdJira) as IMessageChannel;
-            if (channel == null)
+            
+            try
             {
-                Console.WriteLine("Jira channel not found");
-                return Results.Problem("Channel not found");
-            }
+                using var doc = JsonDocument.Parse(body);
+                var embedJson = doc.RootElement.GetProperty("embeds")[0];
 
-            await channel.SendMessageAsync(embed: embed);
-            return Results.Ok();
+                var embedBuilder = new EmbedBuilder()
+                    .WithTitle(embedJson.GetProperty("title").GetString());
+
+                var embed = embedBuilder.Build();
+
+                var channel = await client.GetChannelAsync(ChannelIdJira) as IMessageChannel;
+                
+                if (channel == null)
+                {
+                    Console.WriteLine("Jira channel not found");
+                    return Results.Problem("Channel not found");
+                }
+            
+                await channel.SendMessageAsync(embed: embed);
+                return Results.Ok();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         });
     }
 }
