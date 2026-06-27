@@ -79,7 +79,7 @@ public static class DiscordRelay
                 var user = json.GetProperty("PLASTIC_USER").GetString();
                 var content = json.GetProperty("content").GetString();
                 var comment = json.GetProperty("PLASTIC_COMMENT").GetString();
-                var branch = json.GetProperty("PLASTIC_BRANCH_NAME").GetString();
+                var branch = json.GetProperty("PLASTIC_FULL_BRANCH_NAME").GetString();
 
                 var embed = new EmbedBuilder();
                 
@@ -88,8 +88,13 @@ public static class DiscordRelay
 
                 if (content.StartsWith("New checkin"))
                 {
-                    embed.WithTitle(branch);
+                    embed.WithTitle($":arrow_up: New checkin to {branch}");
                     embed.WithDescription(comment);
+                }
+                else
+                {
+                    embed.WithTitle($"Unknown");
+                    embed.WithDescription($"Please define what type of webhook this is: \n{body}");
                 }
 
                 // --- 
