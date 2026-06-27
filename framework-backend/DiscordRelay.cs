@@ -76,15 +76,15 @@ public static class DiscordRelay
                 // -------
                 using var doc = JsonDocument.Parse(body);
                 var json = doc.RootElement;
-                var user = json.GetProperty("PLASTIC_USER").GetString();
+                var email = json.GetProperty("PLASTIC_USER").GetString();
                 var content = json.GetProperty("content").GetString();
                 var comment = json.GetProperty("PLASTIC_COMMENT").GetString();
                 var branch = json.GetProperty("PLASTIC_FULL_BRANCH_NAME").GetString();
 
-                user = user switch
+                var userName = email switch
                 {
                     "create@darketomaly.hk" => "Darketomaly",
-                    _ => user
+                    _ => email
                 };
 
                 var embed = new EmbedBuilder();
@@ -110,7 +110,7 @@ public static class DiscordRelay
 
                 // --- 
                 
-                embed.WithFooter(user, GravatarHelper.GetGravatarUrl(user));
+                embed.WithFooter(userName, GravatarHelper.GetGravatarUrl(email));
                 embed.WithColor(2303786);
                 
                 
