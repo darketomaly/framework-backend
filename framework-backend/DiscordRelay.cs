@@ -96,7 +96,7 @@ public static class DiscordRelay
                 
                 embed.WithFooter(user);
                 embed.WithColor(2303786);
-                embed.Build();
+                
                 
                 // -------
 
@@ -108,7 +108,7 @@ public static class DiscordRelay
                     return Results.Problem("Channel not found");
                 }
 
-                await channel.SendMessageAsync(embed: embed);
+                await channel.SendMessageAsync(embed: embed.Build());
                 return Results.Ok();
             }
             catch (Exception e)
