@@ -1,19 +1,27 @@
-﻿namespace framework_backend;
+﻿using Discord;
+using Discord.WebSocket;
+
+namespace framework_backend;
 
 public static class PlasticDiscordRelay
 {
-    private static readonly string DiscordWebhookUrl = 
-        "https://discord.com/api/webhooks/1520380727416455228/-DNNo2-xCfYlRt8zow4lv99-SJgL7ggmcas6qqO1kIjF3awpPWflP3CE0tjX5yxXRa84";
+    // Put your Discord Channel ID here (right click channel → Copy ID)
+    private static readonly ulong TargetChannelId = 1234567890123456789; 
 
-    public static void Configure(WebApplication app)
+    public static void Configure(WebApplication app, DiscordSocketClient client)
     {
-        app.MapPost("/plastic-discord-webhook", async (HttpContext context, IHttpClientFactory httpClientFactory) =>
+        app.MapPost("/plastic-discord-webhook", async (HttpContext context) =>
         {
             using var reader = new StreamReader(context.Request.Body);
             string body = await reader.ReadToEndAsync();
 
-            var client = httpClientFactory.CreateClient();
-            await client.PostAsJsonAsync(DiscordWebhookUrl, new { content = body });
+            // Send message using the bot
+            var channel = await client.GetChannelAsync(TargetChannelId) as IMessageChannel;
+
+            if (channel != null)
+            {
+                await channel.SendMessageAsync(body);
+            }
 
             return Results.Ok();
         });

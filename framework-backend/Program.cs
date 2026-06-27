@@ -1,3 +1,5 @@
+using Discord;
+using Discord.WebSocket;
 using framework_backend;
 
 public class Program
@@ -9,9 +11,42 @@ public class Program
 
         var app = builder.Build();
 
-        // Register our relay
-        PlasticDiscordRelay.Configure(app);
+        // Create the Discord client
+        var discordClient = CreateDiscordClient();
+
+        // Start the bot
+        _ = StartDiscordBot(discordClient);
+
+        // Pass the client to your relay
+        PlasticDiscordRelay.Configure(app, discordClient);
 
         app.Run();
+    }
+
+    private static DiscordSocketClient CreateDiscordClient()
+    {
+        var config = new DiscordSocketConfig
+        {
+            GatewayIntents = GatewayIntents.GuildMessages | GatewayIntents.MessageContent
+        };
+
+        var client = new DiscordSocketClient(config);
+
+        client.Log += msg =>
+        {
+            Console.WriteLine(msg);
+            return Task.CompletedTask;
+        };
+
+        return client;
+    }
+
+    private static async Task StartDiscordBot(DiscordSocketClient client)
+    {
+        string token = Environment.GetEnvironmentVariable("DISCORD_BOT_TOKEN");
+        await client.LoginAsync(TokenType.Bot, token);
+        await client.StartAsync();
+
+        await Task.Delay(-1);
     }
 }
