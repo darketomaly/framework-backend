@@ -5,8 +5,14 @@
     <projectFile profileName="http">framework-backend.csproj</projectFile>
     <projectFile profileName="https">framework-backend.csproj</projectFile>
   </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="a073774c-33ca-43ae-ac94-72e927984d9d" name="Changes" comment="" />
+    <list default="true" id="a073774c-33ca-43ae-ac94-72e927984d9d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.framework-backend/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.framework-backend/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../railway.json" beforeDir="false" afterPath="$PROJECT_DIR$/../railway.json" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -15,6 +21,13 @@
   <component name="EmbeddingIndexingInfo">
     <option name="cachedIndexableFilesCount" value="8" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JSON File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -41,6 +54,9 @@
   "fromUser": false
 }]]></component>
   <component name="ProjectId" id="3Fif5ensWahS3aR643Vf9lCOW1x" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="autoscrollFromSource" value="true" />
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -123,7 +139,8 @@
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="Web api template" />
-    <option name="LAST_COMMIT_MESSAGE" value="Web api template" />
+    <MESSAGE value="Added railway.json" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added railway.json" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
