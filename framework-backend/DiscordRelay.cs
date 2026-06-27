@@ -91,6 +91,11 @@ public static class DiscordRelay
                     embed.WithTitle($":arrow_up: New checkin to {branch}");
                     embed.WithDescription(comment);
                 }
+                else if (content.StartsWith("New branch"))
+                {
+                    embed.WithTitle($":twisted_rightwards_arrows: New branch {branch} created");
+                    embed.WithDescription(comment);
+                }
                 else
                 {
                     embed.WithTitle($"Unknown");
