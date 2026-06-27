@@ -73,8 +73,8 @@ public static class DiscordRelay
 
             try
             {
-                using var doc = JsonDocument.Parse(body);
-                var embedJson = doc.RootElement.GetProperty("embeds")[0];
+                //using var doc = JsonDocument.Parse(body);
+                //var embedJson = doc.RootElement.GetProperty("embeds")[0];
 
                 var embed = new EmbedBuilder()
                     .WithTitle("Title")
