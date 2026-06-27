@@ -4,7 +4,7 @@ using Discord.WebSocket;
 
 namespace framework_backend;
 
-public static class PlasticDiscordRelay
+public static class DiscordRelay
 {
     private const ulong ChannelIdPlastic = 1517147424982958281;
     private const ulong ChannelIdJira    = 1518976935277891594;

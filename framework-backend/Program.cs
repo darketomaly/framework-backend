@@ -18,7 +18,7 @@ public class Program
         _ = StartDiscordBot(discordClient);
 
         // Pass the client to your relay
-        PlasticDiscordRelay.Configure(app, discordClient);
+        DiscordRelay.Configure(app, discordClient);
 
         app.Run();
     }
