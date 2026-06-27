@@ -97,6 +97,8 @@ public static class DiscordRelay
                 var branch = GetJsonPropertyString(json, "PLASTIC_FULL_BRANCH_NAME");
                 var comment = GetJsonPropertyString(json, "PLASTIC_COMMENT");
                 var label = GetJsonPropertyString(json, "PLASTIC_LABEL_NAME");
+                var changesetId = GetJsonPropertyString(json, "PLASTIC_CHANGESET_ID");
+                var changesetNumber = GetJsonPropertyString(json, "PLASTIC_CHANGESET_NUMBER");
 
                 var userName = email switch
                 {
@@ -105,6 +107,7 @@ public static class DiscordRelay
                 };
 
                 var embed = new EmbedBuilder();
+                var description = string.Empty;
                 
                 if (content.StartsWith("New checkin"))
                 {
@@ -127,30 +130,40 @@ public static class DiscordRelay
                             emoji = ":cherries:";
                         }
                         
-                        embed.WithDescription($"{emoji} {comment}");
+                        description = $"{emoji} {comment}";
                     }
                 }
                 else if (content.StartsWith("New branch"))
                 {
                     embed.WithTitle($":twisted_rightwards_arrows: New branch {branch} created");
-                    embed.WithDescription(comment);
+                    description = comment;
                 }
                 else if (content.StartsWith("New label"))
                 {
                     embed.WithTitle($":label: New label {label} created");
-                    embed.WithDescription(comment);
+                    description = comment;
                 }
                 else
                 {
                     embed.WithTitle($"Unknown");
-                    embed.WithDescription($"Please define what type of webhook this is: \n\n{body}");
+                    description = $"Please define what type of webhook this is: \n\n{body}";
                     
                     // To do
                     // New repo
                 }
 
                 // --- 
+
+                if (!string.IsNullOrEmpty(changesetId))
+                {
+                    description = $"`{changesetId}`\n{description}";
+                }
+                else if (string.IsNullOrEmpty(changesetNumber))
+                {
+                    description = $"`{changesetNumber}`\n{description}";
+                }
                 
+                embed.WithDescription(description);
                 embed.WithFooter(userName, GravatarHelper.GetGravatarUrl(email));
                 embed.WithColor(2303786);
                 
