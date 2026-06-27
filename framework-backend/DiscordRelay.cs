@@ -73,14 +73,32 @@ public static class DiscordRelay
 
             try
             {
-                //using var doc = JsonDocument.Parse(body);
-                //var embedJson = doc.RootElement.GetProperty("embeds")[0];
+                // -------
+                using var doc = JsonDocument.Parse(body);
+                var json = doc.RootElement;
+                var user = json.GetProperty("PLASTIC_USER").GetString();
+                var content = json.GetProperty("content").GetString();
+                var comment = json.GetProperty("PLASTIC_COMMENT").GetString();
+                var branch = json.GetProperty("PLASTIC_BRANCH_NAME").GetString();
 
-                var embed = new EmbedBuilder()
-                    .WithTitle("Title")
-                    .WithDescription("Description")
-                    .WithColor(2303786)
-                    .Build();
+                var embed = new EmbedBuilder();
+                
+                // To do
+                // Switch statement, depending on type of webhook (checkin, merge, branch created etc) is the title/description
+
+                if (content.StartsWith("New checkin"))
+                {
+                    embed.WithTitle(branch);
+                    embed.WithDescription(comment);
+                }
+
+                // --- 
+                
+                embed.WithFooter(user);
+                embed.WithColor(2303786);
+                embed.Build();
+                
+                // -------
 
                 var channel = await client.GetChannelAsync(ChannelIdPlastic) as IMessageChannel;
 
