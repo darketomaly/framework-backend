@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using Discord;
+﻿using Discord;
 using Discord.WebSocket;
 
 namespace framework_backend;
@@ -37,20 +36,8 @@ public static class PlasticDiscordRelay
             using var reader = new StreamReader(context.Request.Body);
             string body = await reader.ReadToEndAsync();
 
-            // Parse the Discord-style embed JSON you receive
-            using var doc = JsonDocument.Parse(body);
-            var embedData = doc.RootElement.GetProperty("embeds")[0];
-
             var embedBuilder = new EmbedBuilder()
-                .WithTitle(embedData.GetProperty("title").GetString())
-                .WithDescription(embedData.GetProperty("description").GetString())
-                .WithColor(uint.Parse(embedData.GetProperty("color").GetString()!)) // convert string to uint
-                .WithFooter(footer =>
-                {
-                    var footerData = embedData.GetProperty("footer");
-                    footer.Text = footerData.GetProperty("text").GetString();
-                    footer.IconUrl = footerData.GetProperty("icon_url").GetString();
-                });
+                .WithTitle("hello");
 
             var embed = embedBuilder.Build();
 
