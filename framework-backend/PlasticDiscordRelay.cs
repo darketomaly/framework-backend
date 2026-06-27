@@ -36,7 +36,7 @@ public static class PlasticDiscordRelay
             string body = await reader.ReadToEndAsync();
 
             // Send message using the bot
-            var channel = await client.GetChannelAsync(ChannelIdJira) as IMessageChannel;
+            var channel = await client.GetChannelAsync(ChannelIdJira) as IMessageChannel; //
 
             if (channel != null)
             {

@@ -10,7 +10,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a073774c-33ca-43ae-ac94-72e927984d9d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.framework-backend/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.framework-backend/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PlasticDiscordRelay.cs" beforeDir="false" afterPath="$PROJECT_DIR$/PlasticDiscordRelay.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -51,61 +50,61 @@
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="2.1245091843829025" />
-      <entry key="MS500" value="3.3821063487044234" />
-      <entry key="S2" value="3.826669606034394" />
-      <entry key="S5" value="3.952892988412655" />
-      <entry key="S10" value="4.118950400365803" />
-      <entry key="S30" value="4.52489803810201" />
-      <entry key="S60" value="4.72672599930123" />
-      <entry key="M2" value="4.852994016350181" />
-      <entry key="M5" value="4.960787876981621" />
-      <entry key="M10" value="5.745842399590377" />
-      <entry key="M15" value="7.873835884929843" />
-      <entry key="M30" value="18.203761186034875" />
-      <entry key="H1" value="38.11707649900318" />
-      <entry key="H2" value="60.69346198728916" />
-      <entry key="H4" value="78.453657591921" />
-      <entry key="D1" value="98.32755612436657" />
-      <entry key="W1" value="102.31655150712088" />
+      <entry key="MS100" value="1.001882510753605" />
+      <entry key="MS500" value="1.3825973170225927" />
+      <entry key="S2" value="2.289746893688106" />
+      <entry key="S5" value="2.6745417410932557" />
+      <entry key="S10" value="2.8353580933110205" />
+      <entry key="S30" value="3.453220547695839" />
+      <entry key="S60" value="4.560288430433574" />
+      <entry key="M2" value="5.799714770219266" />
+      <entry key="M5" value="6.983480823429909" />
+      <entry key="M10" value="8.14971184252465" />
+      <entry key="M15" value="10.320186458810845" />
+      <entry key="M30" value="20.553486594273764" />
+      <entry key="H1" value="40.4306394426201" />
+      <entry key="H2" value="63.14462635985959" />
+      <entry key="H4" value="81.09817085354292" />
+      <entry key="D1" value="101.25316443333996" />
+      <entry key="W1" value="105.3054895210362" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="0.0" />
-      <entry key="MS500" value="0.0" />
-      <entry key="S2" value="0.0" />
-      <entry key="S5" value="0.0" />
-      <entry key="S10" value="0.0" />
-      <entry key="S30" value="0.0" />
-      <entry key="S60" value="0.0" />
-      <entry key="M2" value="0.0" />
-      <entry key="M5" value="0.0" />
-      <entry key="M10" value="0.0" />
-      <entry key="M15" value="0.0" />
-      <entry key="M30" value="0.0" />
-      <entry key="H1" value="0.0" />
-      <entry key="H2" value="0.0" />
-      <entry key="H4" value="0.0" />
-      <entry key="D1" value="0.0" />
-      <entry key="W1" value="0.0" />
+      <entry key="MS100" value="1.1340888946483113E-229" />
+      <entry key="MS500" value="1.6252845970836759E-46" />
+      <entry key="S2" value="3.5705272743270314E-12" />
+      <entry key="S5" value="2.6368956389344794E-5" />
+      <entry key="S10" value="0.005135071215605951" />
+      <entry key="S30" value="0.17252372386005693" />
+      <entry key="S60" value="0.41535975233531836" />
+      <entry key="M2" value="0.6444840978141495" />
+      <entry key="M5" value="0.8388511077284746" />
+      <entry key="M10" value="0.9158881524118951" />
+      <entry key="M15" value="0.9431084313713489" />
+      <entry key="M30" value="0.9711376994903187" />
+      <entry key="H1" value="0.9854631903274309" />
+      <entry key="H2" value="0.9927049865531206" />
+      <entry key="H4" value="0.9963458167489442" />
+      <entry key="D1" value="0.9993900400865254" />
+      <entry key="W1" value="0.9999128400822604" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="1.9357834474342126" />
-      <entry key="MS500" value="3.3098370128798087" />
-      <entry key="S2" value="3.805167317286776" />
-      <entry key="S5" value="3.9433797716486407" />
-      <entry key="S10" value="4.112513819593448" />
-      <entry key="S30" value="4.521151231600319" />
-      <entry key="S60" value="4.724443039374839" />
-      <entry key="M2" value="4.851723647300047" />
-      <entry key="M5" value="4.960244386400051" />
-      <entry key="M10" value="5.745557781775887" />
-      <entry key="M15" value="7.873626937189082" />
-      <entry key="M30" value="18.203566879370747" />
-      <entry key="H1" value="38.116831938865836" />
-      <entry key="H2" value="60.693232394435945" />
-      <entry key="H4" value="78.45349558087028" />
-      <entry key="D1" value="98.32751973412702" />
-      <entry key="W1" value="102.31654603085582" />
+      <entry key="MS100" value="0.9610950329019101" />
+      <entry key="MS500" value="1.3719290588466" />
+      <entry key="S2" value="2.2854959286823875" />
+      <entry key="S5" value="2.6725821075472735" />
+      <entry key="S10" value="2.838742219140976" />
+      <entry key="S30" value="3.6167906183096674" />
+      <entry key="S60" value="4.964746502734388" />
+      <entry key="M2" value="6.435603393074124" />
+      <entry key="M5" value="7.817799620320555" />
+      <entry key="M10" value="9.063108082953077" />
+      <entry key="M15" value="11.261564895163584" />
+      <entry key="M30" value="21.52364611776643" />
+      <entry key="H1" value="41.41546120578012" />
+      <entry key="H2" value="64.13690171129358" />
+      <entry key="H4" value="82.09425396141216" />
+      <entry key="D1" value="102.25250115345955" />
+      <entry key="W1" value="106.30539446170569" />
     </decayedShown>
   </component>
   <component name="ProblemsViewState">
@@ -214,7 +213,8 @@
     <MESSAGE value="Installed discord.net" />
     <MESSAGE value="Discord relay message test" />
     <MESSAGE value="Fixed placeholder value" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed placeholder value" />
+    <MESSAGE value="Jira relay" />
+    <option name="LAST_COMMIT_MESSAGE" value="Jira relay" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
