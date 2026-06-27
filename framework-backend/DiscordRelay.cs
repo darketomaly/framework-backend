@@ -110,7 +110,7 @@ public static class DiscordRelay
 
                 // --- 
                 
-                embed.WithFooter(user);
+                embed.WithFooter(user, GravatarHelper.GetGravatarUrl(user));
                 embed.WithColor(2303786);
                 
                 
