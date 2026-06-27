@@ -49,6 +49,65 @@
     <urls />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.0877804173170362" />
+      <entry key="MS500" value="1.7750673532905499" />
+      <entry key="S2" value="3.312390567899166" />
+      <entry key="S5" value="4.179045486930276" />
+      <entry key="S10" value="4.560300632972465" />
+      <entry key="S30" value="4.909815912656698" />
+      <entry key="S60" value="5.240725997685295" />
+      <entry key="M2" value="6.045267874579999" />
+      <entry key="M5" value="7.860584628423212" />
+      <entry key="M10" value="9.117213921458488" />
+      <entry key="M15" value="9.661804681084435" />
+      <entry key="M30" value="10.28541568749574" />
+      <entry key="H1" value="10.630520739494049" />
+      <entry key="H2" value="10.812105198773368" />
+      <entry key="H4" value="10.905249831254137" />
+      <entry key="D1" value="10.98409560309175" />
+      <entry key="W1" value="10.997725167374798" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="0.0" />
+      <entry key="S5" value="0.0" />
+      <entry key="S10" value="0.0" />
+      <entry key="S30" value="0.0" />
+      <entry key="S60" value="0.0" />
+      <entry key="M2" value="0.0" />
+      <entry key="M5" value="0.0" />
+      <entry key="M10" value="0.0" />
+      <entry key="M15" value="0.0" />
+      <entry key="M30" value="0.0" />
+      <entry key="H1" value="0.0" />
+      <entry key="H2" value="0.0" />
+      <entry key="H4" value="0.0" />
+      <entry key="D1" value="0.0" />
+      <entry key="W1" value="0.0" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="1.0507266227861447" />
+      <entry key="MS500" value="1.7627633125433761" />
+      <entry key="S2" value="3.306510365574018" />
+      <entry key="S5" value="4.176051899858673" />
+      <entry key="S10" value="4.5586614473858225" />
+      <entry key="S30" value="4.909160641738659" />
+      <entry key="S60" value="5.240138794336612" />
+      <entry key="M2" value="6.044327728848268" />
+      <entry key="M5" value="7.859495927012874" />
+      <entry key="M10" value="9.116410350101301" />
+      <entry key="M15" value="9.66119313599977" />
+      <entry key="M30" value="10.285066255307141" />
+      <entry key="H1" value="10.630333896651088" />
+      <entry key="H2" value="10.812008581186745" />
+      <entry key="H4" value="10.905200701991761" />
+      <entry key="D1" value="10.98408729906683" />
+      <entry key="W1" value="10.997723978224696" />
+    </decayedShown>
+  </component>
   <component name="ProjectColorInfo"><![CDATA[{
   "associatedIndex": 8,
   "fromUser": false
@@ -140,7 +199,8 @@
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="Web api template" />
     <MESSAGE value="Added railway.json" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added railway.json" />
+    <MESSAGE value="Fixed encoding" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed encoding" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

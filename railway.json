@@ -3,5 +3,8 @@
   "build": {
     "builder": "RAILPACK",
     "buildCommand": "dotnet publish framework-backend/framework-backend.csproj -c Release -o out"
+  },
+  "deploy": {
+    "startCommand": "dotnet out/framework-backend.dll"
   }
 }
