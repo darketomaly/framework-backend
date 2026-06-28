@@ -10,13 +10,12 @@ public static class DiscordCommands
     {
         client.Ready += async () => await RegisterCommands(client);
         client.SlashCommandExecuted += command => HandleSlashCommand(command, client);
-        client.ModalSubmitted += modal => HandleModalSubmit(modal, client);
     }
 
     private static async Task RegisterCommands(DiscordSocketClient client)
     {
         var sendMsgCommand = new SlashCommandBuilder()
-            .WithName("sendmsg")
+            .WithName("darksendmsg")
             .WithDescription("Sends a message to a specific channel")
             .WithDefaultMemberPermissions(GuildPermission.ManageMessages)
             .AddOption(new SlashCommandOptionBuilder()
@@ -27,16 +26,44 @@ public static class DiscordCommands
                 .AddChannelType(ChannelType.News)
                 .WithRequired(true))
             .AddOption(new SlashCommandOptionBuilder()
+                .WithName("message")
+                .WithDescription("The message to send. Use <br> for a line break")
+                .WithType(ApplicationCommandOptionType.String)
+                .WithRequired(true))
+            .AddOption(new SlashCommandOptionBuilder()
                 .WithName("image")
                 .WithDescription("An image to attach")
                 .WithType(ApplicationCommandOptionType.Attachment)
                 .WithRequired(false));
 
+        var editMsgCommand = new SlashCommandBuilder()
+            .WithName("darkeditmsg")
+            .WithDescription("Edits a message previously sent by the bot")
+            .WithDefaultMemberPermissions(GuildPermission.ManageMessages)
+            .AddOption(new SlashCommandOptionBuilder()
+                .WithName("channel")
+                .WithDescription("The channel the message is in")
+                .WithType(ApplicationCommandOptionType.Channel)
+                .AddChannelType(ChannelType.Text)
+                .AddChannelType(ChannelType.News)
+                .WithRequired(true))
+            .AddOption(new SlashCommandOptionBuilder()
+                .WithName("message_id")
+                .WithDescription("The ID of the message to edit")
+                .WithType(ApplicationCommandOptionType.String)
+                .WithRequired(true))
+            .AddOption(new SlashCommandOptionBuilder()
+                .WithName("new_message")
+                .WithDescription("The new text content. Use <br> for a line break")
+                .WithType(ApplicationCommandOptionType.String)
+                .WithRequired(true));
+
         try
         {
             await client.Rest.BulkOverwriteGlobalCommands(new[]
             {
-                sendMsgCommand.Build()
+                sendMsgCommand.Build(),
+                editMsgCommand.Build()
             });
         }
         catch (HttpException ex)
@@ -47,20 +74,29 @@ public static class DiscordCommands
 
     private static async Task HandleSlashCommand(SocketSlashCommand command, DiscordSocketClient client)
     {
-        if (command.Data.Name == "sendmsg")
+        switch (command.Data.Name)
         {
-            await HandleSendMsgCommand(command);
+            case "darksendmsg":
+                await HandleSendMsg(command);
+                break;
+
+            case "darkeditmsg":
+                await HandleEditMsg(command, client);
+                break;
         }
     }
 
-    // ---------- /sendmsg ----------
+    // ---------- /darksendmsg ----------
 
-    private static async Task HandleSendMsgCommand(SocketSlashCommand command)
+    private static async Task HandleSendMsg(SocketSlashCommand command)
     {
         var channelOption = command.Data.Options.First(o => o.Name == "channel");
+        var messageOption = command.Data.Options.First(o => o.Name == "message");
         var imageOption = command.Data.Options.FirstOrDefault(o => o.Name == "image");
 
         var targetChannel = channelOption.Value as IMessageChannel;
+        var rawText = messageOption.Value as string ?? "";
+        var messageText = rawText.Replace("<br>", "\n");
         var attachment = imageOption?.Value as Attachment;
 
         if (targetChannel == null)
@@ -69,58 +105,62 @@ public static class DiscordCommands
             return;
         }
 
-        // Encode the channel id + optional attachment url/filename into the modal CustomId
-        // Format: sendmsg_modal|channelId|attachmentUrl|attachmentFilename
-        var customId = $"sendmsg_modal|{targetChannel.Id}|{attachment?.Url ?? ""}|{attachment?.Filename ?? ""}";
-
-        var modal = new ModalBuilder()
-            .WithTitle("Send a message")
-            .WithCustomId(customId)
-            .AddTextInput("Message", "message_body", TextInputStyle.Paragraph,
-                placeholder: "Type your message here...", required: true, maxLength: 2000)
-            .Build();
-
-        await command.RespondWithModalAsync(modal);
-    }
-
-    // ---------- Modal submission ----------
-
-    private static async Task HandleModalSubmit(SocketModal modal, DiscordSocketClient client)
-    {
-        var parts = modal.Data.CustomId.Split('|');
-
-        if (parts[0] != "sendmsg_modal")
-        {
-            return;
-        }
-
-        var channelId = ulong.Parse(parts[1]);
-        var attachmentUrl = parts.Length > 2 ? parts[2] : "";
-        var attachmentFilename = parts.Length > 3 ? parts[3] : "";
-
-        var messageText = modal.Data.Components.First(c => c.CustomId == "message_body").Value;
-
-        var targetChannel = await client.GetChannelAsync(channelId) as IMessageChannel;
-
-        if (targetChannel == null)
-        {
-            await modal.RespondAsync("Couldn't find that channel anymore.", ephemeral: true);
-            return;
-        }
-
-        if (!string.IsNullOrEmpty(attachmentUrl))
+        if (attachment != null)
         {
             using var httpClient = new HttpClient();
-            var bytes = await httpClient.GetByteArrayAsync(attachmentUrl);
+            var bytes = await httpClient.GetByteArrayAsync(attachment.Url);
             using var stream = new MemoryStream(bytes);
 
-            await targetChannel.SendFileAsync(stream, attachmentFilename, messageText);
+            await targetChannel.SendFileAsync(stream, attachment.Filename, messageText);
         }
         else
         {
             await targetChannel.SendMessageAsync(messageText);
         }
 
-        await modal.RespondAsync($"Sent to {((IChannel)targetChannel).Name}.", ephemeral: true);
+        await command.RespondAsync($"Sent to {((IChannel)targetChannel).Name}.", ephemeral: true);
+    }
+
+    // ---------- /darkeditmsg ----------
+
+    private static async Task HandleEditMsg(SocketSlashCommand command, DiscordSocketClient client)
+    {
+        var channelOption = command.Data.Options.First(o => o.Name == "channel");
+        var messageIdOption = command.Data.Options.First(o => o.Name == "message_id");
+        var newMessageOption = command.Data.Options.First(o => o.Name == "new_message");
+
+        var targetChannel = channelOption.Value as IMessageChannel;
+        var rawMessageId = messageIdOption.Value as string;
+        var rawNewText = newMessageOption.Value as string ?? "";
+        var newText = rawNewText.Replace("<br>", "\n");
+
+        if (targetChannel == null)
+        {
+            await command.RespondAsync("That channel isn't a text channel I can edit messages in.", ephemeral: true);
+            return;
+        }
+
+        if (!ulong.TryParse(rawMessageId, out var messageId))
+        {
+            await command.RespondAsync("That doesn't look like a valid message ID.", ephemeral: true);
+            return;
+        }
+
+        var existingMessage = await targetChannel.GetMessageAsync(messageId) as IUserMessage;
+
+        if (existingMessage == null)
+        {
+            await command.RespondAsync("Couldn't find that message in that channel.", ephemeral: true);
+            return;
+        }
+
+        if (existingMessage.Author.Id != client.CurrentUser.Id)
+        {
+            await command.RespondAsync("I can only edit messages that I sent.", ephemeral: true);
+            return;
+        }
+
+        await existingMessage.ModifyAsync(props => props.Content = newText);
+        await command.RespondAsync("Message edited.", ephemeral: true);
     }
 }
