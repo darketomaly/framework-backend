@@ -9,7 +9,7 @@ public static class DiscordCommands
     public static void Configure(DiscordSocketClient client)
     {
         client.Ready += async () => await RegisterCommands(client);
-        client.SlashCommandExecuted += HandleSlashCommand;
+        client.SlashCommandExecuted += command => HandleSlashCommand(command, client);
         client.ModalSubmitted += modal => HandleModalSubmit(modal, client);
     }
 
@@ -68,17 +68,101 @@ public static class DiscordCommands
         }
     }
 
-    private static async Task HandleSlashCommand(SocketSlashCommand command)
+    private static async Task HandleSlashCommand(SocketSlashCommand command, DiscordSocketClient client)
     {
         switch (command.Data.Name)
         {
             case "ping":
                 await command.RespondAsync("Pong!");
                 break;
+
+            case "sendmsg":
+                await HandleSendMsgCommand(command);
+                break;
+
+            case "editmsg":
+                await HandleEditMsgCommand(command, client);
+                break;
         }
     }
 
     // ---------- /sendmsg ----------
+
+    private static async Task HandleSendMsgCommand(SocketSlashCommand command)
+    {
+        var channelOption = command.Data.Options.First(o => o.Name == "channel");
+        var imageOption = command.Data.Options.FirstOrDefault(o => o.Name == "image");
+
+        var targetChannel = channelOption.Value as IMessageChannel;
+        var attachment = imageOption?.Value as Attachment;
+
+        if (targetChannel == null)
+        {
+            await command.RespondAsync("That channel isn't a text channel I can post in.", ephemeral: true);
+            return;
+        }
+
+        // Encode channel id + optional attachment url/filename into the modal CustomId
+        // Format: sendmsg_modal|channelId|attachmentUrl|attachmentFilename
+        var customId = $"sendmsg_modal|{targetChannel.Id}|{attachment?.Url ?? ""}|{attachment?.Filename ?? ""}";
+
+        var modal = new ModalBuilder()
+            .WithTitle("Send a message")
+            .WithCustomId(customId)
+            .AddTextInput("Message", "message_body", TextInputStyle.Paragraph,
+                placeholder: "Type your message here...", required: true, maxLength: 2000)
+            .Build();
+
+        await command.RespondWithModalAsync(modal);
+    }
+
+    // ---------- /editmsg ----------
+
+    private static async Task HandleEditMsgCommand(SocketSlashCommand command, DiscordSocketClient client)
+    {
+        var channelOption = command.Data.Options.First(o => o.Name == "channel");
+        var messageIdOption = command.Data.Options.First(o => o.Name == "message_id");
+
+        var targetChannel = channelOption.Value as IMessageChannel;
+        var rawMessageId = messageIdOption.Value as string;
+
+        if (targetChannel == null)
+        {
+            await command.RespondAsync("That channel isn't a text channel I can edit messages in.", ephemeral: true);
+            return;
+        }
+
+        if (!ulong.TryParse(rawMessageId, out var messageId))
+        {
+            await command.RespondAsync("That doesn't look like a valid message ID.", ephemeral: true);
+            return;
+        }
+
+        var existingMessage = await targetChannel.GetMessageAsync(messageId) as IUserMessage;
+
+        if (existingMessage == null)
+        {
+            await command.RespondAsync("Couldn't find that message in that channel.", ephemeral: true);
+            return;
+        }
+
+        if (existingMessage.Author.Id != client.CurrentUser.Id)
+        {
+            await command.RespondAsync("I can only edit messages that I sent.", ephemeral: true);
+            return;
+        }
+
+        var customId = $"editmsg_modal|{targetChannel.Id}|{messageId}";
+
+        var modal = new ModalBuilder()
+            .WithTitle("Edit message")
+            .WithCustomId(customId)
+            .AddTextInput("New message", "message_body", TextInputStyle.Paragraph,
+                value: existingMessage.Content, required: true, maxLength: 2000)
+            .Build();
+
+        await command.RespondWithModalAsync(modal);
+    }
 
     // ---------- Modal submissions ----------
 
