@@ -29,7 +29,7 @@ public static class DiscordCommands
                 .WithName("message")
                 .WithDescription("The message to send. Use <br> for a line break")
                 .WithType(ApplicationCommandOptionType.String)
-                .WithRequired(true))
+                .WithRequired(false))
             .AddOption(new SlashCommandOptionBuilder()
                 .WithName("image")
                 .WithDescription("An image to attach")
