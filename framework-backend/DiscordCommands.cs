@@ -26,14 +26,18 @@ public static class DiscordCommands
                 .WithName("channel")
                 .WithDescription("The channel to send the message to")
                 .WithType(ApplicationCommandOptionType.Channel)
-                .AddChannelType(ChannelType.News)
                 .AddChannelType(ChannelType.Text)
                 .WithRequired(true))
             .AddOption(new SlashCommandOptionBuilder()
                 .WithName("message")
                 .WithDescription("The message to send")
                 .WithType(ApplicationCommandOptionType.String)
-                .WithRequired(true));
+                .WithRequired(true))
+            .AddOption(new SlashCommandOptionBuilder()
+                .WithName("image")
+                .WithDescription("An image to attach")
+                .WithType(ApplicationCommandOptionType.Attachment)
+                .WithRequired(false));
 
         try
         {
@@ -67,9 +71,11 @@ public static class DiscordCommands
     {
         var channelOption = command.Data.Options.First(o => o.Name == "channel");
         var messageOption = command.Data.Options.First(o => o.Name == "message");
+        var imageOption = command.Data.Options.FirstOrDefault(o => o.Name == "image");
 
         var targetChannel = channelOption.Value as IMessageChannel;
         var messageText = messageOption.Value as string;
+        var attachment = imageOption?.Value as Discord.Attachment;
 
         if (targetChannel == null)
         {
@@ -77,7 +83,20 @@ public static class DiscordCommands
             return;
         }
 
-        await targetChannel.SendMessageAsync(messageText);
+        if (attachment != null)
+        {
+            // Download the attachment bytes, then re-upload to the target channel
+            using var httpClient = new HttpClient();
+            var bytes = await httpClient.GetByteArrayAsync(attachment.Url);
+            using var stream = new MemoryStream(bytes);
+
+            await targetChannel.SendFileAsync(stream, attachment.Filename, messageText);
+        }
+        else
+        {
+            await targetChannel.SendMessageAsync(messageText);
+        }
+
         await command.RespondAsync($"Sent to {((IChannel)targetChannel).Name}.", ephemeral: true);
     }
 }
