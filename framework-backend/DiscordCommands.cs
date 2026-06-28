@@ -91,17 +91,23 @@ public static class DiscordCommands
     private static async Task HandleSendMsg(SocketSlashCommand command)
     {
         var channelOption = command.Data.Options.First(o => o.Name == "channel");
-        var messageOption = command.Data.Options.First(o => o.Name == "message");
+        var messageOption = command.Data.Options.FirstOrDefault(o => o.Name == "message");
         var imageOption = command.Data.Options.FirstOrDefault(o => o.Name == "image");
 
         var targetChannel = channelOption.Value as IMessageChannel;
-        var rawText = messageOption.Value as string ?? "";
+        var rawText = messageOption?.Value as string ?? "";
         var messageText = rawText.Replace("<br>", "\n");
         var attachment = imageOption?.Value as Attachment;
 
         if (targetChannel == null)
         {
             await command.RespondAsync("That channel isn't a text channel I can post in.", ephemeral: true);
+            return;
+        }
+
+        if (string.IsNullOrEmpty(messageText) && attachment == null)
+        {
+            await command.RespondAsync("You need to provide a message, an image, or both.", ephemeral: true);
             return;
         }
 
