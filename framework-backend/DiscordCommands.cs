@@ -25,7 +25,12 @@ public static class DiscordCommands
                 .WithType(ApplicationCommandOptionType.Channel)
                 .AddChannelType(ChannelType.Text)
                 .AddChannelType(ChannelType.News)
-                .WithRequired(true));
+                .WithRequired(true))
+            .AddOption(new SlashCommandOptionBuilder()
+                .WithName("image")
+                .WithDescription("An image to attach")
+                .WithType(ApplicationCommandOptionType.Attachment)
+                .WithRequired(false));
 
         try
         {
@@ -53,7 +58,10 @@ public static class DiscordCommands
     private static async Task HandleSendMsgCommand(SocketSlashCommand command)
     {
         var channelOption = command.Data.Options.First(o => o.Name == "channel");
+        var imageOption = command.Data.Options.FirstOrDefault(o => o.Name == "image");
+
         var targetChannel = channelOption.Value as IMessageChannel;
+        var attachment = imageOption?.Value as Attachment;
 
         if (targetChannel == null)
         {
@@ -61,8 +69,9 @@ public static class DiscordCommands
             return;
         }
 
-        // Encode the channel id into the modal CustomId so we know where to send on submit
-        var customId = $"sendmsg_modal|{targetChannel.Id}";
+        // Encode the channel id + optional attachment url/filename into the modal CustomId
+        // Format: sendmsg_modal|channelId|attachmentUrl|attachmentFilename
+        var customId = $"sendmsg_modal|{targetChannel.Id}|{attachment?.Url ?? ""}|{attachment?.Filename ?? ""}";
 
         var modal = new ModalBuilder()
             .WithTitle("Send a message")
@@ -86,6 +95,9 @@ public static class DiscordCommands
         }
 
         var channelId = ulong.Parse(parts[1]);
+        var attachmentUrl = parts.Length > 2 ? parts[2] : "";
+        var attachmentFilename = parts.Length > 3 ? parts[3] : "";
+
         var messageText = modal.Data.Components.First(c => c.CustomId == "message_body").Value;
 
         var targetChannel = await client.GetChannelAsync(channelId) as IMessageChannel;
@@ -96,7 +108,19 @@ public static class DiscordCommands
             return;
         }
 
-        await targetChannel.SendMessageAsync(messageText);
+        if (!string.IsNullOrEmpty(attachmentUrl))
+        {
+            using var httpClient = new HttpClient();
+            var bytes = await httpClient.GetByteArrayAsync(attachmentUrl);
+            using var stream = new MemoryStream(bytes);
+
+            await targetChannel.SendFileAsync(stream, attachmentFilename, messageText);
+        }
+        else
+        {
+            await targetChannel.SendMessageAsync(messageText);
+        }
+
         await modal.RespondAsync($"Sent to {((IChannel)targetChannel).Name}.", ephemeral: true);
     }
 }
