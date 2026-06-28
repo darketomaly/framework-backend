@@ -29,7 +29,7 @@ public static class DiscordCommands
                 .WithName("message")
                 .WithDescription("The message to send. Use <br> for a line break")
                 .WithType(ApplicationCommandOptionType.String)
-                .WithRequired(false))
+                .WithRequired(true))
             .AddOption(new SlashCommandOptionBuilder()
                 .WithName("image")
                 .WithDescription("An image to attach")
@@ -56,7 +56,12 @@ public static class DiscordCommands
                 .WithName("new_message")
                 .WithDescription("The new text content. Use <br> for a line break")
                 .WithType(ApplicationCommandOptionType.String)
-                .WithRequired(true));
+                .WithRequired(false))
+            .AddOption(new SlashCommandOptionBuilder()
+                .WithName("new_image")
+                .WithDescription("A new image to replace the existing one")
+                .WithType(ApplicationCommandOptionType.Attachment)
+                .WithRequired(false));
 
         try
         {
@@ -133,12 +138,15 @@ public static class DiscordCommands
     {
         var channelOption = command.Data.Options.First(o => o.Name == "channel");
         var messageIdOption = command.Data.Options.First(o => o.Name == "message_id");
-        var newMessageOption = command.Data.Options.First(o => o.Name == "new_message");
+        var newMessageOption = command.Data.Options.FirstOrDefault(o => o.Name == "new_message");
+        var newImageOption = command.Data.Options.FirstOrDefault(o => o.Name == "new_image");
 
         var targetChannel = channelOption.Value as IMessageChannel;
         var rawMessageId = messageIdOption.Value as string;
-        var rawNewText = newMessageOption.Value as string ?? "";
+        var hasNewText = newMessageOption != null;
+        var rawNewText = newMessageOption?.Value as string ?? "";
         var newText = rawNewText.Replace("<br>", "\n");
+        var newAttachment = newImageOption?.Value as Attachment;
 
         if (targetChannel == null)
         {
@@ -149,6 +157,12 @@ public static class DiscordCommands
         if (!ulong.TryParse(rawMessageId, out var messageId))
         {
             await command.RespondAsync("That doesn't look like a valid message ID.", ephemeral: true);
+            return;
+        }
+
+        if (!hasNewText && newAttachment == null)
+        {
+            await command.RespondAsync("You need to provide a new message, a new image, or both.", ephemeral: true);
             return;
         }
 
@@ -166,7 +180,27 @@ public static class DiscordCommands
             return;
         }
 
-        await existingMessage.ModifyAsync(props => props.Content = newText);
+        if (newAttachment != null)
+        {
+            using var httpClient = new HttpClient();
+            var bytes = await httpClient.GetByteArrayAsync(newAttachment.Url);
+            using var stream = new MemoryStream(bytes);
+            var fileAttachment = new FileAttachment(stream, newAttachment.Filename);
+
+            await existingMessage.ModifyAsync(props =>
+            {
+                if (hasNewText)
+                {
+                    props.Content = newText;
+                }
+                props.Attachments = new[] { fileAttachment };
+            });
+        }
+        else
+        {
+            await existingMessage.ModifyAsync(props => props.Content = newText);
+        }
+
         await command.RespondAsync("Message edited.", ephemeral: true);
     }
 }
