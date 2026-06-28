@@ -19,6 +19,7 @@ public class Program
 
         // Listen to plastic/jira relay
         DiscordRelay.Configure(app, discordClient);
+        DiscordCommands.Configure(discordClient);
 
         app.Run();
     }
