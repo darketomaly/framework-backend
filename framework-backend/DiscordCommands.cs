@@ -26,6 +26,7 @@ public static class DiscordCommands
                 .WithName("channel")
                 .WithDescription("The channel to send the message to")
                 .WithType(ApplicationCommandOptionType.Channel)
+                .AddChannelType(ChannelType.News)
                 .AddChannelType(ChannelType.Text)
                 .WithRequired(true))
             .AddOption(new SlashCommandOptionBuilder()
