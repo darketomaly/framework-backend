@@ -10,12 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a073774c-33ca-43ae-ac94-72e927984d9d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/DiscordCommands.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.framework-backend/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.framework-backend/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Debug/net8.0/framework-backend.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net8.0/framework-backend.AssemblyInfo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Debug/net8.0/framework-backend.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net8.0/framework-backend.AssemblyInfoInputs.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/obj/rider.project.model.nuget.info" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,7 +18,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="47" />
+    <option name="cachedIndexableFilesCount" value="48" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="FileTemplateManagerImpl">
@@ -58,61 +53,61 @@
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.2212726472694684" />
-      <entry key="MS500" value="2.1381690461509306" />
-      <entry key="S2" value="2.7232826513125614" />
-      <entry key="S5" value="2.889853256472025" />
-      <entry key="S10" value="3.115975538196123" />
-      <entry key="S30" value="5.116738292256357" />
-      <entry key="S60" value="9.838863973384987" />
-      <entry key="M2" value="21.572519748602303" />
-      <entry key="M5" value="46.45925583842628" />
-      <entry key="M10" value="74.80952019596042" />
-      <entry key="M15" value="101.51936998309363" />
-      <entry key="M30" value="168.2247496984361" />
-      <entry key="H1" value="253.31131403031443" />
-      <entry key="H2" value="349.73036169867106" />
-      <entry key="H4" value="446.5291420101585" />
-      <entry key="D1" value="596.8040104811787" />
-      <entry key="W1" value="634.2890405434435" />
+      <entry key="MS100" value="1.2959636609785348" />
+      <entry key="MS500" value="3.234569775030572" />
+      <entry key="S2" value="6.2993724772615085" />
+      <entry key="S5" value="7.889165402350105" />
+      <entry key="S10" value="8.73529611935046" />
+      <entry key="S30" value="9.510562149336682" />
+      <entry key="S60" value="9.744989304791853" />
+      <entry key="M2" value="9.88994503388011" />
+      <entry key="M5" value="10.471503616359172" />
+      <entry key="M10" value="12.663465685677627" />
+      <entry key="M15" value="16.11101090009592" />
+      <entry key="M30" value="26.434266487388044" />
+      <entry key="H1" value="48.47704078530844" />
+      <entry key="H2" value="124.09972049279054" />
+      <entry key="H4" value="276.41570441717045" />
+      <entry key="D1" value="648.6886780440358" />
+      <entry key="W1" value="764.3845820950909" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="2.3755574935873947E-191" />
-      <entry key="MS500" value="7.505632165991173E-39" />
-      <entry key="S2" value="3.5781492828800897E-10" />
-      <entry key="S5" value="3.142002631763471E-4" />
-      <entry key="S10" value="0.043514422768313216" />
-      <entry key="S30" value="1.6440450888469555" />
-      <entry key="S60" value="4.578838207858504" />
-      <entry key="M2" value="8.232575327872594" />
-      <entry key="M5" value="13.937854097050932" />
-      <entry key="M10" value="20.54135935380814" />
-      <entry key="M15" value="26.456967216520628" />
-      <entry key="M30" value="40.38152280685594" />
-      <entry key="H1" value="57.23708282501488" />
-      <entry key="H2" value="74.357512921472" />
-      <entry key="H4" value="88.67921333067308" />
-      <entry key="D1" value="106.48566245624319" />
-      <entry key="W1" value="110.33132563491228" />
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="0.0" />
+      <entry key="S5" value="0.0" />
+      <entry key="S10" value="0.0" />
+      <entry key="S30" value="9.832889530832818E-171" />
+      <entry key="S60" value="1.1236381713527542E-85" />
+      <entry key="M2" value="5.29369155463075E-43" />
+      <entry key="M5" value="4.698758685768223E-17" />
+      <entry key="M10" value="3.850270472333726E-8" />
+      <entry key="M15" value="4.228237881164993E-5" />
+      <entry key="M30" value="0.05523011217063507" />
+      <entry key="H1" value="2.28735275126916" />
+      <entry key="H2" value="16.005033999581972" />
+      <entry key="H4" value="44.20923216973294" />
+      <entry key="D1" value="106.78314882948494" />
+      <entry key="W1" value="124.71484105166002" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="1.1892991221833957" />
-      <entry key="MS500" value="2.127355246886308" />
-      <entry key="S2" value="2.7198301821993707" />
-      <entry key="S5" value="2.8886510286097073" />
-      <entry key="S10" value="3.1552093868641666" />
-      <entry key="S30" value="6.71495527310336" />
-      <entry key="S60" value="14.352458812041375" />
-      <entry key="M2" value="29.73855937407838" />
-      <entry key="M5" value="60.3105622762821" />
-      <entry key="M10" value="95.25974478046787" />
-      <entry key="M15" value="127.89280858292015" />
-      <entry key="M30" value="208.54433503285173" />
-      <entry key="H1" value="310.5079114303127" />
-      <entry key="H2" value="424.0632038708685" />
-      <entry key="H4" value="535.194134745705" />
-      <entry key="D1" value="703.2868914879648" />
-      <entry key="W1" value="744.6199556354329" />
+      <entry key="MS100" value="1.258580632287562" />
+      <entry key="MS500" value="3.2144568161886458" />
+      <entry key="S2" value="6.286897523054998" />
+      <entry key="S5" value="7.869712370818058" />
+      <entry key="S10" value="8.714908339096377" />
+      <entry key="S30" value="9.498913149550683" />
+      <entry key="S60" value="9.738299099691883" />
+      <entry key="M2" value="9.88635752051254" />
+      <entry key="M5" value="10.469991969355222" />
+      <entry key="M10" value="12.662582788189013" />
+      <entry key="M15" value="16.110303409966402" />
+      <entry key="M30" value="26.488792386298822" />
+      <entry key="H1" value="50.76228251058486" />
+      <entry key="H2" value="140.09899448994068" />
+      <entry key="H4" value="320.6174629718091" />
+      <entry key="D1" value="755.4689264737144" />
+      <entry key="W1" value="889.0989415363968" />
     </decayedShown>
   </component>
   <component name="ProblemsViewState">
@@ -207,20 +202,6 @@
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="Added logs" />
-    <MESSAGE value="Jira embed" />
-    <MESSAGE value="Test embed" />
-    <MESSAGE value="Try catch" />
-    <MESSAGE value="Full embed test" />
-    <MESSAGE value="Trim icon url" />
-    <MESSAGE value="File name change" />
-    <MESSAGE value="Separate methods" />
-    <MESSAGE value="Small cleanup" />
-    <MESSAGE value="Fixed wrong parsing" />
-    <MESSAGE value="Plastic embed test" />
-    <MESSAGE value="Fixed compile error" />
-    <MESSAGE value="Checkin message, body printed if content check can't be found" />
-    <MESSAGE value="Branch test" />
     <MESSAGE value="User parsing" />
     <MESSAGE value="Gravatar test" />
     <MESSAGE value="Cleanup" />
@@ -232,7 +213,21 @@
     <MESSAGE value="Emojis" />
     <MESSAGE value="Changeset number" />
     <MESSAGE value="Fixed typo" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed typo" />
+    <MESSAGE value="Discord command test" />
+    <MESSAGE value="Send message to specific channel test" />
+    <MESSAGE value="Added news channel type support" />
+    <MESSAGE value="Attachment test" />
+    <MESSAGE value="Re-added missing news channel support" />
+    <MESSAGE value="Modal test" />
+    <MESSAGE value="Modal fix attempt" />
+    <MESSAGE value="Stripped down command with modal support" />
+    <MESSAGE value="Image support" />
+    <MESSAGE value="Removed modal support" />
+    <MESSAGE value="Message string is not required for sending a message, allowing sending only images" />
+    <MESSAGE value="Fixed exception when sending an empty message" />
+    <MESSAGE value="Image edit test" />
+    <MESSAGE value="Fixed message no longer optional" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed message no longer optional" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

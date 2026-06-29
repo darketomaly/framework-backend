@@ -111,7 +111,7 @@ public static class DiscordRelay
                 
                 if (content.StartsWith("New checkin"))
                 {
-                    embed.WithTitle($":arrow_up: New checkin to {branch}");
+                    embed.WithTitle($":darkplayer: New checkin to {branch}");
                     
                     if (!string.IsNullOrEmpty(comment))
                     {
