@@ -140,7 +140,7 @@ public static class DiscordRelay
                 }
                 else if (content.StartsWith("New label"))
                 {
-                    embed.WithTitle($":label: New label {label} created");
+                    embed.WithTitle($"<:dark_dev_label:1521230835519328509> New label {label} created");
                     description = comment;
                 }
                 else
