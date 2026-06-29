@@ -119,15 +119,15 @@ public static class DiscordRelay
                         
                         if (comment.StartsWith("Merge from"))
                         {
-                            emoji = "<:dark_dev_mergefrom:1521235178192638072>";
+                            emoji = "<:dark_dev_mergefrom:1521237324661260429>";
                         }
                         else if (comment.StartsWith("Subtractive merge"))
                         {
-                            emoji = "<:dark_dev_subtractivemerge:1521235133313847436>";
+                            emoji = "<:dark_dev_subtractivemerge:1521237351764857083>";
                         }
                         else if (comment.StartsWith("Cherry pick"))
                         {
-                            emoji = "<:dark_dev_cherrypick:1521235053374345287>";
+                            emoji = "<:dark_dev_cherrypick:1521237397722107984>";
                         }
                         
                         description = $"{emoji} {comment}";
