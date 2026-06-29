@@ -135,7 +135,7 @@ public static class DiscordRelay
                 }
                 else if (content.StartsWith("New branch"))
                 {
-                    embed.WithTitle($":twisted_rightwards_arrows: New branch {branch} created");
+                    embed.WithTitle($"<:dark_dev_branch:1521231802138755345> New branch {branch} created");
                     description = comment;
                 }
                 else if (content.StartsWith("New label"))
