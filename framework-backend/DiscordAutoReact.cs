@@ -22,13 +22,6 @@ public static class DiscordAutoReact
             return;
         }
 
-        /*
-        if (message.Author.IsBot)
-        {
-            return;
-        }
-        */
-
         try
         {
             await message.AddReactionAsync(ThumbsUpEmote);
