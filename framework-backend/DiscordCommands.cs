@@ -16,6 +16,7 @@ public static class DiscordCommands
     {
         var sendMsgCommand = new SlashCommandBuilder()
             .WithName("darksendmsg")
+            .WithDefaultMemberPermissions(GuildPermission.Administrator)
             .WithDescription("Sends a message to a specific channel")
             .WithDefaultMemberPermissions(GuildPermission.ManageMessages)
             .AddOption(new SlashCommandOptionBuilder()
@@ -38,6 +39,7 @@ public static class DiscordCommands
 
         var editMsgCommand = new SlashCommandBuilder()
             .WithName("darkeditmsg")
+            .WithDefaultMemberPermissions(GuildPermission.Administrator)
             .WithDescription("Edits a message previously sent by the bot")
             .WithDefaultMemberPermissions(GuildPermission.ManageMessages)
             .AddOption(new SlashCommandOptionBuilder()
