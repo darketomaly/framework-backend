@@ -29,7 +29,10 @@ public class Program
     {
         var config = new DiscordSocketConfig
         {
-            GatewayIntents = GatewayIntents.GuildMessages | GatewayIntents.MessageContent
+            GatewayIntents = GatewayIntents.GuildMessages | 
+                             GatewayIntents.MessageContent | 
+                             GatewayIntents.GuildEmojis |
+                             GatewayIntents.GuildMessageReactions
         };
 
         var client = new DiscordSocketClient(config);
