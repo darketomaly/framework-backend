@@ -17,9 +17,8 @@ public static class DiscordAutoReact
 
     private static async Task HandleMessageReceived(SocketMessage message)
     {
-        Console.WriteLine(message.ToString());
+        //Console.WriteLine(message.ToString());
         
-        /*
         if (message.Channel.Id != ChannelIdAnnouncements)
         {
             return;
@@ -34,6 +33,5 @@ public static class DiscordAutoReact
         {
             Console.WriteLine($"Error auto-reacting in announcements: {e}");
         }
-        */
     }
 }
