@@ -122,7 +122,7 @@ public static class DiscordRelay
                 
                 if (content.StartsWith("New checkin"))
                 {
-                    embed.WithTitle($"<:dark_dev_checkin:1521229395015106711> New checkin to {branch}");
+                    embed.WithTitle($"<:plastic_checkin:1521865803602067529> New checkin to {branch}");
                     
                     if (!string.IsNullOrEmpty(comment))
                     {
@@ -130,7 +130,7 @@ public static class DiscordRelay
                         
                         if (comment.StartsWith("Merge from"))
                         {
-                            emoji = "<:dark_dev_mergefrom:1521237324661260429>";
+                            emoji = "<:plastic_merge_from:1521877966945259722>";
                         }
                         else if (comment.StartsWith("Subtractive merge"))
                         {
@@ -138,7 +138,7 @@ public static class DiscordRelay
                         }
                         else if (comment.StartsWith("Cherry pick"))
                         {
-                            emoji = "<:dark_dev_cherrypick:1521237397722107984>";
+                            emoji = "<:plastic_cherry_pick:1521877174603219044>";
                         }
                         
                         description = $"{emoji} {comment}";
@@ -146,12 +146,12 @@ public static class DiscordRelay
                 }
                 else if (content.StartsWith("New branch"))
                 {
-                    embed.WithTitle($"<:dark_dev_branch:1521231802138755345> New branch {branch} created");
+                    embed.WithTitle($"<:plastic_new_branch:1521877222456164522> New branch {branch} created");
                     description = comment;
                 }
                 else if (content.StartsWith("New label"))
                 {
-                    embed.WithTitle($"<:dark_dev_label:1521230835519328509> New label {label} created");
+                    embed.WithTitle($"<:plastic_label:1521877265779265617> New label {label} created");
                     description = comment;
                 }
                 else
