@@ -26,35 +26,6 @@ public static class DiscordRelay
 
             try
             {
-                using var doc = JsonDocument.Parse(body);
-                var embedJson = doc.RootElement.GetProperty("embeds")[0];
-
-                var embed = new EmbedBuilder();
-                
-                if (embedJson.TryGetProperty("title", out var titleJson))
-                {
-                    embed.WithTitle(titleJson.GetString());
-                }
-
-                if (embedJson.TryGetProperty("description", out var descriptionJson))
-                {
-                    embed.WithDescription(descriptionJson.GetString());
-                }
-                
-                if(embedJson.TryGetProperty("footer", out var footerJson))
-                {
-                    var iconUrl = footerJson.GetProperty("icon_url").GetString()?.Trim() ?? "";
-                    var footerText = footerJson.GetProperty("text").GetString()?.Trim() ?? "";
-
-                    embed.WithFooter(footer =>
-                    {
-                        footer.Text = footerText;
-                        footer.IconUrl = iconUrl;
-                    });
-                }
-                
-                embed.WithColor(2303786);
-
                 var channel = await client.GetChannelAsync(ChannelIdJira) as IMessageChannel;
 
                 if (channel == null)
@@ -63,7 +34,7 @@ public static class DiscordRelay
                     return Results.Problem("Channel not found");
                 }
 
-                await channel.SendMessageAsync(embed: embed.Build());
+                await channel.SendMessageAsync(body);
                 return Results.Ok();
             }
             catch (Exception e)
