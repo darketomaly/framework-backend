@@ -134,7 +134,7 @@ public static class DiscordRelay
                         }
                         else if (comment.StartsWith("Subtractive merge"))
                         {
-                            emoji = "<:dark_dev_subtractivemerge:1521237351764857083>";
+                            emoji = "<:plastic_subtractive_merge:1521878716102479922>";
                         }
                         else if (comment.StartsWith("Cherry pick"))
                         {
