@@ -34,7 +34,8 @@ public static class DiscordRelay
                     return Results.Problem("Channel not found");
                 }
 
-                await channel.SendMessageAsync(body);
+                Console.WriteLine(body);
+                await channel.SendMessageAsync(body[..1999]);
                 return Results.Ok();
             }
             catch (Exception e)
