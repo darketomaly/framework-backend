@@ -7,8 +7,8 @@ public static class DiscordAutoReact
 {
     private const ulong ChannelIdAnnouncements = 1518333254480953451;
 
-    private static readonly Emote ThumbsUpEmote = Emote.Parse("<:darkthumbsup:1521505142090760244>");
-    private static readonly Emote ThumbsDownEmote = Emote.Parse("<:darkthumbsdown:1521505179541704784>");
+    private static readonly Emote ThumbsUpEmote = Emote.Parse("<:thumbs_up:1521877716453032047>");
+    private static readonly Emote ThumbsDownEmote = Emote.Parse("<:thumbs_down:1521877749856337940>");
 
     public static void Configure(DiscordSocketClient client)
     {
