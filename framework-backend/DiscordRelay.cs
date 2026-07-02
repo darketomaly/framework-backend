@@ -23,9 +23,27 @@ public static class DiscordRelay
         {
             using var reader = new StreamReader(context.Request.Body);
             string body = await reader.ReadToEndAsync();
-
+            
             try
             {
+                string msg = "Nothing found"; 
+                
+                using var doc = JsonDocument.Parse(body);
+                var json = doc.RootElement;
+
+                if (json.TryGetProperty("attributes", out var attr))
+                {
+                    if (attr.TryGetProperty("statusCategory", out var statusCat))
+                    {
+                        if (statusCat.TryGetProperty("key", out var statusCatKey))
+                        {
+                            msg = $"Key: {statusCatKey.GetString()}";
+                        }
+                    }
+                }
+                
+                // ---
+                
                 var channel = await client.GetChannelAsync(ChannelIdJira) as IMessageChannel;
 
                 if (channel == null)
@@ -35,7 +53,7 @@ public static class DiscordRelay
                 }
 
                 Console.WriteLine(body);
-                await channel.SendMessageAsync(body[..1999]);
+                await channel.SendMessageAsync(msg);
                 return Results.Ok();
             }
             catch (Exception e)
