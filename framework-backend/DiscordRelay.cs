@@ -28,13 +28,23 @@ public static class EmojiId
 
 public static class DiscordRelay
 {
-    private const ulong ChannelIdPlastic = 1517147424982958281;
-    private const ulong ChannelIdJira = 1518976935277891594;
-    
     public static void Configure(WebApplication app, DiscordSocketClient client)
     {
         JiraMap(app, client);
         PlasticMap(app, client);
+    }
+
+    private static bool GetChannelId(HttpContext context, out ulong channelId)
+    {
+        var channelIdStr = context.Request.Query["channel"].ToString();
+
+        if (!ulong.TryParse(channelIdStr, out channelId))
+        {
+            Console.WriteLine("Missing or invalid channel query parameter");
+            return false;
+        }
+
+        return true;
     }
     
     private static void JiraMap(WebApplication app, DiscordSocketClient client)
@@ -43,6 +53,15 @@ public static class DiscordRelay
 
         app.MapPost("/jira-discord-webhook", async (HttpContext context) =>
         {
+            // --- Get channel id
+
+            if (!GetChannelId(context, out var channelId))
+            {
+                return Results.BadRequest("Missing or invalid channel parameter");
+            }
+            
+            // ---
+            
             using var reader = new StreamReader(context.Request.Body);
             string body = await reader.ReadToEndAsync();
             
@@ -121,7 +140,7 @@ public static class DiscordRelay
                 
                 // -- Send message --
                 
-                var channel = await client.GetChannelAsync(ChannelIdJira) as IMessageChannel;
+                var channel = await client.GetChannelAsync(channelId) as IMessageChannel;
 
                 if (channel == null)
                 {
@@ -160,12 +179,22 @@ public static class DiscordRelay
         // Plastic
         app.MapPost("/plastic-discord-webhook", async (HttpContext context) =>
         {
+            // --- Get channel id
+
+            if (!GetChannelId(context, out var channelId))
+            {
+                return Results.BadRequest("Missing or invalid channel parameter");
+            }
+            
+            // ---
+            
             using var reader = new StreamReader(context.Request.Body);
             string body = await reader.ReadToEndAsync();
 
             try
             {
                 // -------
+                
                 using var doc = JsonDocument.Parse(body);
                 var json = doc.RootElement;
                 
@@ -246,7 +275,7 @@ public static class DiscordRelay
                 
                 // -------
 
-                var channel = await client.GetChannelAsync(ChannelIdPlastic) as IMessageChannel;
+                var channel = await client.GetChannelAsync(channelId) as IMessageChannel;
 
                 if (channel == null)
                 {
