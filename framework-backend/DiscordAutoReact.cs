@@ -7,9 +7,6 @@ public static class DiscordAutoReact
 {
     private const ulong ChannelIdAnnouncements = 1518333254480953451;
 
-    private static readonly Emote ThumbsUpEmote = Emote.Parse("<:thumbs_up:1521877716453032047>");
-    private static readonly Emote ThumbsDownEmote = Emote.Parse("<:thumbs_down:1521877749856337940>");
-
     public static void Configure(DiscordSocketClient client)
     {
         client.MessageReceived += HandleMessageReceived;
@@ -17,8 +14,6 @@ public static class DiscordAutoReact
 
     private static async Task HandleMessageReceived(SocketMessage message)
     {
-        //Console.WriteLine(message.ToString());
-        
         if (message.Channel.Id != ChannelIdAnnouncements)
         {
             return;
@@ -26,8 +21,8 @@ public static class DiscordAutoReact
         
         try
         {
-            await message.AddReactionAsync(ThumbsUpEmote);
-            await message.AddReactionAsync(ThumbsDownEmote);
+            await message.AddReactionAsync(Emote.Parse(EmojiId.ReactionThumbsUp));
+            await message.AddReactionAsync(Emote.Parse(EmojiId.ReactionThumbsDown));
         }
         catch (Exception e)
         {

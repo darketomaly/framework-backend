@@ -4,11 +4,33 @@ using Discord.WebSocket;
 
 namespace framework_backend;
 
+public static class EmojiId
+{
+    public const string PlasticSubtractiveMerge = "<:plastic_cherry_pick:1521877174603219044>";
+    public const string PlasticMergeFrom = "<:plastic_cherry_pick:1521877174603219044>";
+    public const string PlasticLabel = "<:plastic_cherry_pick:1521877174603219044>";
+    public const string PlasticNewBranch = "<:plastic_cherry_pick:1521877174603219044>";
+    public const string PlasticCherryPick = "<:plastic_cherry_pick:1521877174603219044>";
+    public const string PlasticCheckin = "<:plastic_cherry_pick:1521877174603219044>";
+    
+    public const string TaskRevisit = "<:plastic_cherry_pick:1521877174603219044>";
+    public const string TaskCreated = "<:plastic_cherry_pick:1521877174603219044>";
+    public const string TaskReadyForReview = "<:plastic_cherry_pick:1521877174603219044>";
+    public const string TaskRejected = "<:plastic_cherry_pick:1521877174603219044>";
+    public const string TaskApproved = "<:plastic_cherry_pick:1521877174603219044>";
+    
+    public const string SprintCompleted = "<:plastic_cherry_pick:1521877174603219044>";
+    public const string SprintStart = "<:plastic_cherry_pick:1521877174603219044>";
+    
+    public const string ReactionThumbsUp = "<:plastic_cherry_pick:1521877174603219044>";
+    public const string ReactionThumbsDown = "<:plastic_cherry_pick:1521877174603219044>";
+}
+
 public static class DiscordRelay
 {
     private const ulong ChannelIdPlastic = 1517147424982958281;
     private const ulong ChannelIdJira = 1518976935277891594;
-
+    
     public static void Configure(WebApplication app, DiscordSocketClient client)
     {
         JiraMap(app, client);
@@ -44,32 +66,52 @@ public static class DiscordRelay
                 switch (evt)
                 {
                     case "discord-issue-created":
+                        title = $"{EmojiId.TaskCreated} {initiator} created {issueKey}";
+                        description = $"{issueName}";
                         break;
                         
                     case "discord-issue-start":
+                        title = $"{initiator} started working on {issueKey}";
+                        description = $"{issueName}";
                         break;
                         
                     case "discord-issue-ready-for-review":
+                        title = $"{EmojiId.TaskReadyForReview} {initiator} has marked {issueKey} ready for review";
+                        description = $"{issueName}";
                         break;
                         
                     case "discord-issue-rejected":
+                        title = $"{EmojiId.TaskRejected} {initiator} has rejected {issueKey}";
+                        description = $"{description}\n\n**Rejection reason:**\n```{rejectionReason}```";
                         break;
                         
                     case "discord-issue-revision":
+                        title = $"{EmojiId.TaskRevisit} {initiator} is revisiting {issueKey}";
+                        description = $"{description}";
                         break;
                         
                     case "discord-issue-approved":
+                        title = $"{EmojiId.TaskApproved} {issueKey} has been approved by {initiator}";
+                        description = $"{issueName}";
                         break;
                         
                     case "discord-sprint-start":
+                        title = $"{EmojiId.SprintStart} {sprintName} has started";
                         break;
                         
                     case "discord-sprint-completed":
+                        title = $"{EmojiId.SprintCompleted} {sprintName} has been completed";
                         break;
                         
                     case "discord-version-released":
+                        title = $"{EmojiId.SprintCompleted} {versionReleased} has been released";
                         break;
                 }
+                
+                // ---
+                
+                // To do
+                // Embed
                 
                 // ---
                 
@@ -81,8 +123,7 @@ public static class DiscordRelay
                     return Results.Problem("Channel not found");
                 }
 
-                Console.WriteLine(body);
-                await channel.SendMessageAsync(body);
+                await channel.SendMessageAsync(title);
                 return Results.Ok();
             }
             catch (Exception e)
@@ -141,7 +182,7 @@ public static class DiscordRelay
                 
                 if (content.StartsWith("New checkin"))
                 {
-                    embed.WithTitle($"<:plastic_checkin:1521865803602067529> New checkin to {branch}");
+                    embed.WithTitle($"{EmojiId.PlasticCheckin} New checkin to {branch}");
                     
                     if (!string.IsNullOrEmpty(comment))
                     {
@@ -149,15 +190,15 @@ public static class DiscordRelay
                         
                         if (comment.StartsWith("Merge from"))
                         {
-                            emoji = "<:plastic_merge_from:1521877966945259722>";
+                            emoji = EmojiId.PlasticMergeFrom;
                         }
                         else if (comment.StartsWith("Subtractive merge"))
                         {
-                            emoji = "<:plastic_subtractive_merge:1521878716102479922>";
+                            emoji = EmojiId.PlasticSubtractiveMerge;
                         }
                         else if (comment.StartsWith("Cherry pick"))
                         {
-                            emoji = "<:plastic_cherry_pick:1521877174603219044>";
+                            emoji = EmojiId.PlasticCherryPick;
                         }
                         
                         description = $"{emoji} {comment}";
@@ -165,12 +206,12 @@ public static class DiscordRelay
                 }
                 else if (content.StartsWith("New branch"))
                 {
-                    embed.WithTitle($"<:plastic_new_branch:1521877222456164522> New branch {branch} created");
+                    embed.WithTitle($"{EmojiId.PlasticNewBranch} New branch {branch} created");
                     description = comment;
                 }
                 else if (content.StartsWith("New label"))
                 {
-                    embed.WithTitle($"<:plastic_label:1521877265779265617> New label {label} created");
+                    embed.WithTitle($"{EmojiId.PlasticLabel} New label {label} created");
                     description = comment;
                 }
                 else
