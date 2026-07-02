@@ -54,7 +54,7 @@ public static class DiscordRelay
                 // -- Get title and description given the json --
 
                 var evt = GetJsonPropertyString(json, "event");
-                var initiator = GetJsonPropertyString(json, "initiator");
+                var initiator = GetJsonPropertyString(json, "initiator_display_name");
                 var issueKey = GetJsonPropertyString(json, "issue_key");
                 var issueName = GetJsonPropertyString(json, "issue_name");
                 var initiatorIcon = GetJsonPropertyString(json, "initiator_icon");
