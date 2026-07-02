@@ -50,6 +50,8 @@ public static class DiscordRelay
             {
                 using var doc = JsonDocument.Parse(body);
                 var json = doc.RootElement;
+                
+                // -- Get title and description given the json --
 
                 var evt = GetJsonPropertyString(json, "event");
                 var initiator = GetJsonPropertyString(json, "initiator");
@@ -108,12 +110,16 @@ public static class DiscordRelay
                         break;
                 }
                 
-                // ---
+                // -- Build the embed given the title and description --
                 
-                // To do
-                // Embed
+                var embed = new EmbedBuilder();
                 
-                // ---
+                embed.WithTitle(title);
+                embed.WithDescription(description);
+                embed.WithFooter(initiator, initiatorIcon);
+                embed.WithColor(2303786);
+                
+                // -- Send message --
                 
                 var channel = await client.GetChannelAsync(ChannelIdJira) as IMessageChannel;
 
@@ -123,7 +129,7 @@ public static class DiscordRelay
                     return Results.Problem("Channel not found");
                 }
 
-                await channel.SendMessageAsync(title);
+                await channel.SendMessageAsync(embed: embed.Build());
                 return Results.Ok();
             }
             catch (Exception e)
