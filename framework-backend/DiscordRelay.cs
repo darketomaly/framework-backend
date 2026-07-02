@@ -26,6 +26,51 @@ public static class DiscordRelay
             
             try
             {
+                using var doc = JsonDocument.Parse(body);
+                var json = doc.RootElement;
+
+                var evt = GetJsonPropertyString(json, "event");
+                var initiator = GetJsonPropertyString(json, "initiator");
+                var issueKey = GetJsonPropertyString(json, "issue_key");
+                var issueName = GetJsonPropertyString(json, "issue_name");
+                var initiatorIcon = GetJsonPropertyString(json, "initiator_icon");
+                var versionReleased = GetJsonPropertyString(json, "version_released");
+                var sprintName = GetJsonPropertyString(json, "sprint_name");
+                var rejectionReason = GetJsonPropertyString(json, "rejection_reason");
+
+                var title = string.Empty;
+                var description = string.Empty;
+
+                switch (evt)
+                {
+                    case "discord-issue-created":
+                        break;
+                        
+                    case "discord-issue-start":
+                        break;
+                        
+                    case "discord-issue-ready-for-review":
+                        break;
+                        
+                    case "discord-issue-rejected":
+                        break;
+                        
+                    case "discord-issue-revision":
+                        break;
+                        
+                    case "discord-issue-approved":
+                        break;
+                        
+                    case "discord-sprint-start":
+                        break;
+                        
+                    case "discord-sprint-completed":
+                        break;
+                        
+                    case "discord-version-released":
+                        break;
+                }
+                
                 // ---
                 
                 var channel = await client.GetChannelAsync(ChannelIdJira) as IMessageChannel;
