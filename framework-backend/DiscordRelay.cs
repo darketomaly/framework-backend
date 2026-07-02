@@ -26,22 +26,6 @@ public static class DiscordRelay
             
             try
             {
-                string msg = "Nothing found"; 
-                
-                using var doc = JsonDocument.Parse(body);
-                var json = doc.RootElement;
-
-                if (json.TryGetProperty("attributes", out var attr))
-                {
-                    if (attr.TryGetProperty("statusCategory", out var statusCat))
-                    {
-                        if (statusCat.TryGetProperty("key", out var statusCatKey))
-                        {
-                            msg = $"Key: {statusCatKey.GetString()}";
-                        }
-                    }
-                }
-                
                 // ---
                 
                 var channel = await client.GetChannelAsync(ChannelIdJira) as IMessageChannel;
@@ -53,7 +37,7 @@ public static class DiscordRelay
                 }
 
                 Console.WriteLine(body);
-                await channel.SendMessageAsync(msg);
+                await channel.SendMessageAsync(body);
                 return Results.Ok();
             }
             catch (Exception e)
