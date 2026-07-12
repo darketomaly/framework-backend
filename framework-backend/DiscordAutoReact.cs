@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using System.Text.RegularExpressions;
+using Discord;
 using Discord.WebSocket;
 
 namespace framework_backend;
@@ -24,7 +25,16 @@ public static class DiscordAutoReact
             
             case ChannelIdMemes:
                 
-                await TryReact(message,EmojiId.ReactionLaugh);
+                // Only react if it contains an attachment or link
+                
+                var hasImage = message.Attachments != null && message.Attachments.Count > 0 && message.Attachments.Any(a => a.Width > 0);
+                var hasLink = Regex.IsMatch(message.Content, @"https?:\/\/[^\s]+", RegexOptions.IgnoreCase);
+
+                if (hasImage || hasLink)
+                {
+                    await TryReact(message,EmojiId.ReactionLaugh);
+                }
+                
                 break;
         }
     }
