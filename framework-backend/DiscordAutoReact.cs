@@ -24,7 +24,7 @@ public static class DiscordAutoReact
             
             case ChannelIdMemes:
                 
-                await TryReact(message,EmojiId.ReactionLaugh, EmojiId.ReactionLaugh);
+                await TryReact(message,EmojiId.ReactionLaugh);
                 break;
         }
     }
