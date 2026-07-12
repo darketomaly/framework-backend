@@ -24,7 +24,7 @@ public static class EmojiId
     
     public const string ReactionThumbsUp = "<:thumbs_up:1521877716453032047>";
     public const string ReactionThumbsDown = "<:thumbs_down:1521877749856337940>";
-    public const string ReactionLaugh = "<laugh:1525996913550426142>";
+    public const string ReactionLaugh = "<:laugh:1525996913550426142>";
 }
 
 public static class DiscordRelay
