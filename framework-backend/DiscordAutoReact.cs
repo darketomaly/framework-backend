@@ -6,6 +6,7 @@ namespace framework_backend;
 public static class DiscordAutoReact
 {
     private const ulong ChannelIdAnnouncements = 1518333254480953451;
+    private const ulong ChannelIdMemes = 1518347521947340921;
 
     public static void Configure(DiscordSocketClient client)
     {
@@ -14,15 +15,28 @@ public static class DiscordAutoReact
 
     private static async Task HandleMessageReceived(SocketMessage message)
     {
-        if (message.Channel.Id != ChannelIdAnnouncements)
+        switch (message.Channel.Id)
         {
-            return;
+            case  ChannelIdAnnouncements:
+
+                await TryReact(message,EmojiId.ReactionThumbsUp, EmojiId.ReactionThumbsDown);
+                break;
+            
+            case ChannelIdMemes:
+                
+                await TryReact(message,EmojiId.ReactionLaugh, EmojiId.ReactionLaugh);
+                break;
         }
-        
+    }
+
+    private static async Task TryReact(SocketMessage message, params string[] reactions)
+    {
         try
         {
-            await message.AddReactionAsync(Emote.Parse(EmojiId.ReactionThumbsUp));
-            await message.AddReactionAsync(Emote.Parse(EmojiId.ReactionThumbsDown));
+            foreach (var reaction in reactions)
+            {
+                await message.AddReactionAsync(Emote.Parse(reaction));
+            }
         }
         catch (Exception e)
         {
