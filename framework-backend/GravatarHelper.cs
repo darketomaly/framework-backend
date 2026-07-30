@@ -6,8 +6,6 @@ public static class GravatarHelper
 {
     public static string GetGravatarUrl(string email, int size = 80, string defaultImage = "identicon")
     {
-        Console.WriteLine($"Getting gravatar image from email: {email}");
-        
         if (string.IsNullOrWhiteSpace(email))
             return string.Empty;
 
@@ -24,6 +22,8 @@ public static class GravatarHelper
         }
 
         string hash = builder.ToString();
+        
+        Console.WriteLine($"Getting gravatar image from email: {email}, and has: {hash}");
 
         // www.gravatar.com, gravatar.com, and 0.gravatar.com all work
         return $"https://www.gravatar.com/avatar/{hash}?s={size}&d={defaultImage}";
