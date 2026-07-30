@@ -22,7 +22,7 @@ public static class GravatarHelper
         }
 
         var hash = builder.ToString();
-        var url = $"https://www.gravatar.com/avatar/{hash}?s={size}&d={defaultImage}";
+        var url = $"https://www.gravatar.com/avatar/{hash}?s={size}&d={defaultImage}&r={{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}}";
         
         Console.WriteLine($"Getting gravatar image from email: {email}, and hash: {hash}, final url: {url}");
 
