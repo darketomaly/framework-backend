@@ -286,8 +286,6 @@ public static class DiscordRelay
                     return Results.Problem("Channel not found");
                 }
 
-                await channel.SendMessageAsync($"<{avatarUrl}>");
-                await channel.SendMessageAsync(avatarUrl);
                 await channel.SendMessageAsync(embed: embed.Build());
                 return Results.Ok();
             }
