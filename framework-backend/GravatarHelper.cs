@@ -6,6 +6,8 @@ public static class GravatarHelper
 {
     public static string GetGravatarUrl(string email, int size = 80, string defaultImage = "identicon")
     {
+        Console.WriteLine($"Getting gravatar image from email: {email}");
+        
         if (string.IsNullOrWhiteSpace(email))
             return string.Empty;
 
