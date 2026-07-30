@@ -271,7 +271,9 @@ public static class DiscordRelay
                 }
                 
                 embed.WithDescription(description);
-                embed.WithFooter(userName, GravatarHelper.GetGravatarUrl(email));
+
+                var avatarUrl = GravatarHelper.GetGravatarUrl(email);
+                embed.WithFooter(userName, avatarUrl);
                 embed.WithColor(2303786);
                 
                 // -------
@@ -284,6 +286,7 @@ public static class DiscordRelay
                     return Results.Problem("Channel not found");
                 }
 
+                await channel.SendMessageAsync(avatarUrl);
                 await channel.SendMessageAsync(embed: embed.Build());
                 return Results.Ok();
             }
