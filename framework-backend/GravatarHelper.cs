@@ -11,21 +11,22 @@ public static class GravatarHelper
 
         // Gravatar requires: trim + lowercase + SHA-256 (as of 2025+)
         // MD5 is still supported for legacy hashes but should not be used for new code.
-        string normalizedEmail = email.Trim().ToLowerInvariant();
+        var normalizedEmail = email.Trim().ToLowerInvariant();
 
-        byte[] hashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(normalizedEmail));
-
+        var hashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(normalizedEmail));
         var builder = new StringBuilder(hashBytes.Length * 2);
+        
         foreach (byte b in hashBytes)
         {
             builder.Append(b.ToString("x2"));
         }
 
-        string hash = builder.ToString();
+        var hash = builder.ToString();
+        var url = $"https://www.gravatar.com/avatar/{hash}?s={size}&d={defaultImage}";
         
-        Console.WriteLine($"Getting gravatar image from email: {email}, and has: {hash}");
+        Console.WriteLine($"Getting gravatar image from email: {email}, and hash: {hash}, final url: {url}");
 
         // www.gravatar.com, gravatar.com, and 0.gravatar.com all work
-        return $"https://www.gravatar.com/avatar/{hash}?s={size}&d={defaultImage}";
+        return url;
     }
 }
