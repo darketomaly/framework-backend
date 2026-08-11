@@ -31,7 +31,7 @@ public static class DiscordRelay
 {
     public static void Configure(WebApplication app, DiscordSocketClient client)
     {
-        JiraMap(app, client);
+        JiraMap(app, client); // Test
         PlasticMap(app, client);
     }
 

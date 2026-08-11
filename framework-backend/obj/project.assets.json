@@ -891,7 +891,7 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\darke\\.nuget\\packages\\": {}
+    "C:\\Users\\darketomaly\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
@@ -899,11 +899,11 @@
       "projectUniqueName": "C:\\Development\\framework-backend\\framework-backend\\framework-backend.csproj",
       "projectName": "framework-backend",
       "projectPath": "C:\\Development\\framework-backend\\framework-backend\\framework-backend.csproj",
-      "packagesPath": "C:\\Users\\darke\\.nuget\\packages\\",
+      "packagesPath": "C:\\Users\\darketomaly\\.nuget\\packages\\",
       "outputPath": "C:\\Development\\framework-backend\\framework-backend\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\darke\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\darketomaly\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -913,6 +913,7 @@
       },
       "frameworks": {
         "net8.0": {
+          "framework": "net8.0",
           "targetAlias": "net8.0",
           "projectReferences": {}
         }
@@ -930,6 +931,7 @@
     },
     "frameworks": {
       "net8.0": {
+        "framework": "net8.0",
         "targetAlias": "net8.0",
         "dependencies": {
           "Discord.Net": {
@@ -964,7 +966,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Users\\darke\\.dotnet\\sdk\\8.0.422/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Users\\darketomaly\\.dotnet\\sdk\\8.0.423/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
