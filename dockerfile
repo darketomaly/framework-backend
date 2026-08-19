@@ -4,7 +4,7 @@ WORKDIR /app
 
 # Copy everything and restore
 COPY . .
-RUN dotnet publish src/framework-backend.csproj -c Release -o out
+RUN dotnet publish framework-backend.csproj -c Release -o out
 
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0

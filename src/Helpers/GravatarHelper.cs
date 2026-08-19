@@ -25,8 +25,6 @@ public static class GravatarHelper
         var url = $"https://www.gravatar.com/avatar/{hash}?s={size}&d={defaultImage}";
         
         Console.WriteLine($"Getting gravatar image from email: {email}, and hash: {hash}, final url: {url}");
-
-        // www.gravatar.com, gravatar.com, and 0.gravatar.com all work
         return url;
     }
 }
