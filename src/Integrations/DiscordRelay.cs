@@ -4,6 +4,36 @@ using Discord.WebSocket;
 
 namespace framework_backend;
 
+/*
+ 
+ Using Jira relay
+ 
+ All automations have these, nothing per-automation specific:
+ 1. Automation web request url: https://productionurl/jira-discord-webhook?channel=desiredchannelid
+ 2. Custom data:
+ {
+    "event": "{{rule.name}}",
+    "initiator_display_name" : "{{initiator.displayName}}",
+    "issue_key" : "{{issue.key}}",
+    "issue_name" : "{{issue.summary.jsonEncode}}",
+    "initiator_icon" : "{{initiator.avatarUrls."48x48"}}",
+    "version_released" : "{{version.name}}",
+    "sprint_name" : "{{sprint.name}}",
+    "rejection_reason" : "{{issue.customfield_10044.jsonEncode()}}"
+ }
+ 
+ And the automation names should be:
+ discord-issue-approved
+ discord-issue-created
+ discord-issue-ready-for-review
+ discord-issue-rejected
+ discord-issue-revision
+ discord-issue-start
+ discord-sprint-completed
+ discord-sprint-start
+ discord-version-released
+ */
+
 public static class EmojiId
 {
     public const string PlasticSubtractiveMerge = "<:plastic_subtractive_merge:1521878716102479922>";
