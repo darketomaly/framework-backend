@@ -356,8 +356,8 @@ public static class DiscordRelay
                 
                 var embed = new EmbedBuilder();
 
-                //body = body.Truncate(4000);
-                embed.Description = $"Hello world, check logs for the data to be interpreted.";
+                string eventType = context.Request.Headers["X-GitHub-Event"];
+                embed.Description = $"Received webhook: {eventType}, check logs for the data to be interpreted.";
                 Console.WriteLine($"I should interpret this json: {body}");
                 
                 // --- Forward data ---
