@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+﻿﻿using System.Text.Json;
 using Discord;
 using Discord.WebSocket;
 
@@ -191,19 +191,23 @@ public static class DiscordRelay
         });
     }
 
-    private static string GetJsonPropertyString(JsonElement element, string propertyName)
+    private static string GetJsonPropertyString(JsonElement element, params string[] propertyPath)
     {
-        element.TryGetProperty(propertyName, out var queriedElement);
+        foreach (var propertyName in propertyPath)
+        {
+            if (element.ValueKind != JsonValueKind.Object ||
+                !element.TryGetProperty(propertyName, out element))
+            {
+                return string.Empty;
+            }
+        }
 
-        if (queriedElement.ValueKind is JsonValueKind.String)
+        if (element.ValueKind is JsonValueKind.String)
         {
-            var parsedStr = queriedElement.GetString();
-            return string.IsNullOrEmpty(parsedStr) ? string.Empty : parsedStr;
+            return element.GetString() ?? string.Empty;
         }
-        else
-        {
-            return string.Empty;
-        }
+
+        return string.Empty;
     }
 
     private static void PlasticMap(WebApplication app, DiscordSocketClient client)
@@ -361,9 +365,8 @@ public static class DiscordRelay
                 var description = string.Empty;
                 var title = $"{eventType}";
                 
-                var senderData = JsonDocument.Parse(GetJsonPropertyString(json, "sender")).RootElement;
-                var name = GetJsonPropertyString(senderData, "login");
-                var avatarUrl = GetJsonPropertyString(senderData, "avatar_url");
+                var name = GetJsonPropertyString(json, "sender", "login");
+                var avatarUrl = GetJsonPropertyString(json, "sender", "avatar_url");
                 
                 switch (eventType)
                 {
