@@ -387,6 +387,8 @@ public static class DiscordRelay
                 {
                     // To do
                     // Add emojis
+                    // Add "timestamp" to push description for each commit
+                    // Embed description has a 4096-character limit, truncate it with a ... trail
                     
                     case "push":
                         title = $"New push on {repo}";
