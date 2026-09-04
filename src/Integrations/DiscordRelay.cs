@@ -210,6 +210,20 @@ public static class DiscordRelay
         return string.Empty;
     }
 
+    private static JsonElement[] GetJsonArrayProperty(
+        JsonElement element,
+        string arrayPropertyName)
+    {
+        if (element.ValueKind != JsonValueKind.Object ||
+            !element.TryGetProperty(arrayPropertyName, out var arrayElement) ||
+            arrayElement.ValueKind != JsonValueKind.Array)
+        {
+            return Array.Empty<JsonElement>();
+        }
+
+        return arrayElement.EnumerateArray().ToArray();
+    }
+
     private static void PlasticMap(WebApplication app, DiscordSocketClient client)
     {
         // Plastic
@@ -376,11 +390,16 @@ public static class DiscordRelay
                     
                     case "push":
                         title = $"New push on {repo}";
-                        description = "Someone has pushed.";
                         
-                        // To do
-                        // Print all commits
-                        // Or a summary
+                        var commits = GetJsonArrayProperty(json, "commits");
+
+                        foreach (var commit in commits)
+                        {
+                            var msg = GetJsonPropertyString(commit, "message");
+                            var commiter = GetJsonPropertyString(commit, "committer", "name");
+
+                            description += $"{commiter}: {msg}\n\n";
+                        }
                         
                         break;
                     
