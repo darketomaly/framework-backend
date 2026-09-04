@@ -354,7 +354,7 @@ public static class DiscordRelay
                 
                 var embed = new EmbedBuilder();
 
-                embed.Description = "Hello world.";
+                embed.Description = $"{body}";
                 
                 // --- Forward data ---
                 
