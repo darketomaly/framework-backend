@@ -63,6 +63,7 @@ public static class DiscordRelay
     {
         JiraMap(app, client);
         PlasticMap(app, client);
+        GitMap(app, client);
     }
 
     private static bool GetChannelId(HttpContext context, out ulong channelId)
@@ -77,7 +78,7 @@ public static class DiscordRelay
 
         return true;
     }
-    
+
     private static void JiraMap(WebApplication app, DiscordSocketClient client)
     {
         // Jira
@@ -90,17 +91,17 @@ public static class DiscordRelay
             {
                 return Results.BadRequest("Missing or invalid channel parameter");
             }
-            
+
             // ---
-            
+
             using var reader = new StreamReader(context.Request.Body);
             string body = await reader.ReadToEndAsync();
-            
+
             try
             {
                 using var doc = JsonDocument.Parse(body);
                 var json = doc.RootElement;
-                
+
                 // -- Get title and description given the json --
 
                 var evt = GetJsonPropertyString(json, "event");
@@ -121,56 +122,56 @@ public static class DiscordRelay
                         title = $"{EmojiId.TaskCreated} {initiator} created {issueKey}";
                         description = $"{issueName}";
                         break;
-                        
+
                     case "discord-issue-start":
                         title = $"{initiator} started working on {issueKey}";
                         description = $"{issueName}";
                         break;
-                        
+
                     case "discord-issue-ready-for-review":
                         title = $"{EmojiId.TaskReadyForReview} {initiator} has marked {issueKey} ready for review";
                         description = $"{issueName}";
                         break;
-                        
+
                     case "discord-issue-rejected":
                         title = $"{EmojiId.TaskRejected} {initiator} has rejected {issueKey}";
                         description = $"{description}\n\n**Rejection reason:**\n```{rejectionReason}```";
                         break;
-                        
+
                     case "discord-issue-revision":
                         title = $"{EmojiId.TaskRevisit} {initiator} is revisiting {issueKey}";
                         description = $"{description}";
                         break;
-                        
+
                     case "discord-issue-approved":
                         title = $"{EmojiId.TaskApproved} {issueKey} has been approved by {initiator}";
                         description = $"{issueName}";
                         break;
-                        
+
                     case "discord-sprint-start":
                         title = $"{EmojiId.SprintStart} {sprintName} has started";
                         break;
-                        
+
                     case "discord-sprint-completed":
                         title = $"{EmojiId.SprintCompleted} {sprintName} has been completed";
                         break;
-                        
+
                     case "discord-version-released":
                         title = $"{EmojiId.SprintCompleted} {versionReleased} has been released";
                         break;
                 }
-                
+
                 // -- Build the embed given the title and description --
-                
+
                 var embed = new EmbedBuilder();
-                
+
                 embed.WithTitle(title);
                 embed.WithDescription(description);
                 embed.WithFooter(initiator, initiatorIcon);
                 embed.WithColor(2303786);
-                
+
                 // -- Send message --
-                
+
                 var channel = await client.GetChannelAsync(channelId) as IMessageChannel;
 
                 if (channel == null)
@@ -216,19 +217,19 @@ public static class DiscordRelay
             {
                 return Results.BadRequest("Missing or invalid channel parameter");
             }
-            
+
             // ---
-            
+
             using var reader = new StreamReader(context.Request.Body);
             string body = await reader.ReadToEndAsync();
 
             try
             {
                 // -------
-                
+
                 using var doc = JsonDocument.Parse(body);
                 var json = doc.RootElement;
-                
+
                 var content = GetJsonPropertyString(json, "content");
                 var email = GetJsonPropertyString(json, "PLASTIC_USER");
                 var branch = GetJsonPropertyString(json, "PLASTIC_FULL_BRANCH_NAME");
@@ -245,15 +246,15 @@ public static class DiscordRelay
 
                 var embed = new EmbedBuilder();
                 var description = string.Empty;
-                
+
                 if (content.StartsWith("New checkin"))
                 {
                     embed.WithTitle($"{EmojiId.PlasticCheckin} New checkin to {branch}");
-                    
+
                     if (!string.IsNullOrEmpty(comment))
                     {
                         var emoji = string.Empty;
-                        
+
                         if (comment.StartsWith("Merge from"))
                         {
                             emoji = EmojiId.PlasticMergeFrom;
@@ -266,7 +267,7 @@ public static class DiscordRelay
                         {
                             emoji = EmojiId.PlasticCherryPick;
                         }
-                        
+
                         description = $"{emoji} {comment}";
                     }
                 }
@@ -284,7 +285,7 @@ public static class DiscordRelay
                 {
                     embed.WithTitle($"Unknown");
                     description = $"Please define what type of webhook this is: \n\n{body}";
-                    
+
                     // To do
                     // New repo
                 }
@@ -299,20 +300,20 @@ public static class DiscordRelay
                 {
                     description = $"`{changesetNumber}`\n{description}";
                 }
-                
+
                 embed.WithDescription(description);
 
                 var avatarUrl = GravatarHelper.GetGravatarUrl(email);
                 embed.WithFooter(userName, avatarUrl);
                 embed.WithColor(2303786);
-                
+
                 // -------
 
                 var channel = await client.GetChannelAsync(channelId) as IMessageChannel;
 
                 if (channel == null)
                 {
-                    Console.WriteLine("Jira channel not found");
+                    Console.WriteLine("Plastic channel not found");
                     return Results.Problem("Channel not found");
                 }
 
@@ -321,7 +322,56 @@ public static class DiscordRelay
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Error processing Jira webhook: {e}");
+                Console.WriteLine($"Error processing Plastic webhook: {e}");
+                return Results.Problem("Failed to process embed");
+            }
+        });
+    }
+
+    private static void GitMap(WebApplication app, DiscordSocketClient client)
+    {
+        // Git
+        app.MapPost("/git-discord-webhook", async (HttpContext context) =>
+        {
+            // --- Get channel id ---
+
+            if (!GetChannelId(context, out var channelId))
+            {
+                return Results.BadRequest("Missing or invalid channel parameter");
+            }
+            
+            // --- Read data ---
+
+            using var reader = new StreamReader(context.Request.Body);
+            string body = await reader.ReadToEndAsync();
+
+            try
+            {
+                // --- Interpret data ---
+                
+                // To do
+                // Read data received and add it to the embed
+                
+                var embed = new EmbedBuilder();
+
+                embed.Description = "Hello world.";
+                
+                // --- Forward data ---
+                
+                var channel = await client.GetChannelAsync(channelId) as IMessageChannel;
+
+                if (channel == null)
+                {
+                    Console.WriteLine("Git channel not found");
+                    return Results.Problem("Channel not found");
+                }
+
+                await channel.SendMessageAsync(embed: embed.Build());
+                return Results.Ok();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error processing git webhook: {e}");
                 return Results.Problem("Failed to process embed");
             }
         });

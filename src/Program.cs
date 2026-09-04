@@ -17,7 +17,7 @@ public class Program
         // Start the bot
         _ = StartDiscordBot(discordClient);
 
-        // Listen to plastic/jira relay
+        // Listen to discord relays
         DiscordRelay.Configure(app, discordClient);
         DiscordCommands.Configure(discordClient);
         DiscordAutoReact.Configure(discordClient);
