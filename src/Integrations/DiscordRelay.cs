@@ -356,6 +356,7 @@ public static class DiscordRelay
                 
                 var embed = new EmbedBuilder();
 
+                body = body.Truncate(4000);
                 embed.Description = $"{body}";
                 
                 // --- Forward data ---
@@ -377,5 +378,11 @@ public static class DiscordRelay
                 return Results.Problem("Failed to process embed");
             }
         });
+    }
+    
+    private static string Truncate(this string value, int maxLength)
+    {
+        if (string.IsNullOrEmpty(value)) return value;
+        return value.Length <= maxLength ? value : value.Substring(0, maxLength);
     }
 }
