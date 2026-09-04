@@ -356,8 +356,9 @@ public static class DiscordRelay
                 
                 var embed = new EmbedBuilder();
 
-                body = body.Truncate(4000);
-                embed.Description = $"{body}";
+                //body = body.Truncate(4000);
+                embed.Description = $"Hello world, check logs for the data to be interpreted.";
+                Console.WriteLine($"I should interpret this json: {body}");
                 
                 // --- Forward data ---
                 
