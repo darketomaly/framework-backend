@@ -349,16 +349,28 @@ public static class DiscordRelay
             {
                 // --- Interpret data ---
                 
-                // To do
-                // Read data received and add it to the embed
-                
                 // Test comment .
                 
                 var embed = new EmbedBuilder();
+                
+                var eventType = context.Request.Headers["X-GitHub-Event"];
 
-                string eventType = context.Request.Headers["X-GitHub-Event"];
-                embed.Description = $"Received webhook: {eventType}, check logs for the data to be interpreted.";
-                Console.WriteLine($"I should interpret this json: {body}");
+                var description = string.Empty;
+                var title = $"{eventType}";
+                
+                switch (eventType)
+                {
+                    case "push":
+                        description = "Someone has pushed.";
+                        break;
+                    
+                    case "deployment.created":
+                        description = "A deployment has been created.";
+                        break;
+                }
+
+                embed.Title = title;
+                embed.Description = description;
                 
                 // --- Forward data ---
                 
