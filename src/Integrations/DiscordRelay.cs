@@ -349,6 +349,9 @@ public static class DiscordRelay
             {
                 // --- Interpret data ---
                 
+                using var doc = JsonDocument.Parse(body);
+                var json = doc.RootElement;
+                
                 // Test comment..
                 
                 var embed = new EmbedBuilder();
@@ -358,19 +361,24 @@ public static class DiscordRelay
                 var description = string.Empty;
                 var title = $"{eventType}";
                 
+                var senderData = JsonDocument.Parse(GetJsonPropertyString(json, "sender")).RootElement;
+                var name = GetJsonPropertyString(senderData, "login");
+                var avatarUrl = GetJsonPropertyString(senderData, "avatar_url");
+                
                 switch (eventType)
                 {
                     case "push":
                         description = "Someone has pushed.";
                         break;
                     
-                    case "deployment.created":
+                    case "deployment":
                         description = "A deployment has been created.";
                         break;
                 }
 
                 embed.Title = title;
                 embed.Description = description;
+                embed.WithFooter(name, avatarUrl);
                 
                 // --- Forward data ---
                 
