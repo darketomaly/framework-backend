@@ -363,24 +363,41 @@ public static class DiscordRelay
                 var eventType = context.Request.Headers["X-GitHub-Event"];
 
                 var description = string.Empty;
-                var title = $"{eventType}";
+                var title = string.Empty;
+                var repo = GetJsonPropertyString(json, "repository", "name");
                 
                 var name = GetJsonPropertyString(json, "sender", "login");
                 var avatarUrl = GetJsonPropertyString(json, "sender", "avatar_url");
                 
                 switch (eventType)
                 {
+                    // To do
+                    // Add emojis
+                    
                     case "push":
+                        title = $"New push on {repo}";
                         description = "Someone has pushed.";
+                        
+                        // To do
+                        // Print all commits
+                        // Or a summary
+                        
                         break;
                     
                     case "deployment":
-                        description = "A deployment has been created.";
+                        title = $"{repo} has been deployed";
                         break;
                 }
+                
+                // --- Format embed ---
 
                 embed.Title = title;
-                embed.Description = description;
+
+                if (!string.IsNullOrEmpty(description))
+                {
+                    embed.Description = description;
+                }
+                
                 embed.WithFooter(name, avatarUrl);
                 
                 // --- Forward data ---
