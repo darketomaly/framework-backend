@@ -404,7 +404,7 @@ public static class DiscordRelay
                             var parsedDate = DateTimeOffset.Parse(timestamp);
                             var formattedTimestamp = parsedDate.ToString("[d MMM yyyy @ h:mm tt]");
 
-                            description += $"**Commit {i + 1}**\n{formattedTimestamp} {commiter}: {msg}\n\n";
+                            description += $"**Commit {i + 1} | {formattedTimestamp} | {commiter}**\n{msg}\n\n";
                         }
 
                         break;
