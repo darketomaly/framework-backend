@@ -370,7 +370,7 @@ public static class DiscordRelay
                 using var doc = JsonDocument.Parse(body);
                 var json = doc.RootElement;
                 
-                // Test comment........
+                // Test comment.........
                 
                 var embed = new EmbedBuilder();
                 
@@ -387,7 +387,6 @@ public static class DiscordRelay
                 {
                     // To do
                     // Add emojis
-                    // Add "timestamp" to push description for each commit
                     // Embed description has a 4096-character limit, truncate it with a ... trail
                     
                     case "push":
