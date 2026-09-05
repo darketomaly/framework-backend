@@ -374,8 +374,6 @@ public static class DiscordRelay
                 using var doc = JsonDocument.Parse(body);
                 var json = doc.RootElement;
                 
-                // Test comment.............
-                
                 var embed = new EmbedBuilder();
                 
                 var eventType = context.Request.Headers["X-GitHub-Event"];
