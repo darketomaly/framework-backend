@@ -402,7 +402,7 @@ public static class DiscordRelay
                             var timestamp = GetJsonPropertyString(commit, "timestamp");
                             
                             var parsedDate = DateTimeOffset.Parse(timestamp);
-                            var formattedTimestamp = parsedDate.ToString(@"'[d MMM yyyy \@ h:mm tt]'");
+                            var formattedTimestamp = parsedDate.ToString("[d MMM yyyy @ h:mm tt]");
 
                             description += $"**Commit {i + 1}**\n{formattedTimestamp} {commiter}: {msg}\n\n";
                         }
