@@ -42,6 +42,10 @@ public static class EmojiId
     public const string PlasticNewBranch = "<:plastic_new_branch:1521877222456164522>";
     public const string PlasticCherryPick = "<:plastic_cherry_pick:1521877174603219044>";
     public const string PlasticCheckin = "<:plastic_checkin:1521865803602067529>";
+
+    public const string GitPush = PlasticCheckin;
+    public const string GitCommit = PlasticCheckin;
+    public const string GitDeploy = SprintCompleted; // To do, replace for spaceship
     
     public const string TaskRevisit = "<:task_revisit:1521878670166327426>";
     public const string TaskCreated = "<:task_created:1521877022945841242>";
@@ -386,11 +390,8 @@ public static class DiscordRelay
                 
                 switch (eventType)
                 {
-                    // To do
-                    // Add emojis
-                    
                     case "push":
-                        title = $"New push on {repo} @ {branch}";
+                        title = $"{EmojiId.GitCommit} New push on {repo} @ {branch}";
                         
                         var commits = GetJsonArrayProperty(json, "commits");
 
@@ -400,7 +401,7 @@ public static class DiscordRelay
                             var msg = GetJsonPropertyString(commit, "message");
                             var commiter = GetJsonPropertyString(commit, "committer", "name");
 
-                            description += $"{commiter}: {msg}\n\n";
+                            description += $"{EmojiId.GitCommit} {commiter}: {msg}\n\n";
 
                             if (description.Length > 4096)
                             {
@@ -414,7 +415,7 @@ public static class DiscordRelay
                         break;
                     
                     case "deployment":
-                        title = $"{repo} has been deployed";
+                        title = $"{EmojiId.GitDeploy} {repo} has been deployed";
                         break;
                 }
                 
