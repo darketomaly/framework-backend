@@ -379,6 +379,7 @@ public static class DiscordRelay
                 var description = string.Empty;
                 var title = string.Empty;
                 var repo = GetJsonPropertyString(json, "repository", "name");
+                var branch = GetJsonPropertyString(json, "ref");
                 
                 var name = GetJsonPropertyString(json, "sender", "login");
                 var avatarUrl = GetJsonPropertyString(json, "sender", "avatar_url");
@@ -390,21 +391,16 @@ public static class DiscordRelay
                     // Embed description has a 4096-character limit, truncate it with a ... trail
                     
                     case "push":
-                        title = $"New push on {repo}";
+                        title = $"New push on {repo} @ {branch}";
                         
                         var commits = GetJsonArrayProperty(json, "commits");
 
-                        for (var i = 0; i < commits.Length; i++)
+                        foreach (var commit in commits)
                         {
-                            var commit = commits[i];
                             var msg = GetJsonPropertyString(commit, "message");
                             var commiter = GetJsonPropertyString(commit, "committer", "name");
-                            var timestamp = GetJsonPropertyString(commit, "timestamp");
-                            
-                            var parsedDate = DateTimeOffset.Parse(timestamp);
-                            var formattedTimestamp = parsedDate.ToString("[d MMM yyyy @ h:mm tt]");
 
-                            description += $"**Commit {i + 1} | {formattedTimestamp} | {commiter}**\n{msg}\n\n";
+                            description += $"{commiter}: {msg}\n\n";
                         }
 
                         break;
