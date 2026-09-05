@@ -388,19 +388,27 @@ public static class DiscordRelay
                 {
                     // To do
                     // Add emojis
-                    // Embed description has a 4096-character limit, truncate it with a ... trail
                     
                     case "push":
                         title = $"New push on {repo} @ {branch}";
                         
                         var commits = GetJsonArrayProperty(json, "commits");
 
-                        foreach (var commit in commits)
+                        for (var i = 0; i < commits.Length; i++)
                         {
+                            var commit = commits[i];
                             var msg = GetJsonPropertyString(commit, "message");
                             var commiter = GetJsonPropertyString(commit, "committer", "name");
 
                             description += $"{commiter}: {msg}\n\n";
+
+                            if (description.Length > 4096)
+                            {
+                                var otherCommits = commits.Length - i - 1;
+                                var suffix = $"\n... + {otherCommits} other commits";
+                                description = $"{description.Truncate(4096 - suffix.Length)}{suffix}";
+                                break;
+                            }
                         }
 
                         break;
