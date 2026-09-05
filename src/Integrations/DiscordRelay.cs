@@ -395,14 +395,19 @@ public static class DiscordRelay
                         
                         var commits = GetJsonArrayProperty(json, "commits");
 
-                        foreach (var commit in commits)
+                        for (var i = 0; i < commits.Length; i++)
                         {
+                            var commit = commits[i];
                             var msg = GetJsonPropertyString(commit, "message");
                             var commiter = GetJsonPropertyString(commit, "committer", "name");
+                            var timestamp = GetJsonPropertyString(commit, "timestamp");
+                            
+                            var parsedDate = DateTimeOffset.Parse(timestamp);
+                            var formattedTimestamp = parsedDate.ToString(@"'[d MMM yyyy \@ h:mm tt]'");
 
-                            description += $"{commiter}: {msg}\n\n";
+                            description += $"**Commit {i + 1}**\n{formattedTimestamp} {commiter}: {msg}\n\n";
                         }
-                        
+
                         break;
                     
                     case "deployment":
