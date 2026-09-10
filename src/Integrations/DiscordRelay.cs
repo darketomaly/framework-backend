@@ -421,6 +421,9 @@ public static class DiscordRelay
         });
     }
     
+    // To do
+    // Need a helper method to reduce redundant code
+    
     private static string Truncate(this string value, int maxLength)
     {
         if (string.IsNullOrEmpty(value)) return value;
