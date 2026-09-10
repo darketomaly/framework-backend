@@ -1,6 +1,6 @@
 using Discord;
 using Discord.WebSocket;
-using framework_backend;
+namespace framework_backend;
 
 public class Program
 {
