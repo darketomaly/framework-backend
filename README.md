@@ -55,6 +55,8 @@ Sends Plastic SCM json data as a formatted embed to a specific discord channel.
 
 ## Github relay
 
+<img width="521" height="226" alt="image" src="https://github.com/user-attachments/assets/c4f80da3-fd18-46af-9ec4-59e9a417fe96" />
+
 1. Go to your GitHub repository -> Settings -> Webhooks -> Add webhook.
 2.  You can select the desired events, though usually the push event alone is enough.
 3.  Select content type as application/json with payload URL https://api.darketomaly.com/git-discord-webhook?channel=desiredchannel id (replace desiredchannelid by your channel id).
