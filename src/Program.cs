@@ -10,7 +10,7 @@ public class Program
         builder.Services.AddHttpClient();
 
         var app = builder.Build();
-
+        
         // Create the Discord client
         var discordClient = CreateDiscordClient();
 
@@ -22,6 +22,9 @@ public class Program
         DiscordCommands.Configure(discordClient);
         DiscordAutoReact.Configure(discordClient);
 
+        // Configure the rest of the integrations
+        Redirects.Configure(app);
+        
         app.Run();
     }
 
