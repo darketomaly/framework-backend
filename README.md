@@ -49,6 +49,12 @@ Sends Plastic SCM json data as a formatted embed to a specific discord channel.
 <img width="248" height="150" alt="image" src="https://github.com/user-attachments/assets/982f45ae-836d-4cc3-be22-5894532505a2" />
 
 1. On the Unity Dashboard, go to Version control -> Settings -> Integrations -> Webhook -> Add new webhook
-2. Set payload url https://api.darketomaly.com/plastic-discord-webhook?channel=desiredchannelid (replace desiredchannelid by your channel id)
+2. Set payload url https://api.darketomaly.com/plastic-discord-webhook?channel=desiredchannelid (replace desiredchannelid by your channel id).
 3. Select which repository you want the webhook to act on. Selecting all repositories also works.
 4. Select these events (all "after", not "before"): Branch created, check in, label created and repository created.
+
+## Github relay
+
+1. Go to your GitHub repository -> Settings -> Webhooks -> Add webhook.
+2.  You can select the desired events, though usually the push event alone is enough.
+3.  Select content type as application/json with payload URL https://api.darketomaly.com/git-discord-webhook?channel=desiredchannel id (replace desiredchannelid by your channel id).
