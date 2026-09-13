@@ -14,6 +14,11 @@ public static class DiscordCommands
 
     private static async Task RegisterCommands(DiscordSocketClient client)
     {
+        var generateServerKeyCommand = new SlashCommandBuilder()
+            .WithName("darkgenerateserverkey")
+            .WithDefaultMemberPermissions(GuildPermission.Administrator)
+            .WithDescription("Generates a unique key for this server to pass to webhook relays");
+        
         var sendMsgCommand = new SlashCommandBuilder()
             .WithName("darksendmsg")
             .WithDefaultMemberPermissions(GuildPermission.Administrator)
@@ -70,7 +75,8 @@ public static class DiscordCommands
             await client.Rest.BulkOverwriteGlobalCommands(new[]
             {
                 sendMsgCommand.Build(),
-                editMsgCommand.Build()
+                editMsgCommand.Build(),
+                generateServerKeyCommand.Build()
             });
         }
         catch (HttpException ex)
@@ -89,6 +95,10 @@ public static class DiscordCommands
 
             case "darkeditmsg":
                 await HandleEditMsg(command, client);
+                break;
+            
+            case "darkgenerateserverkey":
+                await HandleGenerateServerKey(command, client);
                 break;
         }
     }
@@ -204,5 +214,13 @@ public static class DiscordCommands
         }
 
         await command.RespondAsync("Message edited.", ephemeral: true);
+    }
+
+    private static async Task HandleGenerateServerKey(SocketSlashCommand command, DiscordSocketClient client)
+    {
+        var guildId = (ulong)command.GuildId;
+        var guildName = client.GetGuild(guildId).Name;
+        
+        await command.RespondAsync($"I should generate a server key for {guildName}. I haven't yet, but I should.", ephemeral: true);
     }
 }
