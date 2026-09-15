@@ -14,15 +14,23 @@ public static class DiscordRelay
         GitMap(app, client);
     }
 
-    private static bool GetChannelId(HttpContext context, out ulong channelId)
+    /// <summary>
+    /// Checks if given channel exists and if the given key matches the channel's server.
+    /// </summary>
+    /// <returns>Channel id from payload as ulong</returns>
+    private static bool IsValidChannelId(HttpContext context, out ulong channelId)
     {
         var channelIdStr = context.Request.Query["channel"].ToString();
+        var serverKeyStr = context.Request.Query["key"].ToString();
 
         if (!ulong.TryParse(channelIdStr, out channelId))
         {
             Console.WriteLine("Missing or invalid channel query parameter");
             return false;
         }
+        
+        // To do
+        // Check if given server key matches the channel's server key
 
         return true;
     }
@@ -35,7 +43,7 @@ public static class DiscordRelay
         {
             // --- Get channel id
 
-            if (!GetChannelId(context, out var channelId))
+            if (!IsValidChannelId(context, out var channelId))
             {
                 return Results.BadRequest("Missing or invalid channel parameter");
             }
@@ -145,7 +153,7 @@ public static class DiscordRelay
         {
             // --- Get channel id
 
-            if (!GetChannelId(context, out var channelId))
+            if (!IsValidChannelId(context, out var channelId))
             {
                 return Results.BadRequest("Missing or invalid channel parameter");
             }
@@ -266,7 +274,7 @@ public static class DiscordRelay
         {
             // --- Get channel id ---
 
-            if (!GetChannelId(context, out var channelId))
+            if (!IsValidChannelId(context, out var channelId))
             {
                 return Results.BadRequest("Missing or invalid channel parameter");
             }
