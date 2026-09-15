@@ -15,24 +15,36 @@ public static class DiscordRelay
     }
 
     /// <summary>
-    /// Checks if given channel exists and if the given key matches the channel's server.
+    /// Checks if the given channel exists and returns its guild ID.
     /// </summary>
-    /// <returns>Channel id from payload as ulong</returns>
-    private static bool IsValidChannelId(HttpContext context, DiscordSocketClient client, out ulong channelId)
+    private static async Task<(bool IsValid, ulong ChannelId)> IsValidChannelIdAsync(
+        HttpContext context,
+        DiscordSocketClient client)
     {
         var channelIdStr = context.Request.Query["channel"].ToString();
-        var serverKeyStr = context.Request.Query["key"].ToString();
+        var secretKeyStr = context.Request.Query["key"].ToString();
 
-        if (!ulong.TryParse(channelIdStr, out channelId))
+        if (!ulong.TryParse(channelIdStr, out var channelId))
         {
             Console.WriteLine("Missing or invalid channel query parameter");
-            return false;
+            return (false, 0);
         }
+
+        var channel = await client.GetChannelAsync(channelId);
+
+        if (channel is not IGuildChannel guildChannel)
+        {
+            Console.WriteLine("Channel not found or does not belong to a guild");
+            return (false, 0);
+        }
+
+        var guildId = guildChannel.Id;
         
         // To do
-        // Check if given server key matches the channel's server key
+        // Query database for the secret value of guildId
+        // Check if secret key matches the queried secret value
 
-        return true;
+        return (true, channelId);
     }
     
     #endregion
@@ -43,10 +55,14 @@ public static class DiscordRelay
         {
             // --- Get channel id
 
-            if (!IsValidChannelId(context, client, out var channelId))
+            var channelValidation = await IsValidChannelIdAsync(context, client);
+
+            if (!channelValidation.IsValid)
             {
                 return Results.BadRequest("Missing or invalid channel parameter");
             }
+
+            var channelId = channelValidation.ChannelId;
 
             // ---
 
@@ -153,10 +169,14 @@ public static class DiscordRelay
         {
             // --- Get channel id
 
-            if (!IsValidChannelId(context, client, out var channelId))
+            var channelValidation = await IsValidChannelIdAsync(context, client);
+
+            if (!channelValidation.IsValid)
             {
                 return Results.BadRequest("Missing or invalid channel parameter");
             }
+
+            var channelId = channelValidation.ChannelId;
 
             // ---
 
@@ -274,10 +294,14 @@ public static class DiscordRelay
         {
             // --- Get channel id ---
 
-            if (!IsValidChannelId(context, client, out var channelId))
+            var channelValidation = await IsValidChannelIdAsync(context, client);
+
+            if (!channelValidation.IsValid)
             {
                 return Results.BadRequest("Missing or invalid channel parameter");
             }
+
+            var channelId = channelValidation.ChannelId;
             
             // --- Read data ---
 
