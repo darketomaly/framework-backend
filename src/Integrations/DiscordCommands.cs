@@ -277,6 +277,8 @@ public static class DiscordCommands
 
         if (addEntry == DatabaseQueryExitCode.AddValueSuccess)
         {
+            await DiscordAutoReact.RefreshCacheAsync();
+
             if (clearedValue)
             {
                 await command.RespondAsync($"Bot was reacting with thumbs up and thumbs down, now it's toggled off.", ephemeral: true);
@@ -319,6 +321,8 @@ public static class DiscordCommands
 
         if (addEntry == DatabaseQueryExitCode.AddValueSuccess)
         {
+            await DiscordAutoReact.RefreshCacheAsync();
+
             if (clearedValue)
             {
                 await command.RespondAsync($"Bot was reacting with thumbs up and thumbs down, now it's toggled off.", ephemeral: true);

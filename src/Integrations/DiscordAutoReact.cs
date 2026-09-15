@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+using System.Collections.Concurrent;
+using System.Text.RegularExpressions;
 using Discord;
 using Discord.WebSocket;
 
@@ -6,35 +7,51 @@ namespace framework_backend;
 
 public static class DiscordAutoReact
 {
-    private const ulong ChannelIdAnnouncements = 1518333254480953451;
-    private const ulong ChannelIdMemes = 1518347521947340921;
+    private static readonly ConcurrentDictionary<string, string> ReactionCache = new(StringComparer.OrdinalIgnoreCase);
 
     public static void Configure(DiscordSocketClient client)
     {
+        _ = RefreshCacheAsync();
         client.MessageReceived += HandleMessageReceived;
+    }
+
+    public static async Task RefreshCacheAsync()
+    {
+        var values = await DatabaseManager.QueryAllValues(DatabaseTable.AutoReactChannels);
+        ReactionCache.Clear();
+
+        foreach (var pair in values)
+        {
+            ReactionCache[pair.Key] = pair.Value;
+        }
     }
 
     private static async Task HandleMessageReceived(SocketMessage message)
     {
-        switch (message.Channel.Id)
+        if (!ReactionCache.TryGetValue(message.Channel.Id.ToString(), out var storedValue) || string.IsNullOrWhiteSpace(storedValue))
         {
-            case  ChannelIdAnnouncements:
+            return;
+        }
 
-                await TryReact(message,EmojiId.ReactionThumbsUp, EmojiId.ReactionThumbsDown);
+        switch (storedValue.Trim().ToUpperInvariant())
+        {
+            case "THUMBS":
+                await TryReact(message, EmojiId.ReactionThumbsUp, EmojiId.ReactionThumbsDown);
                 break;
-            
-            case ChannelIdMemes:
-                
-                // Only react if it contains an attachment or link
-                
+
+            case "LAUGH":
                 var hasImage = message.Attachments != null && message.Attachments.Count > 0 && message.Attachments.Any(a => a.Width > 0);
                 var hasLink = Regex.IsMatch(message.Content, @"https?:\/\/[^\s]+", RegexOptions.IgnoreCase);
 
                 if (hasImage || hasLink)
                 {
-                    await TryReact(message,EmojiId.ReactionLaugh);
+                    await TryReact(message, EmojiId.ReactionLaugh);
                 }
-                
+
+                break;
+
+            case "NONE":
+            default:
                 break;
         }
     }

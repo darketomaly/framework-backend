@@ -128,6 +128,45 @@ public static class DatabaseManager
         }
     }
 
+    public static async Task<Dictionary<string, string>> QueryAllValues(string tableName)
+    {
+        await using var database = await Connect();
+
+        if (database is null)
+        {
+            return new Dictionary<string, string>();
+        }
+
+        var values = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        try
+        {
+            await using var command = new NpgsqlCommand(
+                $"SELECT key, value FROM {tableName}",
+                database);
+
+            await using var reader = await command.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
+            {
+                var key = reader["key"]?.ToString();
+                var value = reader["value"]?.ToString();
+
+                if (!string.IsNullOrWhiteSpace(key))
+                {
+                    values[key] = value ?? "NONE";
+                }
+            }
+
+            return values;
+        }
+        catch (NpgsqlException exception)
+        {
+            Console.WriteLine($"PostgreSQL table query failed: {exception.Message}");
+            return values;
+        }
+    }
+
     public static async Task<DatabaseQueryExitCode> AddValue(string key, string value, string tableName)
     {
         await using var database = await Connect();
