@@ -16,11 +16,17 @@ public static class DatabaseManager
                 return null;
             }
 
-            var databaseConnectionString = databaseUrl;
+            string databaseConnectionString;
 
             if (Uri.TryCreate(databaseUrl, UriKind.Absolute, out var databaseUri) &&
-                !string.IsNullOrWhiteSpace(databaseUri.UserInfo))
+                databaseUri.Scheme is "postgres" or "postgresql")
             {
+                if (string.IsNullOrWhiteSpace(databaseUri.UserInfo))
+                {
+                    Console.WriteLine("PostgreSQL connection skipped: DATABASE_URL has no credentials");
+                    return null;
+                }
+
                 var userInfo = databaseUri.UserInfo.Split(':', 2);
 
                 if (userInfo.Length != 2)
@@ -41,6 +47,10 @@ public static class DatabaseManager
 
                 databaseConnectionString = connectionBuilder.ConnectionString;
             }
+            else
+            {
+                databaseConnectionString = new NpgsqlConnectionStringBuilder(databaseUrl).ConnectionString;
+            }
 
             var database = new NpgsqlConnection(databaseConnectionString);
             await database.OpenAsync();
@@ -51,6 +61,10 @@ public static class DatabaseManager
             Console.WriteLine($"PostgreSQL connection failed: {exception.Message}");
         }
         catch (ArgumentException exception)
+        {
+            Console.WriteLine($"PostgreSQL connection configuration is invalid: {exception.Message}");
+        }
+        catch (InvalidOperationException exception)
         {
             Console.WriteLine($"PostgreSQL connection configuration is invalid: {exception.Message}");
         }
