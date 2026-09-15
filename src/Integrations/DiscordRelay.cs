@@ -44,6 +44,10 @@ public static class DiscordRelay
         // To do
         // Query database for the secret value of guildId
         // Check if secret key matches the queried secret value
+        
+        // To do
+        // Make utility to connect and query the database
+        
         try
         {
             var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
