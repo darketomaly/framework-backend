@@ -14,8 +14,13 @@ public enum DatabaseQueryExitCode
 
 public static class DatabaseTable
 {
-    public const string SecretKeys = "secret_keys";
-    public const string AutoReactChannels = "auto_react_channels";
+    public static string SecretKeys => GetRequiredTableName("SECRET_KEYS_TABLE");
+    public static string AutoReactChannels => GetRequiredTableName("AUTO_REACT_CHANNELS_TABLE");
+
+    private static string GetRequiredTableName(string environmentVariable)
+    {
+        return Environment.GetEnvironmentVariable(environmentVariable);;
+    }
 }
 
 public static class DatabaseManager
