@@ -222,10 +222,7 @@ public static class DiscordCommands
     {
         var guildId = (ulong)command.GuildId;
         
-        // To-do
-        // Use guild id
-
-        var (exitCode, value) = await DatabaseManager.QueryValue("test");
+        var (exitCode, value) = await DatabaseManager.QueryValue(guildId.ToString());
 
         if (exitCode is DatabaseQueryExitCode.NotFound)
         {
@@ -233,12 +230,12 @@ public static class DiscordCommands
             // If value does not exist, add into database via DatabaseManager.AddValue
 
             DatabaseManager.AddValue("test", "hi!");
+            await command.RespondAsync($"Secret value not found, generated one: ``. Use this on the relay payload.", ephemeral: true);
         }
         else if (exitCode is DatabaseQueryExitCode.Success)
         {
             Console.WriteLine($"Test query was a success: {value}");
+            await command.RespondAsync($"Secret value found for guild #{guildId}: `{value}`. Use this on the relay payload.", ephemeral: true);
         }
-        
-        await command.RespondAsync($"I should generate a server key for {guildId}. Test value: {value}", ephemeral: true);
     }
 }
