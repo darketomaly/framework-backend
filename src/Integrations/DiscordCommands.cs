@@ -223,6 +223,10 @@ public static class DiscordCommands
         var guildId = (ulong)command.GuildId;
         var guildName = client.GetGuild(guildId).Name;
         
+        // To-do
+        // Query value via DatabaseManager.QueryValue
+        // If value does not exist, add into database via DatabaseManager.AddValue
+        
         await command.RespondAsync($"I should generate a server key for {guildName}. I haven't yet, but I should.", ephemeral: true);
     }
 }
