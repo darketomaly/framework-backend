@@ -27,7 +27,8 @@ public static class DiscordCommands
                 .WithDescription("The channel to react to")
                 .WithType(ApplicationCommandOptionType.Channel)
                 .AddChannelType(ChannelType.Text)
-                .AddChannelType(ChannelType.News))   
+                .AddChannelType(ChannelType.News)
+                .WithRequired(true))   
             .WithDescription("Bot will react with a thumbs up and a thumbs down to all messages on the target channel.");
 
         var autoReactMemesChannelCommand = new SlashCommandBuilder()
@@ -38,7 +39,8 @@ public static class DiscordCommands
                 .WithDescription("The channel to react to")
                 .WithType(ApplicationCommandOptionType.Channel)
                 .AddChannelType(ChannelType.Text)
-                .AddChannelType(ChannelType.News))   
+                .AddChannelType(ChannelType.News)
+                .WithRequired(true))   
             .WithDescription("Bot will react with a laugh to all messages on the target channel.");
         
         var sendMsgCommand = new SlashCommandBuilder()
@@ -252,12 +254,20 @@ public static class DiscordCommands
 
     private static async Task HandleAutoReactAnnouncementsChannel(SocketSlashCommand command)
     {
+        var channelOption = command.Data.Options.First(o => o.Name == "channel");
+        var targetChannel = channelOption.Value as IMessageChannel;
+
+        await command.RespondAsync($"Now reacting with thumbs up and thumbs down to all messages on {targetChannel.Name}.", ephemeral: true);
     }
 
     // ---------- /darkautoreactmemeschannel ----------
 
     private static async Task HandleAutoReactMemesChannel(SocketSlashCommand command)
     {
+        var channelOption = command.Data.Options.First(o => o.Name == "channel");
+        var targetChannel = channelOption.Value as IMessageChannel;
+
+        await command.RespondAsync($"Now reacting with a laugh to all media messages on {targetChannel.Name}.", ephemeral: true);
     }
 
     // ---------- /darkgenerateserverkey ----------
