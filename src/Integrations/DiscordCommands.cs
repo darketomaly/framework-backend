@@ -216,6 +216,8 @@ public static class DiscordCommands
         await command.RespondAsync("Message edited.", ephemeral: true);
     }
 
+    // ---------- /darkgenerateserverkey ----------
+    
     private static async Task HandleGenerateServerKey(SocketSlashCommand command, DiscordSocketClient client)
     {
         var guildId = (ulong)command.GuildId;

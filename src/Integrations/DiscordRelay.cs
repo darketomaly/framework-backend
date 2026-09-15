@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Discord;
 using Discord.WebSocket;
+using Npgsql;
 namespace framework_backend;
 
 public static class DiscordRelay
@@ -38,11 +39,28 @@ public static class DiscordRelay
             return (false, 0);
         }
 
-        var guildId = guildChannel.Id;
+        var guildId = guildChannel.GuildId;
         
         // To do
         // Query database for the secret value of guildId
         // Check if secret key matches the queried secret value
+        var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+
+        if (string.IsNullOrWhiteSpace(databaseUrl))
+        {
+            throw new InvalidOperationException("DATABASE_URL is not configured");
+        }
+
+        await using var database = new NpgsqlConnection(databaseUrl);
+        await database.OpenAsync();
+
+        await using var command = new NpgsqlCommand(
+            "SELECT value FROM secret_keys WHERE secret_key = @key LIMIT 1",
+            database);
+        command.Parameters.AddWithValue("key", "test");
+
+        var result = await command.ExecuteScalarAsync();
+        Console.WriteLine($"PostgreSQL test: {result}");
 
         return (true, channelId);
     }
