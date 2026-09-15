@@ -257,10 +257,16 @@ public static class DiscordCommands
         var channelOption = command.Data.Options.First(o => o.Name == "channel");
         var targetChannel = channelOption.Value as IMessageChannel;
         
-        await command.RespondAsync($"Now reacting with thumbs up and thumbs down to all messages on {targetChannel.Name}.", ephemeral: true);
-        
-        // To do
-        // Add target channel database
+        var addEntry = await DatabaseManager.AddValue(targetChannel.Id.ToString(), "THUMBS", DatabaseTable.AutoReactChannels);
+
+        if (addEntry == DatabaseQueryExitCode.AddValueSuccess)
+        {
+            await command.RespondAsync($"Now reacting with thumbs up and thumbs down to all messages on {targetChannel.Name}.", ephemeral: true);
+        }
+        else if (addEntry == DatabaseQueryExitCode.AddValueFailed)
+        {
+            await command.RespondAsync($"Something went wrong. Not setting auto-reaction on this channel.", ephemeral: true);
+        }
     }
 
     // ---------- /darkautoreactmemeschannel ----------
@@ -269,11 +275,17 @@ public static class DiscordCommands
     {
         var channelOption = command.Data.Options.First(o => o.Name == "channel");
         var targetChannel = channelOption.Value as IMessageChannel;
-
-        await command.RespondAsync($"Now reacting with a laugh to all media messages on {targetChannel.Name}.", ephemeral: true);
         
-        // To do
-        // Add target channel database
+        var addEntry = await DatabaseManager.AddValue(targetChannel.Id.ToString(), "LAUGH", DatabaseTable.AutoReactChannels);
+
+        if (addEntry == DatabaseQueryExitCode.AddValueSuccess)
+        {
+            await command.RespondAsync($"Now reacting with a laugh to all media messages on {targetChannel.Name}.", ephemeral: true);
+        }
+        else if (addEntry == DatabaseQueryExitCode.AddValueFailed)
+        {
+            await command.RespondAsync($"Something went wrong. Not setting auto-reaction on this channel.", ephemeral: true);
+        }
     }
 
     // ---------- /darkgenerateserverkey ----------
