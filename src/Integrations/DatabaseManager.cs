@@ -96,4 +96,10 @@ public static class DatabaseManager
             Console.WriteLine($"PostgreSQL query failed: {exception.Message}");
         }
     }
+
+    public static async Task AddValue(string key, string value)
+    {
+        // To do
+        // Add entry into the database from the discord command
+    }
 }
