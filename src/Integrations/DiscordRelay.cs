@@ -23,7 +23,8 @@ public static class DiscordRelay
         DiscordSocketClient client)
     {
         var channelIdStr = context.Request.Query["channel"].ToString();
-        //var secretKeyStr = context.Request.Query["key"].ToString();
+        var givenSecretKeyValue = context.Request.Query["key"].ToString();
+        givenSecretKeyValue = "hello_world";
 
         if (!ulong.TryParse(channelIdStr, out var channelId))
         {
@@ -40,12 +41,18 @@ public static class DiscordRelay
         }
 
         var guildId = guildChannel.GuildId;
+        var guildSecretKeyValue = "hello_world";
         
         // To do
         // Query database for the secret value of guildId
         // Check if secret key matches the queried secret value
-
         //DatabaseManager.QueryValue("test");
+
+        if (givenSecretKeyValue != guildSecretKeyValue)
+        {
+            Console.WriteLine("Given secret key is not valid for this channel");
+            return (false, 0);
+        }
 
         return (true, channelId);
     }

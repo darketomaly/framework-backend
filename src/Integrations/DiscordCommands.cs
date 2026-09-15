@@ -221,7 +221,6 @@ public static class DiscordCommands
     private static async Task HandleGenerateServerKey(SocketSlashCommand command, DiscordSocketClient client)
     {
         var guildId = (ulong)command.GuildId;
-        var guildName = client.GetGuild(guildId).Name;
         
         // To-do
         // Use guild id
@@ -240,6 +239,6 @@ public static class DiscordCommands
             Console.WriteLine($"Test query was a success: {value}");
         }
         
-        await command.RespondAsync($"I should generate a server key for {guildName}. I haven't yet, but I should.", ephemeral: true);
+        await command.RespondAsync($"I should generate a server key for {guildId}. Test value: {value}", ephemeral: true);
     }
 }
