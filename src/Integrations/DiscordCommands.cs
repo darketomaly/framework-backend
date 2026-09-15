@@ -20,7 +20,7 @@ public static class DiscordCommands
             .WithDescription("Generates a unique key for this server to pass to webhook relays");
 
         var autoReactAnnouncementsChannelCommand = new SlashCommandBuilder()
-            .WithName("darkautoreactannouncementschannel")
+            .WithName("darkautoreactannouncementchannel")
             .WithDefaultMemberPermissions(GuildPermission.Administrator)
             .AddOption(new SlashCommandOptionBuilder()
                 .WithName("channel")
@@ -127,8 +127,8 @@ public static class DiscordCommands
                 await HandleGenerateServerKey(command, client);
                 break;
 
-            case "darkautoreactannouncementschannel":
-                await HandleAutoReactAnnouncementsChannel(command);
+            case "darkautoreactannouncementchannel":
+                await HandleAutoReactAnnouncementChannel(command);
                 break;
 
             case "darkautoreactmemeschannel":
@@ -250,9 +250,9 @@ public static class DiscordCommands
         await command.RespondAsync("Message edited.", ephemeral: true);
     }
 
-    // ---------- /darkautoreactannouncementschannel ----------
+    // ---------- /darkautoreactannouncementchannel ----------
 
-    private static async Task HandleAutoReactAnnouncementsChannel(SocketSlashCommand command)
+    private static async Task HandleAutoReactAnnouncementChannel(SocketSlashCommand command)
     {
         var channelOption = command.Data.Options.First(o => o.Name == "channel");
         var targetChannel = channelOption.Value as IMessageChannel;
