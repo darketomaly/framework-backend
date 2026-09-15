@@ -11,6 +11,14 @@ Install via https://api.darketomaly.com/install-discord-bot
 <hr>
 
 # Discord relays
+
+## Secret
+All payloads must provide `channelid` and `secret`. To generate a secret, a discord server admin should use the command `darkgenerateserverkey`.
+
+<img width="542" height="100" alt="image" src="https://github.com/user-attachments/assets/6c5e0931-4ec4-44ba-a961-86450daab493" />
+
+This generates a unique secret string that only server admins can see. This avoids someone from your server abusing the api and redirecting bot messages towards a channel.
+
 ## Jira  relay
 Sends Jira json data as a formatted embed to a specific discord channel.
 
@@ -41,7 +49,7 @@ Sends Jira json data as a formatted embed to a specific discord channel.
     "rejection_reason" : "{{issue.customfield_10044.jsonEncode()}}"
  }
  ```
- 3. Configure the automation request url to https://api.darketomaly.com/jira-discord-webhook?channel=desiredchannelid (replace desiredchannelid by your channel id).
+ 3. Configure the automation request url to https://api.darketomaly.com/jira-discord-webhook?channel=XXX&secret=XXX
 
 ## Plastic SCM relay
 Sends Plastic SCM json data as a formatted embed to a specific discord channel.
@@ -49,7 +57,7 @@ Sends Plastic SCM json data as a formatted embed to a specific discord channel.
 <img width="248" height="150" alt="image" src="https://github.com/user-attachments/assets/982f45ae-836d-4cc3-be22-5894532505a2" />
 
 1. On the Unity Dashboard, go to Version control -> Settings -> Integrations -> Webhook -> Add new webhook
-2. Set payload url https://api.darketomaly.com/plastic-discord-webhook?channel=desiredchannelid (replace desiredchannelid by your channel id).
+2. Set payload url https://api.darketomaly.com/plastic-discord-webhook?channel=XXX&secret=XXX
 3. Select which repository you want the webhook to act on. Selecting all repositories also works.
 4. Select these events (all "after", not "before"): Branch created, check in, label created and repository created.
 
@@ -59,4 +67,4 @@ Sends Plastic SCM json data as a formatted embed to a specific discord channel.
 
 1. Go to your GitHub repository -> Settings -> Webhooks -> Add webhook.
 2.  You can select the desired events, though usually the push event alone is enough.
-3.  Select content type as application/json with payload URL https://api.darketomaly.com/git-discord-webhook?channel=desiredchannel id (replace desiredchannelid by your channel id).
+3.  Select content type as application/json with payload URL https://api.darketomaly.com/git-discord-webhook?channel=XXX&secret=XXX
