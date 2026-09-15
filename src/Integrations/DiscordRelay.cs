@@ -24,7 +24,6 @@ public static class DiscordRelay
     {
         var channelIdStr = context.Request.Query["channel"].ToString();
         var givenSecretKeyValue = context.Request.Query["secret"].ToString();
-        givenSecretKeyValue = "hello_world";
 
         if (!ulong.TryParse(channelIdStr, out var channelId))
         {
@@ -41,14 +40,9 @@ public static class DiscordRelay
         }
 
         var guildId = guildChannel.GuildId;
-        var guildSecretKeyValue = "hello_world";
+        var guildSecretKeyValue = await DatabaseManager.QueryValue(guildId.ToString()); 
         
-        // To do
-        // Query database for the secret value of guildId
-        // Check if secret key matches the queried secret value
-        //DatabaseManager.QueryValue("test");
-
-        if (givenSecretKeyValue != guildSecretKeyValue)
+        if (givenSecretKeyValue != guildSecretKeyValue.Value)
         {
             Console.WriteLine("Given secret key is not valid for this channel");
             return (false, 0);
