@@ -256,12 +256,35 @@ public static class DiscordCommands
     {
         var channelOption = command.Data.Options.First(o => o.Name == "channel");
         var targetChannel = channelOption.Value as IMessageChannel;
+        var clearedValue = false;
+        var targetValue = "THUMBS";
+        
+        var currentValue = DatabaseManager.QueryValue(targetChannel.Id.ToString(), DatabaseTable.AutoReactChannels);
 
-        var addEntry = await DatabaseManager.AddValue(targetChannel.Id.ToString(), "THUMBS", DatabaseTable.AutoReactChannels);
+        if (currentValue.Result.ExitCode == DatabaseQueryExitCode.QuerySuccess)
+        {
+            if (currentValue.Result.Value == "THUMBS")
+            {
+                // There's an entry and command was executed
+                // Clearing entry
+
+                clearedValue = true;
+                targetValue = "NONE";
+            }
+        }
+
+        var addEntry = await DatabaseManager.AddValue(targetChannel.Id.ToString(), targetValue, DatabaseTable.AutoReactChannels);
 
         if (addEntry == DatabaseQueryExitCode.AddValueSuccess)
         {
-            await command.RespondAsync($"Now reacting with thumbs up and thumbs down to all messages on {targetChannel.Name}.", ephemeral: true);
+            if (clearedValue)
+            {
+                await command.RespondAsync($"Bot was reacting with thumbs up and thumbs down, now it's toggled off.", ephemeral: true);
+            }
+            else
+            {
+                await command.RespondAsync($"Now reacting with thumbs up and thumbs down to all messages on {targetChannel.Name}.", ephemeral: true);
+            }
         }
         else if (addEntry == DatabaseQueryExitCode.AddValueFailed)
         {
@@ -275,12 +298,35 @@ public static class DiscordCommands
     {
         var channelOption = command.Data.Options.First(o => o.Name == "channel");
         var targetChannel = channelOption.Value as IMessageChannel;
+        var clearedValue = false;
+        var targetValue = "LAUGH";
+
+        var currentValue = DatabaseManager.QueryValue(targetChannel.Id.ToString(), DatabaseTable.AutoReactChannels);
+
+        if (currentValue.Result.ExitCode == DatabaseQueryExitCode.QuerySuccess)
+        {
+            if (currentValue.Result.Value == "LAUGH")
+            {
+                // There's an entry and command was executed
+                // Clearing entry
+
+                clearedValue = true;
+                targetValue = "NONE";
+            }
+        }
         
-        var addEntry = await DatabaseManager.AddValue(targetChannel.Id.ToString(), "LAUGH", DatabaseTable.AutoReactChannels);
+        var addEntry = await DatabaseManager.AddValue(targetChannel.Id.ToString(), targetValue, DatabaseTable.AutoReactChannels);
 
         if (addEntry == DatabaseQueryExitCode.AddValueSuccess)
         {
-            await command.RespondAsync($"Now reacting with a laugh to all media messages on {targetChannel.Name}.", ephemeral: true);
+            if (clearedValue)
+            {
+                await command.RespondAsync($"Bot was reacting with thumbs up and thumbs down, now it's toggled off.", ephemeral: true);
+            }
+            else
+            {
+                await command.RespondAsync($"Now reacting with a laugh to all media messages on {targetChannel.Name}.", ephemeral: true);
+            }
         }
         else if (addEntry == DatabaseQueryExitCode.AddValueFailed)
         {
