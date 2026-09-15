@@ -256,7 +256,7 @@ public static class DiscordCommands
     {
         var channelOption = command.Data.Options.First(o => o.Name == "channel");
         var targetChannel = channelOption.Value as IMessageChannel;
-        
+
         var addEntry = await DatabaseManager.AddValue(targetChannel.Id.ToString(), "THUMBS", DatabaseTable.AutoReactChannels);
 
         if (addEntry == DatabaseQueryExitCode.AddValueSuccess)

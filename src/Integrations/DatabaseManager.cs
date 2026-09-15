@@ -105,7 +105,7 @@ public static class DatabaseManager
         try
         {
             await using var command = new NpgsqlCommand(
-                $"SELECT value FROM {tableName} WHERE secret_key = @key LIMIT 1",
+                $"SELECT value FROM {tableName} WHERE key = @key LIMIT 1",
                 database);
             command.Parameters.AddWithValue("key", key);
 
@@ -139,20 +139,41 @@ public static class DatabaseManager
 
         try
         {
-            await using var command = new NpgsqlCommand(
+            await using var keyCheckCommand = new NpgsqlCommand(
+                $"SELECT 1 FROM {tableName} WHERE key = @key LIMIT 1",
+                database);
+            keyCheckCommand.Parameters.AddWithValue("key", key);
+
+            var keyExists = await keyCheckCommand.ExecuteScalarAsync();
+
+            if (keyExists is not null && keyExists is not DBNull)
+            {
+                await using var updateCommand = new NpgsqlCommand(
+                    $"UPDATE {tableName} SET value = @value WHERE key = @key",
+                    database);
+                updateCommand.Parameters.AddWithValue("key", key);
+                updateCommand.Parameters.AddWithValue("value", value);
+
+                await updateCommand.ExecuteNonQueryAsync();
+
+                Console.WriteLine($"PostgreSQL value updated for key '{key}'");
+                return DatabaseQueryExitCode.AddValueSuccess;
+            }
+
+            await using var insertCommand = new NpgsqlCommand(
                 $"INSERT INTO {tableName} (key, value) VALUES (@key, @value)",
                 database);
-            command.Parameters.AddWithValue("key", key);
-            command.Parameters.AddWithValue("value", value);
+            insertCommand.Parameters.AddWithValue("key", key);
+            insertCommand.Parameters.AddWithValue("value", value);
 
-            await command.ExecuteNonQueryAsync();
+            await insertCommand.ExecuteNonQueryAsync();
 
             Console.WriteLine($"PostgreSQL value added for key '{key}'");
             return DatabaseQueryExitCode.AddValueSuccess;
-        } 
+        }
         catch (NpgsqlException exception)
         {
-            Console.WriteLine($"PostgreSQL insert failed: {exception.Message}");
+            Console.WriteLine($"PostgreSQL add/update failed: {exception.Message}");
             return DatabaseQueryExitCode.AddValueFailed;
         }
     }
