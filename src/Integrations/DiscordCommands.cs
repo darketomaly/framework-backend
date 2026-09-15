@@ -20,7 +20,7 @@ public static class DiscordCommands
             .WithDescription("Generates a unique key for this server to pass to webhook relays");
 
         var autoReactAnnouncementsChannelCommand = new SlashCommandBuilder()
-            .WithName("darkautoreactannouncementchannel")
+            .WithName("darkautoreactthumbs")
             .WithDefaultMemberPermissions(GuildPermission.Administrator)
             .AddOption(new SlashCommandOptionBuilder()
                 .WithName("channel")
@@ -32,7 +32,7 @@ public static class DiscordCommands
             .WithDescription("Bot will react with a thumbs up and a thumbs down to all messages on the target channel.");
 
         var autoReactMemesChannelCommand = new SlashCommandBuilder()
-            .WithName("darkautoreactmemeschannel")
+            .WithName("darkautoreactlaugh")
             .WithDefaultMemberPermissions(GuildPermission.Administrator)
             .AddOption(new SlashCommandOptionBuilder()
                 .WithName("channel")
@@ -127,12 +127,12 @@ public static class DiscordCommands
                 await HandleGenerateServerKey(command, client);
                 break;
 
-            case "darkautoreactannouncementchannel":
-                await HandleAutoReactAnnouncementChannel(command);
+            case "darkautoreactthumbs":
+                await HandleAutoReactThumbs(command);
                 break;
 
-            case "darkautoreactmemeschannel":
-                await HandleAutoReactMemesChannel(command);
+            case "darkautoreactlaugh":
+                await HandleAutoReactLaugh(command);
                 break;
         }
     }
@@ -252,22 +252,28 @@ public static class DiscordCommands
 
     // ---------- /darkautoreactannouncementchannel ----------
 
-    private static async Task HandleAutoReactAnnouncementChannel(SocketSlashCommand command)
+    private static async Task HandleAutoReactThumbs(SocketSlashCommand command)
     {
         var channelOption = command.Data.Options.First(o => o.Name == "channel");
         var targetChannel = channelOption.Value as IMessageChannel;
-
+        
         await command.RespondAsync($"Now reacting with thumbs up and thumbs down to all messages on {targetChannel.Name}.", ephemeral: true);
+        
+        // To do
+        // Add target channel database
     }
 
     // ---------- /darkautoreactmemeschannel ----------
 
-    private static async Task HandleAutoReactMemesChannel(SocketSlashCommand command)
+    private static async Task HandleAutoReactLaugh(SocketSlashCommand command)
     {
         var channelOption = command.Data.Options.First(o => o.Name == "channel");
         var targetChannel = channelOption.Value as IMessageChannel;
 
         await command.RespondAsync($"Now reacting with a laugh to all media messages on {targetChannel.Name}.", ephemeral: true);
+        
+        // To do
+        // Add target channel database
     }
 
     // ---------- /darkgenerateserverkey ----------
