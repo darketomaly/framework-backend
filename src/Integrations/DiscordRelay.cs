@@ -5,6 +5,8 @@ namespace framework_backend;
 
 public static class DiscordRelay
 {
+    #region Setup
+
     public static void Configure(WebApplication app, DiscordSocketClient client)
     {
         JiraMap(app, client);
@@ -24,11 +26,11 @@ public static class DiscordRelay
 
         return true;
     }
+    
+    #endregion
 
     private static void JiraMap(WebApplication app, DiscordSocketClient client)
     {
-        // Jira
-
         app.MapPost("/jira-discord-webhook", async (HttpContext context) =>
         {
             // --- Get channel id
@@ -137,42 +139,8 @@ public static class DiscordRelay
         });
     }
 
-    private static string GetJsonPropertyString(JsonElement element, params string[] propertyPath)
-    {
-        foreach (var propertyName in propertyPath)
-        {
-            if (element.ValueKind != JsonValueKind.Object ||
-                !element.TryGetProperty(propertyName, out element))
-            {
-                return string.Empty;
-            }
-        }
-
-        if (element.ValueKind is JsonValueKind.String)
-        {
-            return element.GetString() ?? string.Empty;
-        }
-
-        return string.Empty;
-    }
-
-    private static JsonElement[] GetJsonArrayProperty(
-        JsonElement element,
-        string arrayPropertyName)
-    {
-        if (element.ValueKind != JsonValueKind.Object ||
-            !element.TryGetProperty(arrayPropertyName, out var arrayElement) ||
-            arrayElement.ValueKind != JsonValueKind.Array)
-        {
-            return Array.Empty<JsonElement>();
-        }
-
-        return arrayElement.EnumerateArray().ToArray();
-    }
-
     private static void PlasticMap(WebApplication app, DiscordSocketClient client)
     {
-        // Plastic
         app.MapPost("/plastic-discord-webhook", async (HttpContext context) =>
         {
             // --- Get channel id
@@ -294,7 +262,6 @@ public static class DiscordRelay
 
     private static void GitMap(WebApplication app, DiscordSocketClient client)
     {
-        // Git
         app.MapPost("/git-discord-webhook", async (HttpContext context) =>
         {
             // --- Get channel id ---
@@ -390,13 +357,49 @@ public static class DiscordRelay
             }
         });
     }
+
+    #region Utility
     
-    // To do
-    // Need a helper method to reduce redundant code
+    private static string GetJsonPropertyString(JsonElement element, params string[] propertyPath)
+        {
+            foreach (var propertyName in propertyPath)
+            {
+                if (element.ValueKind != JsonValueKind.Object ||
+                    !element.TryGetProperty(propertyName, out element))
+                {
+                    return string.Empty;
+                }
+            }
+    
+            if (element.ValueKind is JsonValueKind.String)
+            {
+                return element.GetString() ?? string.Empty;
+            }
+    
+            return string.Empty;
+        }
+    
+    private static JsonElement[] GetJsonArrayProperty(JsonElement element, string arrayPropertyName)
+    {
+        if (element.ValueKind != JsonValueKind.Object ||
+            !element.TryGetProperty(arrayPropertyName, out var arrayElement) ||
+            arrayElement.ValueKind != JsonValueKind.Array)
+        {
+            return Array.Empty<JsonElement>();
+        }
+
+        return [.. arrayElement.EnumerateArray()];
+    }
     
     private static string Truncate(this string value, int maxLength)
     {
-        if (string.IsNullOrEmpty(value)) return value;
-        return value.Length <= maxLength ? value : value.Substring(0, maxLength);
+        if (string.IsNullOrEmpty(value))
+        {
+            return value;
+        }
+        
+        return value.Length <= maxLength ? value : value[..maxLength];
     }
+    
+    #endregion
 }
