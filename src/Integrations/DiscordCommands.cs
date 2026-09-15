@@ -229,7 +229,7 @@ public static class DiscordCommands
             var randomShort = (short)Random.Shared.Next(0, short.MaxValue);
             value = randomShort.ToString();
 
-            var addValue = DatabaseManager.AddValue("test", "hi!");
+            var addValue = DatabaseManager.AddValue(guildId.ToString(), value);
 
             if (addValue.Result is DatabaseQueryExitCode.AddValueSuccess)
             {

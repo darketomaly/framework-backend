@@ -125,11 +125,24 @@ public static class DatabaseManager
         {
             return DatabaseQueryExitCode.ConnectionFailed;
         }
-        
-        // Add value to database
-        // If it failed return DatabaseQueryExitCode.AddValueFailed
-        // On success return DatabaseQueryExitCode.AddValueSuccess
 
-        return DatabaseQueryExitCode.AddValueFailed;
+        try
+        {
+            await using var command = new NpgsqlCommand(
+                "INSERT INTO secret_keys (secret_key, value) VALUES (@key, @value)",
+                database);
+            command.Parameters.AddWithValue("key", key);
+            command.Parameters.AddWithValue("value", value);
+
+            await command.ExecuteNonQueryAsync();
+
+            Console.WriteLine($"PostgreSQL value added for key '{key}'");
+            return DatabaseQueryExitCode.AddValueSuccess;
+        }
+        catch (NpgsqlException exception)
+        {
+            Console.WriteLine($"PostgreSQL insert failed: {exception.Message}");
+            return DatabaseQueryExitCode.AddValueFailed;
+        }
     }
 }
