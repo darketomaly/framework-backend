@@ -23,7 +23,7 @@ public static class DiscordRelay
         DiscordSocketClient client)
     {
         var channelIdStr = context.Request.Query["channel"].ToString();
-        var givenSecretKeyValue = context.Request.Query["key"].ToString();
+        var givenSecretKeyValue = context.Request.Query["secret"].ToString();
         givenSecretKeyValue = "hello_world";
 
         if (!ulong.TryParse(channelIdStr, out var channelId))
