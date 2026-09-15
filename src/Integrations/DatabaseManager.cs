@@ -2,6 +2,14 @@
 
 namespace framework_backend;
 
+public enum DatabaseQueryExitCode
+{
+    Success = 0,
+    NotFound = 1,
+    ConnectionFailed = 2,
+    QueryFailed = 3
+}
+
 public static class DatabaseManager
 {
     private static async Task<NpgsqlConnection?> Connect()
@@ -72,13 +80,13 @@ public static class DatabaseManager
         return null;
     }
 
-    public static async Task QueryValue(string key)
+    public static async Task<(DatabaseQueryExitCode ExitCode, string? Value)> QueryValue(string key)
     {
         await using var database = await Connect();
 
         if (database is null)
         {
-            return;
+            return (DatabaseQueryExitCode.ConnectionFailed, null);
         }
 
         try
@@ -89,11 +97,21 @@ public static class DatabaseManager
             command.Parameters.AddWithValue("key", key);
 
             var result = await command.ExecuteScalarAsync();
-            Console.WriteLine($"Testing! PostgreSQL value for key '{key}': {result ?? "<not found>"}");
+
+            if (result is null || result is DBNull)
+            {
+                Console.WriteLine($"PostgreSQL value for key '{key}': <not found>");
+                return (DatabaseQueryExitCode.NotFound, null);
+            }
+
+            var value = result.ToString();
+            Console.WriteLine($"PostgreSQL value for key '{key}': {value}");
+            return (DatabaseQueryExitCode.Success, value);
         }
         catch (NpgsqlException exception)
         {
             Console.WriteLine($"PostgreSQL query failed: {exception.Message}");
+            return (DatabaseQueryExitCode.QueryFailed, null);
         }
     }
 

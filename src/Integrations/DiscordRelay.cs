@@ -45,7 +45,7 @@ public static class DiscordRelay
         // Query database for the secret value of guildId
         // Check if secret key matches the queried secret value
 
-        DatabaseManager.QueryValue("test");
+        //DatabaseManager.QueryValue("test");
 
         return (true, channelId);
     }

@@ -224,8 +224,21 @@ public static class DiscordCommands
         var guildName = client.GetGuild(guildId).Name;
         
         // To-do
-        // Query value via DatabaseManager.QueryValue
-        // If value does not exist, add into database via DatabaseManager.AddValue
+        // Use guild id
+
+        var (exitCode, value) = await DatabaseManager.QueryValue("test");
+
+        if (exitCode is DatabaseQueryExitCode.NotFound)
+        {
+            //To-do
+            // If value does not exist, add into database via DatabaseManager.AddValue
+
+            DatabaseManager.AddValue("test", "hi!");
+        }
+        else if (exitCode is DatabaseQueryExitCode.Success)
+        {
+            Console.WriteLine($"Test query was a success: {value}");
+        }
         
         await command.RespondAsync($"I should generate a server key for {guildName}. I haven't yet, but I should.", ephemeral: true);
     }
