@@ -4,10 +4,12 @@ namespace framework_backend;
 
 public enum DatabaseQueryExitCode
 {
-    Success = 0,
-    NotFound = 1,
+    QuerySuccess = 0,
+    ValueNotFound = 1,
     ConnectionFailed = 2,
-    QueryFailed = 3
+    QueryFailed = 3,
+    AddValueSuccess = 4,
+    AddValueFailed = 5,
 }
 
 public static class DatabaseManager
@@ -101,12 +103,12 @@ public static class DatabaseManager
             if (result is null || result is DBNull)
             {
                 Console.WriteLine($"PostgreSQL value for key '{key}': <not found>");
-                return (DatabaseQueryExitCode.NotFound, null);
+                return (DatabaseQueryExitCode.ValueNotFound, null);
             }
 
             var value = result.ToString();
             Console.WriteLine($"PostgreSQL value for key '{key}': {value}");
-            return (DatabaseQueryExitCode.Success, value);
+            return (DatabaseQueryExitCode.QuerySuccess, value);
         }
         catch (NpgsqlException exception)
         {
@@ -115,9 +117,19 @@ public static class DatabaseManager
         }
     }
 
-    public static async Task AddValue(string key, string value)
+    public static async Task<DatabaseQueryExitCode> AddValue(string key, string value)
     {
-        // To do
-        // Add entry into the database from the discord command
+        await using var database = await Connect();
+
+        if (database is null)
+        {
+            return DatabaseQueryExitCode.ConnectionFailed;
+        }
+        
+        // Add value to database
+        // If it failed return DatabaseQueryExitCode.AddValueFailed
+        // On success return DatabaseQueryExitCode.AddValueSuccess
+
+        return DatabaseQueryExitCode.AddValueFailed;
     }
 }
