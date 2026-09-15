@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
 using Discord;
 using Discord.WebSocket;
-using Npgsql;
 namespace framework_backend;
 
 public static class DiscordRelay
