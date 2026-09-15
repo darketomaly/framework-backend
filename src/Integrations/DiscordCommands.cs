@@ -29,7 +29,7 @@ public static class DiscordCommands
                 .AddChannelType(ChannelType.Text)
                 .AddChannelType(ChannelType.News)
                 .WithRequired(true))   
-            .WithDescription("Bot will react with a thumbs up and a thumbs down to all messages on the target channel.");
+            .WithDescription("Toggles bot will auto-react with a thumbs up and a thumbs down to all messages on the target channel.");
 
         var autoReactMemesChannelCommand = new SlashCommandBuilder()
             .WithName("darkautoreactlaugh")
@@ -41,7 +41,7 @@ public static class DiscordCommands
                 .AddChannelType(ChannelType.Text)
                 .AddChannelType(ChannelType.News)
                 .WithRequired(true))   
-            .WithDescription("Bot will react with a laugh to all messages on the target channel.");
+            .WithDescription("Toggls bot auto-react with a laugh to all messages on the target channel.");
         
         var sendMsgCommand = new SlashCommandBuilder()
             .WithName("darksendmsg")
@@ -282,14 +282,14 @@ public static class DiscordCommands
     {
         var guildId = (ulong)command.GuildId;
         
-        var (exitCode, value) = await DatabaseManager.QueryValue(guildId.ToString());
+        var (exitCode, value) = await DatabaseManager.QueryValue(guildId.ToString(), DatabaseTable.SecretKeys);
 
         if (exitCode is DatabaseQueryExitCode.ValueNotFound)
         {
             var randomShort = (short)Random.Shared.Next(0, short.MaxValue);
             value = randomShort.ToString();
 
-            var addValue = DatabaseManager.AddValue(guildId.ToString(), value);
+            var addValue = DatabaseManager.AddValue(guildId.ToString(), value, DatabaseTable.SecretKeys);
 
             if (addValue.Result is DatabaseQueryExitCode.AddValueSuccess)
             {

@@ -12,6 +12,12 @@ public enum DatabaseQueryExitCode
     AddValueFailed = 5,
 }
 
+public static class DatabaseTable
+{
+    public const string SecretKeys = "secret_keys";
+    public const string AutoReactChannels = "auto_react_channels";
+}
+
 public static class DatabaseManager
 {
     private static async Task<NpgsqlConnection?> Connect()
@@ -82,7 +88,7 @@ public static class DatabaseManager
         return null;
     }
 
-    public static async Task<(DatabaseQueryExitCode ExitCode, string? Value)> QueryValue(string key)
+    public static async Task<(DatabaseQueryExitCode ExitCode, string? Value)> QueryValue(string key, string tableName)
     {
         await using var database = await Connect();
 
@@ -94,7 +100,7 @@ public static class DatabaseManager
         try
         {
             await using var command = new NpgsqlCommand(
-                "SELECT value FROM secret_keys WHERE secret_key = @key LIMIT 1",
+                $"SELECT value FROM {tableName} WHERE secret_key = @key LIMIT 1",
                 database);
             command.Parameters.AddWithValue("key", key);
 
@@ -117,7 +123,7 @@ public static class DatabaseManager
         }
     }
 
-    public static async Task<DatabaseQueryExitCode> AddValue(string key, string value)
+    public static async Task<DatabaseQueryExitCode> AddValue(string key, string value, string tableName)
     {
         await using var database = await Connect();
 
@@ -129,7 +135,7 @@ public static class DatabaseManager
         try
         {
             await using var command = new NpgsqlCommand(
-                "INSERT INTO secret_keys (secret_key, value) VALUES (@key, @value)",
+                $"INSERT INTO {tableName} (secret_key, value) VALUES (@key, @value)",
                 database);
             command.Parameters.AddWithValue("key", key);
             command.Parameters.AddWithValue("value", value);
@@ -138,7 +144,7 @@ public static class DatabaseManager
 
             Console.WriteLine($"PostgreSQL value added for key '{key}'");
             return DatabaseQueryExitCode.AddValueSuccess;
-        }
+        } 
         catch (NpgsqlException exception)
         {
             Console.WriteLine($"PostgreSQL insert failed: {exception.Message}");

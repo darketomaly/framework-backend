@@ -39,7 +39,7 @@ public static class DiscordRelay
         }
 
         var guildId = guildChannel.GuildId;
-        var guildSecretKeyValue = await DatabaseManager.QueryValue(guildId.ToString()); 
+        var guildSecretKeyValue = await DatabaseManager.QueryValue(guildId.ToString(), DatabaseTable.SecretKeys); 
         
         if (givenSecretKeyValue != guildSecretKeyValue.Value)
         {
