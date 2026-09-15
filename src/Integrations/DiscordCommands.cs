@@ -224,15 +224,23 @@ public static class DiscordCommands
         
         var (exitCode, value) = await DatabaseManager.QueryValue(guildId.ToString());
 
-        if (exitCode is DatabaseQueryExitCode.NotFound)
+        if (exitCode is DatabaseQueryExitCode.ValueNotFound)
         {
-            //To-do
-            // If value does not exist, add into database via DatabaseManager.AddValue
+            var randomShort = (short)Random.Shared.Next(0, short.MaxValue);
+            value = randomShort.ToString();
 
-            DatabaseManager.AddValue("test", "hi!");
-            await command.RespondAsync($"Secret value not found, generated one: ``. Use this on the relay payload.", ephemeral: true);
+            var addValue = DatabaseManager.AddValue("test", "hi!");
+
+            if (addValue.Result is DatabaseQueryExitCode.AddValueSuccess)
+            {
+                await command.RespondAsync($"Secret value not found, generated one: `{value}`. Use this on the relay payload.", ephemeral: true);
+            }
+            else
+            {
+                await command.RespondAsync($"There was a problem generating the secret value.", ephemeral: true);
+            }
         }
-        else if (exitCode is DatabaseQueryExitCode.Success)
+        else if (exitCode is DatabaseQueryExitCode.QuerySuccess)
         {
             Console.WriteLine($"Test query was a success: {value}");
             await command.RespondAsync($"Secret value found for guild #{guildId}: `{value}`. Use this on the relay payload.", ephemeral: true);
