@@ -140,7 +140,7 @@ public static class DatabaseManager
         try
         {
             await using var command = new NpgsqlCommand(
-                $"INSERT INTO {tableName} (secret_key, value) VALUES (@key, @value)",
+                $"INSERT INTO {tableName} (key, value) VALUES (@key, @value)",
                 database);
             command.Parameters.AddWithValue("key", key);
             command.Parameters.AddWithValue("value", value);
