@@ -18,6 +18,28 @@ public static class DiscordCommands
             .WithName("darkgenerateserverkey")
             .WithDefaultMemberPermissions(GuildPermission.Administrator)
             .WithDescription("Generates a unique key for this server to pass to webhook relays");
+
+        var autoReactAnnouncementsChannelCommand = new SlashCommandBuilder()
+            .WithName("darkautoreactannouncementschannel")
+            .WithDefaultMemberPermissions(GuildPermission.Administrator)
+            .AddOption(new SlashCommandOptionBuilder()
+                .WithName("channel")
+                .WithDescription("The channel to react to")
+                .WithType(ApplicationCommandOptionType.Channel)
+                .AddChannelType(ChannelType.Text)
+                .AddChannelType(ChannelType.News))   
+            .WithDescription("Bot will react with a thumbs up and a thumbs down to all messages on the target channel.");
+
+        var autoReactMemesChannelCommand = new SlashCommandBuilder()
+            .WithName("darkautoreactmemeschannel")
+            .WithDefaultMemberPermissions(GuildPermission.Administrator)
+            .AddOption(new SlashCommandOptionBuilder()
+                .WithName("channel")
+                .WithDescription("The channel to react to")
+                .WithType(ApplicationCommandOptionType.Channel)
+                .AddChannelType(ChannelType.Text)
+                .AddChannelType(ChannelType.News))   
+            .WithDescription("Bot will react with a laugh to all messages on the target channel.");
         
         var sendMsgCommand = new SlashCommandBuilder()
             .WithName("darksendmsg")
@@ -76,7 +98,9 @@ public static class DiscordCommands
             {
                 sendMsgCommand.Build(),
                 editMsgCommand.Build(),
-                generateServerKeyCommand.Build()
+                generateServerKeyCommand.Build(),
+                autoReactAnnouncementsChannelCommand.Build(),
+                autoReactMemesChannelCommand.Build()
             });
         }
         catch (HttpException ex)
@@ -99,6 +123,14 @@ public static class DiscordCommands
             
             case "darkgenerateserverkey":
                 await HandleGenerateServerKey(command, client);
+                break;
+
+            case "darkautoreactannouncementschannel":
+                await HandleAutoReactAnnouncementsChannel(command);
+                break;
+
+            case "darkautoreactmemeschannel":
+                await HandleAutoReactMemesChannel(command);
                 break;
         }
     }
@@ -214,6 +246,18 @@ public static class DiscordCommands
         }
 
         await command.RespondAsync("Message edited.", ephemeral: true);
+    }
+
+    // ---------- /darkautoreactannouncementschannel ----------
+
+    private static async Task HandleAutoReactAnnouncementsChannel(SocketSlashCommand command)
+    {
+    }
+
+    // ---------- /darkautoreactmemeschannel ----------
+
+    private static async Task HandleAutoReactMemesChannel(SocketSlashCommand command)
+    {
     }
 
     // ---------- /darkgenerateserverkey ----------
