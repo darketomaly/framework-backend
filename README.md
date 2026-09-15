@@ -4,9 +4,14 @@
 Install via https://api.darketomaly.com/install-discord-bot
 
 ## Usage
+
 ### Commands
 `/darksendmsg` Sends a message by the bot to a specific channel.<br>
 `/darkeditmsg` Very useful when you have sent a message but want to edit the attached image. This is only possible with a webhook, and the webhook has the limitation of having a fixed profile picture and name, so it can grow old quickly for pinned/unique messages.<br>
+
+Use `/darkautoreactthumbs` or `darkautoreactlaugh` to have the bot automatically react to messages.
+
+<img width="565" height="185" alt="image" src="https://github.com/user-attachments/assets/78351d0b-5ebe-406b-ad66-516c8ef40942" />
 
 <hr>
 
