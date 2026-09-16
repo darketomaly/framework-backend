@@ -99,7 +99,7 @@ public static class DiscordCommands
             .WithDefaultMemberPermissions(GuildPermission.Administrator)
             .WithDescription("Sends a message for role reactions")
             .AddOption(new SlashCommandOptionBuilder()
-                .WithName("Role")
+                .WithName("role")
                 .WithDescription("Role to assign when reacted.")
                 .WithType(ApplicationCommandOptionType.Role));
 
