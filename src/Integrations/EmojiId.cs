@@ -29,4 +29,12 @@ public static class EmojiId
     public const string One = "<:one:1549843341863161896>";
     public const string Two = "<:two:1549841295877472406>";
     public const string Three = "<:three:1549839691887419482>";
+    
+    public static readonly HashSet<string> RoleEmojis =
+    [
+        EmojiId.One,
+        EmojiId.Two,
+        EmojiId.Three
+    ];
 }
+
