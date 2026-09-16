@@ -17,10 +17,11 @@ public class Program
         // Start the bot
         _ = StartDiscordBot(discordClient);
 
-        // Listen to discord relays
+        // Listen to discord integrations
         DiscordRelay.Configure(app, discordClient);
         DiscordCommands.Configure(discordClient);
         DiscordAutoReact.Configure(discordClient);
+        DiscordRoleAssignment.Configure(discordClient);
 
         // Configure the rest of the integrations
         Redirects.Configure(app);
