@@ -13,6 +13,10 @@ Use `/darkautoreactthumbs` or `darkautoreactlaugh` to have the bot automatically
 
 <img width="565" height="185" alt="image" src="https://github.com/user-attachments/assets/78351d0b-5ebe-406b-ad66-516c8ef40942" />
 
+<br>Use `/darksendreactforrolemsg` to send a bot message with automatic emoji reaction. When users click on this reaction, they get assigned or unassigned roles. Up to three roles can be chosen on the command.
+
+<img width="404" height="256" alt="image" src="https://github.com/user-attachments/assets/dc80c58d-bc19-4ef6-a54e-27efac9eef83" />
+
 <hr>
 
 # Discord relays
