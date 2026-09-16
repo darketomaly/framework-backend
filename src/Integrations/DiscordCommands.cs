@@ -99,9 +99,29 @@ public static class DiscordCommands
             .WithDefaultMemberPermissions(GuildPermission.Administrator)
             .WithDescription("Sends a message for role reactions")
             .AddOption(new SlashCommandOptionBuilder()
-                .WithName("role")
-                .WithDescription("Role to assign when reacted.")
-                .WithType(ApplicationCommandOptionType.Role));
+                .WithName("channel")
+                .WithDescription("Channel to send the message to.")
+                .WithType(ApplicationCommandOptionType.Channel)
+                .WithRequired(true)
+            )
+            .AddOption(new SlashCommandOptionBuilder()
+                .WithName("role_one")
+                .WithDescription("First role to assign when reacted.")
+                .WithType(ApplicationCommandOptionType.Role)
+                .WithRequired(false)
+            )
+            .AddOption(new SlashCommandOptionBuilder()
+                .WithName("role_two")
+                .WithDescription("Second role to assign when reacted.")
+                .WithType(ApplicationCommandOptionType.Role)
+                .WithRequired(false)
+            )
+            .AddOption(new SlashCommandOptionBuilder()
+                .WithName("role_three")
+                .WithDescription("Third role to assign when reacted.")
+                .WithType(ApplicationCommandOptionType.Role)
+                .WithRequired(false)
+            );
 
         try
         {
@@ -387,6 +407,36 @@ public static class DiscordCommands
 
     private static async Task HandleSendReactForRoleMsg(SocketSlashCommand command)
     {
-        await command.RespondAsync($"I should have sent the message. I haven't but I should have.", ephemeral: true);
+        var channelOption = command.Data.Options.First(o => o.Name == "channel");
+        var role1 = command.Data.Options.FirstOrDefault(o => o.Name == "role_one")?.Value as IRole;
+        var role2 = command.Data.Options.FirstOrDefault(o => o.Name == "role_two")?.Value as IRole;
+        var role3 = command.Data.Options.FirstOrDefault(o => o.Name == "role_three")?.Value as IRole;
+        var message = string.Empty;
+        
+        var targetChannel = channelOption.Value as IMessageChannel;
+        
+        if (targetChannel == null)
+        {
+            await command.RespondAsync("That channel isn't a text channel I can post in.", ephemeral: true);
+            return;
+        }
+
+        if (role1 != null)
+        {
+            message += $"{role1.Name}";
+        }
+        
+        if (role2 != null)
+        {
+            message += $"{role2.Name}";
+        }
+        
+        if (role3 != null)
+        {
+            message += $"{role3.Name}";
+        }
+        
+        await targetChannel.SendMessageAsync(message);
+        //await command.RespondAsync($"I should have sent the message. I haven't, but I should have.", ephemeral: true);
     }
 }
