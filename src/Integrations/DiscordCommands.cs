@@ -94,6 +94,15 @@ public static class DiscordCommands
                 .WithType(ApplicationCommandOptionType.Attachment)
                 .WithRequired(false));
 
+        var sendReactForRoleMsgCommand = new SlashCommandBuilder()
+            .WithName("darksendreactforrolemsg")
+            .WithDefaultMemberPermissions(GuildPermission.Administrator)
+            .WithDescription("Sends a message for role reactions")
+            .AddOption(new SlashCommandOptionBuilder()
+                .WithName("Role")
+                .WithDescription("Role to assign when reacted.")
+                .WithType(ApplicationCommandOptionType.Role));
+
         try
         {
             await client.Rest.BulkOverwriteGlobalCommands(new[]
@@ -102,7 +111,8 @@ public static class DiscordCommands
                 editMsgCommand.Build(),
                 generateServerKeyCommand.Build(),
                 autoReactAnnouncementsChannelCommand.Build(),
-                autoReactMemesChannelCommand.Build()
+                autoReactMemesChannelCommand.Build(),
+                sendReactForRoleMsgCommand.Build()
             });
         }
         catch (HttpException ex)
@@ -133,6 +143,10 @@ public static class DiscordCommands
 
             case "darkautoreactlaugh":
                 await HandleAutoReactLaugh(command);
+                break;
+
+            case "darksendreactforrolemsg":
+                await HandleSendReactForRoleMsg(command);
                 break;
         }
     }
@@ -367,5 +381,12 @@ public static class DiscordCommands
             Console.WriteLine($"Test query was a success: {value}");
             await command.RespondAsync($"Secret value found for guild #{guildId}: `{value}`. Use this on the relay payload.", ephemeral: true);
         }
+    }
+
+    // ---------- /darksendreactforrolemsg ----------
+
+    private static async Task HandleSendReactForRoleMsg(SocketSlashCommand command)
+    {
+        await command.RespondAsync($"I should have sent the message. I haven't but I should have.", ephemeral: true);
     }
 }
