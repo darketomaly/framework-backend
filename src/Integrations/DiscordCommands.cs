@@ -411,7 +411,7 @@ public static class DiscordCommands
         var role1 = command.Data.Options.FirstOrDefault(o => o.Name == "role_one")?.Value as IRole;
         var role2 = command.Data.Options.FirstOrDefault(o => o.Name == "role_two")?.Value as IRole;
         var role3 = command.Data.Options.FirstOrDefault(o => o.Name == "role_three")?.Value as IRole;
-        var message = string.Empty;
+        var message = "React to this message to assign yourself a role.<br><br>";
         
         var targetChannel = channelOption.Value as IMessageChannel;
         
@@ -423,20 +423,36 @@ public static class DiscordCommands
 
         if (role1 != null)
         {
-            message += $"{role1.Name}";
+            message += $"{EmojiId.One} {role1.Name}";
         }
         
         if (role2 != null)
         {
-            message += $"{role2.Name}";
+            message += $"<br>{EmojiId.Two} {role2.Name}";
         }
         
         if (role3 != null)
         {
-            message += $"{role3.Name}";
+            message += $"<br>{EmojiId.Three} {role3.Name}";
         }
         
-        await targetChannel.SendMessageAsync(message);
-        //await command.RespondAsync($"I should have sent the message. I haven't, but I should have.", ephemeral: true);
+        var sentMessage = await targetChannel.SendMessageAsync(message);
+
+        if (role1 != null)
+        {
+            await sentMessage.AddReactionAsync(Emote.Parse(EmojiId.One));
+        }
+
+        if (role2 != null)
+        {
+            await sentMessage.AddReactionAsync(Emote.Parse(EmojiId.Two));
+        }
+
+        if (role3 != null)
+        {
+            await sentMessage.AddReactionAsync(Emote.Parse(EmojiId.Three));
+        }
+
+        await command.RespondAsync($"React-for-role message sent.", ephemeral: true);
     }
 }

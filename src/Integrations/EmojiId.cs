@@ -24,5 +24,10 @@ public static class EmojiId
     
     public const string ReactionThumbsUp = "<:thumbs_up:1521877716453032047>";
     public const string ReactionThumbsDown = "<:thumbs_down:1521877749856337940>";
-    public const string ReactionLaugh = "<:laugh:1526001338373112000>"; 
+    public const string ReactionLaugh = "<:laugh:1526001338373112000>";
+
+    // To do, replace placeholder strings
+    public const string One = "<:laugh:1526001338373112000>";
+    public const string Two = "<:laugh:1526001338373112000>";
+    public const string Three = "<:laugh:1526001338373112000>";
 }
