@@ -29,7 +29,7 @@ public static class DiscordCommands
                 .AddChannelType(ChannelType.Text)
                 .AddChannelType(ChannelType.News)
                 .WithRequired(true))   
-            .WithDescription("Toggles bot will auto-react with a thumbs up and a thumbs down to all messages on the target channel.");
+            .WithDescription("Toggles thumbs-up and thumbs-down reactions for messages in the target channel.");
 
         var autoReactMemesChannelCommand = new SlashCommandBuilder()
             .WithName("darkautoreactlaugh")
