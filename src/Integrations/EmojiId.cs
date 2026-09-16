@@ -27,6 +27,6 @@ public static class EmojiId
     public const string ReactionLaugh = "<:laugh:1526001338373112000>";
 
     public const string One = "<:one:1549839691887419482>";
-    public const string Two = "<:two:1549839580952535050>";
+    public const string Two = "<:two:1549841295877472406>";
     public const string Three = "<:three:1549839524794998854>";
 }
