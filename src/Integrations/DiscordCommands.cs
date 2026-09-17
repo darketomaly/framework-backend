@@ -446,7 +446,7 @@ public static class DiscordCommands
             message += $"\n{EmojiId.Three} <@&{role3.Id}>";
         }
 
-        IUserMessage? sentMessage = null;
+        IUserMessage? sentMessage;
         
         if (string.IsNullOrEmpty(rawMessageId))
         {
@@ -468,24 +468,33 @@ public static class DiscordCommands
             await sentMessage.ModifyAsync(props => props.Content = message);
         }
         
-        // --- Add reactions ---
+        // --- Add or remove reactions ---
 
-        // To do
-        // Remove reactions if message was edited and the role is no longer chosen on the command
-        
         if (role1 != null)
         {
             await sentMessage.AddReactionAsync(Emote.Parse(EmojiId.One));
+        }
+        else
+        {
+            await sentMessage.RemoveAllReactionsForEmoteAsync(Emote.Parse(EmojiId.One));
         }
 
         if (role2 != null)
         {
             await sentMessage.AddReactionAsync(Emote.Parse(EmojiId.Two));
         }
+        else
+        {
+            await sentMessage.RemoveAllReactionsForEmoteAsync(Emote.Parse(EmojiId.Two));
+        }
 
         if (role3 != null)
         {
             await sentMessage.AddReactionAsync(Emote.Parse(EmojiId.Three));
+        }
+        else
+        {
+            await sentMessage.RemoveAllReactionsForEmoteAsync(Emote.Parse(EmojiId.Three));
         }
 
         await command.RespondAsync($"React-for-role message sent.", ephemeral: true);
