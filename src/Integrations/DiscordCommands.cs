@@ -413,7 +413,7 @@ public static class DiscordCommands
     private static async Task HandleSendReactForRoleMsg(SocketSlashCommand command)
     {
         var channelOption = command.Data.Options.First(o => o.Name == "channel");
-        var msgIdToReplaceDataOption = command.Data.Options.First(o => o.Name == "message_to_replace");
+        var msgIdToReplaceDataOption = command.Data.Options.FirstOrDefault(o => o.Name == "message_to_replace");
         var role1 = command.Data.Options.FirstOrDefault(o => o.Name == "role_one")?.Value as IRole;
         var role2 = command.Data.Options.FirstOrDefault(o => o.Name == "role_two")?.Value as IRole;
         var role3 = command.Data.Options.FirstOrDefault(o => o.Name == "role_three")?.Value as IRole;
@@ -429,7 +429,7 @@ public static class DiscordCommands
         
         // --- Build and send message ---
         
-        var rawMessageId = msgIdToReplaceDataOption.Value as string;
+        var rawMessageId = msgIdToReplaceDataOption?.Value as string;
 
         if (role1 != null)
         {
@@ -465,6 +465,13 @@ public static class DiscordCommands
             }
             
             sentMessage = await targetChannel.GetMessageAsync(messageId) as IUserMessage;
+
+            if (sentMessage == null)
+            {
+                await command.RespondAsync("Couldn't find that message in that channel.", ephemeral: true);
+                return;
+            }
+
             await sentMessage.ModifyAsync(props => props.Content = message);
         }
         
