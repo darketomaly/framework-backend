@@ -412,6 +412,8 @@ public static class DiscordCommands
 
     private static async Task HandleSendReactForRoleMsg(SocketSlashCommand command)
     {
+        await command.DeferAsync(ephemeral: true);
+
         var channelOption = command.Data.Options.First(o => o.Name == "channel");
         var msgIdToReplaceDataOption = command.Data.Options.FirstOrDefault(o => o.Name == "message_to_replace");
         var role1 = command.Data.Options.FirstOrDefault(o => o.Name == "role_one")?.Value as IRole;
@@ -423,7 +425,7 @@ public static class DiscordCommands
         
         if (targetChannel == null)
         {
-            await command.RespondAsync("That channel isn't a text channel I can post in.", ephemeral: true);
+            await command.FollowupAsync("That channel isn't a text channel I can post in.", ephemeral: true);
             return;
         }
         
@@ -460,7 +462,7 @@ public static class DiscordCommands
             
             if (!ulong.TryParse(rawMessageId, out var messageId))
             {
-                await command.RespondAsync("That doesn't look like a valid message ID.", ephemeral: true);
+                await command.FollowupAsync("That doesn't look like a valid message ID.", ephemeral: true);
                 return;
             }
             
@@ -468,7 +470,7 @@ public static class DiscordCommands
 
             if (sentMessage == null)
             {
-                await command.RespondAsync("Couldn't find that message in that channel.", ephemeral: true);
+                await command.FollowupAsync("Couldn't find that message in that channel.", ephemeral: true);
                 return;
             }
 
@@ -483,7 +485,10 @@ public static class DiscordCommands
         }
         else
         {
-            await sentMessage.RemoveAllReactionsForEmoteAsync(Emote.Parse(EmojiId.One));
+            if (!string.IsNullOrEmpty(rawMessageId))
+            {
+                await sentMessage.RemoveAllReactionsForEmoteAsync(Emote.Parse(EmojiId.One));
+            }
         }
 
         if (role2 != null)
@@ -492,7 +497,10 @@ public static class DiscordCommands
         }
         else
         {
-            await sentMessage.RemoveAllReactionsForEmoteAsync(Emote.Parse(EmojiId.Two));
+            if (!string.IsNullOrEmpty(rawMessageId))
+            {
+                await sentMessage.RemoveAllReactionsForEmoteAsync(Emote.Parse(EmojiId.Two));
+            }
         }
 
         if (role3 != null)
@@ -501,9 +509,12 @@ public static class DiscordCommands
         }
         else
         {
-            await sentMessage.RemoveAllReactionsForEmoteAsync(Emote.Parse(EmojiId.Three));
+            if (!string.IsNullOrEmpty(rawMessageId))
+            {
+                await sentMessage.RemoveAllReactionsForEmoteAsync(Emote.Parse(EmojiId.Three));
+            }
         }
 
-        await command.RespondAsync($"React-for-role message sent.", ephemeral: true);
+        await command.FollowupAsync("React-for-role message sent.", ephemeral: true);
     }
 }
