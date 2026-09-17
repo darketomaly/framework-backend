@@ -105,6 +105,11 @@ public static class DiscordCommands
                 .WithRequired(true)
             )
             .AddOption(new SlashCommandOptionBuilder()
+                .WithName("message_to_replace")
+                .WithDescription("Provide a message ID to replace an existing message")
+                .WithType(ApplicationCommandOptionType.String)
+                .WithRequired(false))
+            .AddOption(new SlashCommandOptionBuilder()
                 .WithName("role_one")
                 .WithDescription("First role to assign when reacted.")
                 .WithType(ApplicationCommandOptionType.Role)
@@ -408,6 +413,7 @@ public static class DiscordCommands
     private static async Task HandleSendReactForRoleMsg(SocketSlashCommand command)
     {
         var channelOption = command.Data.Options.First(o => o.Name == "channel");
+        var msgIdToReplaceDataOption = command.Data.Options.First(o => o.Name == "message_to_replace");
         var role1 = command.Data.Options.FirstOrDefault(o => o.Name == "role_one")?.Value as IRole;
         var role2 = command.Data.Options.FirstOrDefault(o => o.Name == "role_two")?.Value as IRole;
         var role3 = command.Data.Options.FirstOrDefault(o => o.Name == "role_three")?.Value as IRole;
@@ -420,6 +426,10 @@ public static class DiscordCommands
             await command.RespondAsync("That channel isn't a text channel I can post in.", ephemeral: true);
             return;
         }
+        
+        // --- Build and send message ---
+        
+        var rawMessageId = msgIdToReplaceDataOption.Value as string;
 
         if (role1 != null)
         {
@@ -435,9 +445,34 @@ public static class DiscordCommands
         {
             message += $"\n{EmojiId.Three} <@&{role3.Id}>";
         }
-        
-        var sentMessage = await targetChannel.SendMessageAsync(message);
 
+        IUserMessage? sentMessage = null;
+        
+        if (string.IsNullOrEmpty(rawMessageId))
+        {
+            // Send new message
+            
+            sentMessage = await targetChannel.SendMessageAsync(message);
+        }
+        else
+        {
+            // Edit message with given id
+            
+            if (!ulong.TryParse(rawMessageId, out var messageId))
+            {
+                await command.RespondAsync("That doesn't look like a valid message ID.", ephemeral: true);
+                return;
+            }
+            
+            sentMessage = await targetChannel.GetMessageAsync(messageId) as IUserMessage;
+            await sentMessage.ModifyAsync(props => props.Content = message);
+        }
+        
+        // --- Add reactions ---
+
+        // To do
+        // Remove reactions if message was edited and the role is no longer chosen on the command
+        
         if (role1 != null)
         {
             await sentMessage.AddReactionAsync(Emote.Parse(EmojiId.One));
