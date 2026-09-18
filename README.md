@@ -3,27 +3,6 @@
 ## Installation
 Install via https://api.darketomaly.com/install-discord-bot
 
-## Website contact email
-
-The `POST /contact` endpoint accepts the website contact form as
-`multipart/form-data` and sends one branded HTML email per submission through
-the Resend API.
-
-Configure these Railway environment variables:
-
-```text
-RESEND_API_KEY=re_...
-CONTACT_EMAIL_FROM=Website <website@your-verified-domain.com>
-CONTACT_EMAIL_TO=your-private-email@example.com
-CONTACT_EMAIL_LOGO_URL=https://darketomaly.com/darketomaly_profile_picture.png
-WEBSITE_ORIGIN=https://darketomaly.com
-```
-
-`CONTACT_EMAIL_FROM` must use a domain verified with Resend. Add the SPF and
-DKIM records Resend provides before testing delivery. `WEBSITE_ORIGIN` limits
-browser requests to the website while the endpoint remains publicly reachable
-for HTTP clients.
-
 ## Usage
 
 ### Commands
