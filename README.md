@@ -7,24 +7,21 @@ Install via https://api.darketomaly.com/install-discord-bot
 
 The `POST /contact` endpoint accepts the website contact form as
 `multipart/form-data` and sends one branded HTML email per submission through
-SMTP2GO.
+the SMTP2GO HTTPS API.
 
 Configure these Railway environment variables:
 
 ```text
-SMTP_HOST=mail.smtp2go.com
-SMTP_PORT=587
-SMTP_USERNAME=your-smtp2go-username
-SMTP_PASSWORD=your-smtp2go-password
+SMTP2GO_API_KEY=api-...
 CONTACT_EMAIL_FROM=Darketomaly Website <contact@darketomaly.com>
 CONTACT_EMAIL_TO=your-private-email@example.com
 CONTACT_EMAIL_LOGO_URL=https://darketomaly.com/darketomaly_profile_picture.png
 WEBSITE_ORIGIN=https://darketomaly.com
 ```
 
-Create SMTP credentials in SMTP2GO and configure the sender/domain verification
-records it provides. `WEBSITE_ORIGIN` limits browser requests to the website
-while the endpoint remains publicly reachable for HTTP clients.
+Create an SMTP2GO API key and configure the sender/domain verification records
+it provides. `WEBSITE_ORIGIN` limits browser requests to the website while the
+endpoint remains publicly reachable for HTTP clients.
 
 ## Usage
 

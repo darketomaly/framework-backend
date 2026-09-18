@@ -1,8 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using System.Net.Sockets;
-using MailKit.Net.Smtp;
-using MailKit.Security;
-using MimeKit;
+using System.Net.Http.Json;
+using System.Text.Json.Serialization;
 
 namespace framework_backend;
 
@@ -10,7 +8,10 @@ public static class ContactEmail
 {
     public static void Configure(WebApplication app)
     {
-        app.MapPost("/contact", async (HttpRequest request, ILogger<Program> logger) =>
+        app.MapPost("/contact", async (
+            HttpRequest request,
+            IHttpClientFactory httpClientFactory,
+            ILogger<Program> logger) =>
         {
             if (!request.HasFormContentType)
             {
@@ -35,91 +36,61 @@ public static class ContactEmail
                 return Results.BadRequest(new { error = "Please provide a valid email address and message." });
             }
 
-            var smtpHost = Environment.GetEnvironmentVariable("SMTP_HOST");
-            var smtpPortValue = Environment.GetEnvironmentVariable("SMTP_PORT");
-            var smtpUsername = Environment.GetEnvironmentVariable("SMTP_USERNAME");
-            var smtpPassword = Environment.GetEnvironmentVariable("SMTP_PASSWORD");
+            var apiKey = Environment.GetEnvironmentVariable("SMTP2GO_API_KEY");
             var sender = Environment.GetEnvironmentVariable("CONTACT_EMAIL_FROM");
             var recipient = Environment.GetEnvironmentVariable("CONTACT_EMAIL_TO");
 
-            if (!int.TryParse(smtpPortValue, out var smtpPort) ||
-                string.IsNullOrWhiteSpace(smtpHost) ||
-                string.IsNullOrWhiteSpace(smtpUsername) ||
-                string.IsNullOrWhiteSpace(smtpPassword) ||
+            if (string.IsNullOrWhiteSpace(apiKey) ||
                 string.IsNullOrWhiteSpace(sender) ||
                 string.IsNullOrWhiteSpace(recipient))
             {
-                logger.LogError("SMTP contact email configuration is incomplete.");
+                logger.LogError("SMTP2GO API contact email configuration is incomplete.");
                 return Results.Problem("Contact email is not configured.", statusCode: 503);
             }
 
             var displayName = string.IsNullOrWhiteSpace(name) ? "Website visitor" : name;
-            var emailMessage = BuildMessage(sender, recipient, displayName, email, messageText);
+            var emailRequest = new Smtp2GoEmail(
+                sender,
+                [recipient],
+                $"New message from {displayName}",
+                BuildHtml(displayName, email, messageText),
+                $"Name: {displayName}\nEmail: {email}\n\n{messageText}",
+                [new Smtp2GoHeader("Reply-To", email)],
+                true);
 
             try
             {
-                using var smtp = new SmtpClient();
-                smtp.Timeout = 30_000;
-                var security = smtpPort == 465
-                    ? SecureSocketOptions.SslOnConnect
-                    : SecureSocketOptions.StartTls;
-                await smtp.ConnectAsync(smtpHost, smtpPort, security);
-                await smtp.AuthenticateAsync(smtpUsername, smtpPassword);
-                await smtp.SendAsync(emailMessage);
-                await smtp.DisconnectAsync(true);
+                var client = httpClientFactory.CreateClient();
+                client.DefaultRequestHeaders.Add("X-Smtp2go-Api-Key", apiKey);
+                using var response = await client.PostAsJsonAsync(
+                    "https://api.smtp2go.com/v3/email/send",
+                    emailRequest);
+
+                var responseBody = await response.Content.ReadAsStringAsync();
+                if (!response.IsSuccessStatusCode)
+                {
+                    logger.LogError(
+                        "SMTP2GO API rejected a contact email with status {StatusCode}: {Details}",
+                        response.StatusCode,
+                        responseBody);
+                    return Results.Problem("Unable to send the message.", statusCode: 502);
+                }
+
+                var apiResponse = System.Text.Json.JsonSerializer.Deserialize<Smtp2GoResponse>(responseBody);
+                if (apiResponse?.Data?.Failed > 0)
+                {
+                    logger.LogError("SMTP2GO failed to send a contact email: {Details}", responseBody);
+                    return Results.Problem("Unable to send the message.", statusCode: 502);
+                }
             }
-            catch (TimeoutException exception)
+            catch (HttpRequestException exception)
             {
-                logger.LogError(exception, "SMTP2GO connection timed out on {Host}:{Port}.", smtpHost, smtpPort);
-                return Results.Problem("The email service timed out. Please try again later.", statusCode: 504);
-            }
-            catch (SocketException exception)
-            {
-                logger.LogError(exception, "Could not connect to SMTP2GO at {Host}:{Port}.", smtpHost, smtpPort);
+                logger.LogError(exception, "Could not reach the SMTP2GO API.");
                 return Results.Problem("The email service could not be reached.", statusCode: 502);
-            }
-            catch (SmtpCommandException exception)
-            {
-                logger.LogError(exception, "SMTP2GO rejected a contact email.");
-                return Results.Problem("Unable to send the message.", statusCode: 502);
-            }
-            catch (SmtpProtocolException exception)
-            {
-                logger.LogError(exception, "SMTP2GO returned an invalid response.");
-                return Results.Problem("Unable to send the message.", statusCode: 502);
-            }
-            catch (MailKit.Security.AuthenticationException exception)
-            {
-                logger.LogError(exception, "SMTP2GO authentication failed.");
-                return Results.Problem("Unable to send the message.", statusCode: 502);
             }
 
             return Results.Ok(new { message = "Message sent." });
         });
-    }
-
-    private static MimeMessage BuildMessage(
-        string sender,
-        string recipient,
-        string name,
-        string email,
-        string messageText)
-    {
-        var message = new MimeMessage();
-        message.From.Add(MailboxAddress.Parse(sender));
-        message.To.Add(MailboxAddress.Parse(recipient));
-        message.ReplyTo.Add(new MailboxAddress(name, email));
-        message.Subject = $"New message from {name}";
-
-        var plainText = $"Name: {name}\nEmail: {email}\n\n{messageText}";
-        var builder = new BodyBuilder
-        {
-            TextBody = plainText,
-            HtmlBody = BuildHtml(name, email, messageText)
-        };
-
-        message.Body = builder.ToMessageBody();
-        return message;
     }
 
     private static bool IsValidEmail(string email) =>
@@ -157,4 +128,23 @@ public static class ContactEmail
     }
 
     private static string Escape(string value) => System.Net.WebUtility.HtmlEncode(value);
+
+    private sealed record Smtp2GoEmail(
+        [property: JsonPropertyName("sender")] string Sender,
+        [property: JsonPropertyName("to")] string[] To,
+        [property: JsonPropertyName("subject")] string Subject,
+        [property: JsonPropertyName("html_body")] string HtmlBody,
+        [property: JsonPropertyName("text_body")] string TextBody,
+        [property: JsonPropertyName("custom_headers")] Smtp2GoHeader[] CustomHeaders,
+        [property: JsonPropertyName("fastaccept")] bool FastAccept);
+
+    private sealed record Smtp2GoHeader(
+        [property: JsonPropertyName("header")] string Header,
+        [property: JsonPropertyName("value")] string Value);
+
+    private sealed record Smtp2GoResponse(
+        [property: JsonPropertyName("data")] Smtp2GoResponseData? Data);
+
+    private sealed record Smtp2GoResponseData(
+        [property: JsonPropertyName("failed")] int Failed);
 }
