@@ -7,22 +7,24 @@ Install via https://api.darketomaly.com/install-discord-bot
 
 The `POST /contact` endpoint accepts the website contact form as
 `multipart/form-data` and sends one branded HTML email per submission through
-the Resend API.
+SMTP2GO.
 
 Configure these Railway environment variables:
 
 ```text
-RESEND_API_KEY=re_...
-CONTACT_EMAIL_FROM=Website <website@your-verified-domain.com>
+SMTP_HOST=mail.smtp2go.com
+SMTP_PORT=2525
+SMTP_USERNAME=your-smtp2go-username
+SMTP_PASSWORD=your-smtp2go-password
+CONTACT_EMAIL_FROM=Darketomaly Website <contact@darketomaly.com>
 CONTACT_EMAIL_TO=your-private-email@example.com
 CONTACT_EMAIL_LOGO_URL=https://darketomaly.com/darketomaly_profile_picture.png
 WEBSITE_ORIGIN=https://darketomaly.com
 ```
 
-`CONTACT_EMAIL_FROM` must use a domain verified with Resend. Add the SPF and
-DKIM records Resend provides before testing delivery. `WEBSITE_ORIGIN` limits
-browser requests to the website while the endpoint remains publicly reachable
-for HTTP clients.
+Create SMTP credentials in SMTP2GO and configure the sender/domain verification
+records it provides. `WEBSITE_ORIGIN` limits browser requests to the website
+while the endpoint remains publicly reachable for HTTP clients.
 
 ## Usage
 
