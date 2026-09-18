@@ -8,8 +8,20 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
         builder.Services.AddHttpClient();
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("Website", policy =>
+            {
+                var origin = Environment.GetEnvironmentVariable("WEBSITE_ORIGIN");
+                if (!string.IsNullOrWhiteSpace(origin))
+                {
+                    policy.WithOrigins(origin).AllowAnyHeader().AllowAnyMethod();
+                }
+            });
+        });
 
         var app = builder.Build();
+        app.UseCors("Website");
         
         // Create the Discord client
         var discordClient = CreateDiscordClient();
@@ -25,6 +37,7 @@ public class Program
 
         // Configure the rest of the integrations
         Redirects.Configure(app);
+        ContactEmail.Configure(app);
         
         app.Run();
     }
