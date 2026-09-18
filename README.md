@@ -13,7 +13,7 @@ Configure these Railway environment variables:
 
 ```text
 SMTP_HOST=mail.smtp2go.com
-SMTP_PORT=2525
+SMTP_PORT=587
 SMTP_USERNAME=your-smtp2go-username
 SMTP_PASSWORD=your-smtp2go-password
 CONTACT_EMAIL_FROM=Darketomaly Website <contact@darketomaly.com>

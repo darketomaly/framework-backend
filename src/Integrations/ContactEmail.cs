@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Net.Sockets;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
@@ -58,10 +59,24 @@ public static class ContactEmail
             try
             {
                 using var smtp = new SmtpClient();
-                await smtp.ConnectAsync(smtpHost, smtpPort, SecureSocketOptions.StartTls);
+                smtp.Timeout = 30_000;
+                var security = smtpPort == 465
+                    ? SecureSocketOptions.SslOnConnect
+                    : SecureSocketOptions.StartTls;
+                await smtp.ConnectAsync(smtpHost, smtpPort, security);
                 await smtp.AuthenticateAsync(smtpUsername, smtpPassword);
                 await smtp.SendAsync(emailMessage);
                 await smtp.DisconnectAsync(true);
+            }
+            catch (TimeoutException exception)
+            {
+                logger.LogError(exception, "SMTP2GO connection timed out on {Host}:{Port}.", smtpHost, smtpPort);
+                return Results.Problem("The email service timed out. Please try again later.", statusCode: 504);
+            }
+            catch (SocketException exception)
+            {
+                logger.LogError(exception, "Could not connect to SMTP2GO at {Host}:{Port}.", smtpHost, smtpPort);
+                return Results.Problem("The email service could not be reached.", statusCode: 502);
             }
             catch (SmtpCommandException exception)
             {
