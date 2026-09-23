@@ -120,12 +120,10 @@ public static class WordGenerator
         var letters = new Dictionary<char, Image<Rgba32>>(26);
 
         var letterIndex = 0;
-        var rowHeight = sheet.Height / GridRows;
-        for (var row = 0; row < GridRows; row++)
+        var glyphRows = FindGlyphRows(sheet);
+        foreach (var (rowTop, rowBottom) in glyphRows)
         {
-            var rowTop = row * rowHeight;
-            var rowBottom = row == GridRows - 1 ? sheet.Height : rowTop + rowHeight;
-            var glyphRuns = FindGlyphRuns(sheet, rowTop, rowBottom);
+            var glyphRuns = FindGlyphRuns(sheet, rowTop, rowBottom + 1);
 
             foreach (var (left, right) in glyphRuns)
             {
@@ -134,7 +132,7 @@ public static class WordGenerator
                     left,
                     right,
                     rowTop,
-                    rowBottom);
+                    rowBottom + 1);
                 var cell = sheet.Clone(context => context.Crop(new Rectangle(
                     left,
                     glyphTop,
@@ -227,6 +225,53 @@ public static class WordGenerator
         }
 
         return runs;
+    }
+
+    private static List<(int Top, int Bottom)> FindGlyphRows(Image<Rgba32> sheet)
+    {
+        var rows = new List<(int Top, int Bottom)>();
+        var inRun = false;
+        var top = 0;
+
+        sheet.ProcessPixelRows(accessor =>
+        {
+            for (var y = 0; y < sheet.Height; y++)
+            {
+                var hasPixels = false;
+                var row = accessor.GetRowSpan(y);
+                for (var x = 0; x < row.Length; x++)
+                {
+                    if (row[x].A != 0)
+                    {
+                        hasPixels = true;
+                        break;
+                    }
+                }
+
+                if (hasPixels && !inRun)
+                {
+                    top = y;
+                    inRun = true;
+                }
+                else if (!hasPixels && inRun)
+                {
+                    rows.Add((top, y - 1));
+                    inRun = false;
+                }
+            }
+        });
+
+        if (inRun)
+        {
+            rows.Add((top, sheet.Height - 1));
+        }
+
+        if (rows.Count != GridRows)
+        {
+            throw new InvalidOperationException("The sprite sheet does not contain four letter rows.");
+        }
+
+        return rows;
     }
 
     private static (int Top, int Bottom) FindGlyphVerticalBounds(
