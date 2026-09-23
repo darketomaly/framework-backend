@@ -7,10 +7,7 @@ namespace framework_backend;
 
 public static class WordGenerator
 {
-    private const int GridColumns = 7;
     private const int GridRows = 4;
-    private const int CellWidth = 256;
-    private const int CellHeight = 252;
     private const int LetterSpacing = 8;
     private const int MaxWordLength = 100;
     private const string SpriteFileName = "T55ht (1).png";
@@ -122,22 +119,30 @@ public static class WordGenerator
         using var sheet = Image.Load<Rgba32>(spritePath);
         var letters = new Dictionary<char, Image<Rgba32>>(26);
 
-        for (var index = 0; index < 26; index++)
+        var letterIndex = 0;
+        var rowHeight = sheet.Height / GridRows;
+        for (var row = 0; row < GridRows; row++)
         {
-            var row = index / GridColumns;
-            var column = index % GridColumns;
-            if (row == GridRows - 1)
+            var rowTop = row * rowHeight;
+            var rowBottom = row == GridRows - 1 ? sheet.Height : rowTop + rowHeight;
+            var glyphRuns = FindGlyphRuns(sheet, rowTop, rowBottom);
+
+            foreach (var (left, right) in glyphRuns)
             {
-                column++;
+                var cell = sheet.Clone(context => context.Crop(new Rectangle(
+                    left,
+                    rowTop,
+                    right - left + 1,
+                    rowBottom - rowTop)));
+
+                letters[(char)('A' + letterIndex)] = TrimTransparentMargins(cell);
+                letterIndex++;
             }
+        }
 
-            var cell = sheet.Clone(context => context.Crop(new Rectangle(
-                column * CellWidth,
-                row * CellHeight,
-                CellWidth,
-                CellHeight)));
-
-            letters[(char)('A' + index)] = TrimTransparentMargins(cell);
+        if (letterIndex != 26)
+        {
+            throw new InvalidOperationException("The sprite sheet does not contain 26 letters.");
         }
 
         try
@@ -169,6 +174,53 @@ public static class WordGenerator
                 letter.Dispose();
             }
         }
+    }
+
+    private static List<(int Left, int Right)> FindGlyphRuns(
+        Image<Rgba32> sheet,
+        int top,
+        int bottom)
+    {
+        var runs = new List<(int Left, int Right)>();
+        var columnHasPixels = new bool[sheet.Width];
+        var inRun = false;
+        var left = 0;
+
+        sheet.ProcessPixelRows(accessor =>
+        {
+            for (var y = top; y < bottom; y++)
+            {
+                var row = accessor.GetRowSpan(y);
+                for (var x = 0; x < row.Length; x++)
+                {
+                    if (row[x].A != 0)
+                    {
+                        columnHasPixels[x] = true;
+                    }
+                }
+            }
+        });
+
+        for (var x = 0; x < columnHasPixels.Length; x++)
+        {
+            if (columnHasPixels[x] && !inRun)
+            {
+                left = x;
+                inRun = true;
+            }
+            else if (!columnHasPixels[x] && inRun)
+            {
+                runs.Add((left, x - 1));
+                inRun = false;
+            }
+        }
+
+        if (inRun)
+        {
+            runs.Add((left, sheet.Width - 1));
+        }
+
+        return runs;
     }
 
     private static Image<Rgba32> TrimTransparentMargins(Image<Rgba32> image)
