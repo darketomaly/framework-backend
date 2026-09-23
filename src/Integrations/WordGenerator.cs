@@ -55,6 +55,11 @@ public static class WordGenerator
         {
             var row = index / GridColumns;
             var column = index % GridColumns;
+            if (row == GridRows - 1)
+            {
+                column++;
+            }
+
             var cell = sheet.Clone(context => context.Crop(new Rectangle(
                 column * CellWidth,
                 row * CellHeight,
