@@ -31,7 +31,9 @@ public static class WordGenerator
                     input { background: #050708; color: inherit; flex: 1; }
                     button { background: #eaf0f2; color: #101416; cursor: pointer; }
                     #status { color: #aebbc1; min-height: 24px; }
-                    #preview { background: #050708; border-radius: 8px; display: block; max-width: 100%; }
+                    .preview-block { margin-top: 24px; }
+                    .preview-block h2 { font-size: 14px; font-weight: 500; margin: 0 0 8px; }
+                    .preview { background: #050708; border-radius: 8px; display: block; max-width: 100%; }
                 </style>
             </head>
             <body>
@@ -42,42 +44,58 @@ public static class WordGenerator
                         <button type="submit">Generate</button>
                     </form>
                     <p id="status"></p>
-                    <img id="preview" alt="Generated word preview" hidden>
+                    <div class="preview-block" id="original-block" hidden>
+                        <h2>Original</h2>
+                        <img class="preview" id="original-preview" alt="Original generated word" >
+                    </div>
+                    <div class="preview-block" id="discord-block" hidden>
+                        <h2>Discord ready</h2>
+                        <img class="preview" id="discord-preview" alt="Discord-ready generated word">
+                    </div>
                 </main>
                 <script>
                     const form = document.getElementById("form");
                     const input = document.getElementById("word");
                     const status = document.getElementById("status");
-                    const preview = document.getElementById("preview");
-                    let previousUrl;
+                    const originalBlock = document.getElementById("original-block");
+                    const discordBlock = document.getElementById("discord-block");
+                    const originalPreview = document.getElementById("original-preview");
+                    const discordPreview = document.getElementById("discord-preview");
+                    let previousUrls = [];
 
                     form.addEventListener("submit", async (event) => {
                         event.preventDefault();
                         const word = input.value.trim();
                         if (!/^[A-Za-z]+$/.test(word) || word.length > 100) {
                             status.textContent = "Enter a word containing only letters.";
-                            preview.hidden = true;
+                            originalBlock.hidden = true;
+                            discordBlock.hidden = true;
                             return;
                         }
 
                         status.textContent = "Generating...";
                         try {
-                            const response = await fetch(`/generate-word/${encodeURIComponent(word)}`);
-                            if (!response.ok) {
+                            const [originalResponse, discordResponse] = await Promise.all([
+                                fetch(`/generate-word/${encodeURIComponent(word)}`),
+                                fetch(`/generate-word/${encodeURIComponent(word)}?format=discord`)
+                            ]);
+                            if (!originalResponse.ok || !discordResponse.ok) {
                                 throw new Error("The word could not be generated.");
                             }
 
-                            const blob = await response.blob();
-                            if (previousUrl) {
-                                URL.revokeObjectURL(previousUrl);
-                            }
-                            previousUrl = URL.createObjectURL(blob);
-                            preview.src = previousUrl;
-                            preview.hidden = false;
+                            previousUrls.forEach(url => URL.revokeObjectURL(url));
+                            const originalUrl = URL.createObjectURL(await originalResponse.blob());
+                            const discordUrl = URL.createObjectURL(await discordResponse.blob());
+                            previousUrls = [originalUrl, discordUrl];
+                            originalPreview.src = originalUrl;
+                            discordPreview.src = discordUrl;
+                            originalBlock.hidden = false;
+                            discordBlock.hidden = false;
                             status.textContent = "";
                         } catch (error) {
                             status.textContent = error.message;
-                            preview.hidden = true;
+                            originalBlock.hidden = true;
+                            discordBlock.hidden = true;
                         }
                     });
                 </script>
@@ -86,7 +104,7 @@ public static class WordGenerator
             """,
             "text/html"));
 
-        app.MapGet("/generate-word/{word}", (string word) =>
+        app.MapGet("/generate-word/{word}", (string word, HttpContext context) =>
         {
             if (string.IsNullOrWhiteSpace(word) ||
                 word.Length > MaxWordLength ||
@@ -102,8 +120,9 @@ public static class WordGenerator
 
             try
             {
+                var discordReady = context.Request.Query["format"] == "discord";
                 return Results.File(
-                    Generate(word),
+                    Generate(word, discordReady),
                     "image/png");
             }
             catch (FileNotFoundException)
@@ -113,7 +132,7 @@ public static class WordGenerator
         });
     }
 
-    private static byte[] Generate(string word)
+    private static byte[] Generate(string word, bool discordReady)
     {
         var spritePath = Path.Combine(AppContext.BaseDirectory, "Sprites", SpriteFileName);
         using var sheet = Image.Load<Rgba32>(spritePath);
@@ -157,12 +176,16 @@ public static class WordGenerator
             var width = requestedLetters.Sum(letter => letter.Width) +
                         LetterSpacing * (requestedLetters.Length - 1);
             var height = requestedLetters.Max(letter => letter.Height);
-            using var result = new Image<Rgba32>(width, height, Color.Transparent);
+            var canvasWidth = discordReady ? 1370 : width;
+            var canvasHeight = discordReady ? 266 : height;
+            using var result = new Image<Rgba32>(canvasWidth, canvasHeight, Color.Transparent);
 
             var x = 0;
             foreach (var letter in requestedLetters)
             {
-                var y = height - letter.Height;
+                var y = discordReady
+                    ? (canvasHeight - letter.Height) / 2
+                    : canvasHeight - letter.Height;
                 result.Mutate(context => context.DrawImage(letter, new Point(x, y), 1f));
                 x += letter.Width + LetterSpacing;
             }
