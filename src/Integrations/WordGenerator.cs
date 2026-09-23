@@ -34,6 +34,7 @@ public static class WordGenerator
                     .preview-block { margin-top: 24px; }
                     .preview-block h2 { font-size: 14px; font-weight: 500; margin: 0 0 8px; }
                     .preview { background: #050708; border-radius: 8px; display: block; max-width: 100%; }
+                    .download { display: inline-block; margin-top: 8px; }
                 </style>
             </head>
             <body>
@@ -47,10 +48,12 @@ public static class WordGenerator
                     <div class="preview-block" id="original-block" hidden>
                         <h2>Original</h2>
                         <img class="preview" id="original-preview" alt="Original generated word" >
+                        <button class="download" id="original-download" type="button">Download original</button>
                     </div>
                     <div class="preview-block" id="discord-block" hidden>
                         <h2>Discord ready</h2>
                         <img class="preview" id="discord-preview" alt="Discord-ready generated word">
+                        <button class="download" id="discord-download" type="button">Download Discord-ready</button>
                     </div>
                 </main>
                 <script>
@@ -61,7 +64,25 @@ public static class WordGenerator
                     const discordBlock = document.getElementById("discord-block");
                     const originalPreview = document.getElementById("original-preview");
                     const discordPreview = document.getElementById("discord-preview");
+                    const originalDownload = document.getElementById("original-download");
+                    const discordDownload = document.getElementById("discord-download");
                     let previousUrls = [];
+                    let currentWord = "";
+
+                    function downloadImage(url, filename) {
+                        const link = document.createElement("a");
+                        link.href = url;
+                        link.download = filename;
+                        link.click();
+                    }
+
+                    originalDownload.addEventListener("click", () => {
+                        downloadImage(previousUrls[0], `${currentWord}.png`);
+                    });
+
+                    discordDownload.addEventListener("click", () => {
+                        downloadImage(previousUrls[1], `${currentWord}-discord.png`);
+                    });
 
                     form.addEventListener("submit", async (event) => {
                         event.preventDefault();
@@ -87,6 +108,7 @@ public static class WordGenerator
                             const originalUrl = URL.createObjectURL(await originalResponse.blob());
                             const discordUrl = URL.createObjectURL(await discordResponse.blob());
                             previousUrls = [originalUrl, discordUrl];
+                            currentWord = word.toLowerCase();
                             originalPreview.src = originalUrl;
                             discordPreview.src = discordUrl;
                             originalBlock.hidden = false;
