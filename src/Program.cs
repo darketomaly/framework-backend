@@ -38,6 +38,7 @@ public class Program
         // Configure the rest of the integrations
         Redirects.Configure(app);
         ContactEmail.Configure(app);
+        WordGenerator.Configure(app);
         
         app.Run();
     }
