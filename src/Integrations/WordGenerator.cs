@@ -129,11 +129,17 @@ public static class WordGenerator
 
             foreach (var (left, right) in glyphRuns)
             {
+                var (glyphTop, glyphBottom) = FindGlyphVerticalBounds(
+                    sheet,
+                    left,
+                    right,
+                    rowTop,
+                    rowBottom);
                 var cell = sheet.Clone(context => context.Crop(new Rectangle(
                     left,
-                    rowTop,
+                    glyphTop,
                     right - left + 1,
-                    rowBottom - rowTop)));
+                    glyphBottom - glyphTop + 1)));
 
                 letters[(char)('A' + letterIndex)] = TrimTransparentMargins(cell);
                 letterIndex++;
@@ -221,6 +227,64 @@ public static class WordGenerator
         }
 
         return runs;
+    }
+
+    private static (int Top, int Bottom) FindGlyphVerticalBounds(
+        Image<Rgba32> sheet,
+        int left,
+        int right,
+        int top,
+        int bottom)
+    {
+        var rowPixelCounts = new int[bottom - top];
+
+        sheet.ProcessPixelRows(accessor =>
+        {
+            for (var y = top; y < bottom; y++)
+            {
+                var row = accessor.GetRowSpan(y);
+                for (var x = left; x <= right; x++)
+                {
+                    if (row[x].A != 0)
+                    {
+                        rowPixelCounts[y - top]++;
+                    }
+                }
+            }
+        });
+
+        var bestTop = -1;
+        var bestBottom = -1;
+        var currentTop = -1;
+
+        for (var index = 0; index < rowPixelCounts.Length; index++)
+        {
+            if (rowPixelCounts[index] > 0 && currentTop < 0)
+            {
+                currentTop = index;
+            }
+
+            var isLastRow = index == rowPixelCounts.Length - 1;
+            if (currentTop >= 0 && (rowPixelCounts[index] == 0 || isLastRow))
+            {
+                var currentBottom = rowPixelCounts[index] == 0 ? index - 1 : index;
+                if (bestTop < 0 ||
+                    currentBottom - currentTop > bestBottom - bestTop)
+                {
+                    bestTop = currentTop;
+                    bestBottom = currentBottom;
+                }
+
+                currentTop = -1;
+            }
+        }
+
+        if (bestTop < 0)
+        {
+            throw new InvalidOperationException("A sprite cell is empty.");
+        }
+
+        return (top + bestTop, top + bestBottom);
     }
 
     private static Image<Rgba32> TrimTransparentMargins(Image<Rgba32> image)
