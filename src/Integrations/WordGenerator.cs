@@ -17,6 +17,78 @@ public static class WordGenerator
 
     public static void Configure(WebApplication app)
     {
+        app.MapGet("/generate-word", () => Results.Content(
+            """
+            <!doctype html>
+            <html lang="en">
+            <head>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <title>Generate word</title>
+                <style>
+                    :root { color-scheme: dark; }
+                    body { background: #101416; color: #eaf0f2; font: 16px system-ui, sans-serif; margin: 0; padding: 32px; }
+                    main { max-width: 720px; margin: auto; }
+                    form { display: flex; gap: 8px; }
+                    input, button { border: 1px solid #53616a; border-radius: 6px; font: inherit; padding: 10px 12px; }
+                    input { background: #050708; color: inherit; flex: 1; }
+                    button { background: #eaf0f2; color: #101416; cursor: pointer; }
+                    #status { color: #aebbc1; min-height: 24px; }
+                    #preview { background: #050708; border-radius: 8px; display: block; max-width: 100%; }
+                </style>
+            </head>
+            <body>
+                <main>
+                    <h1>Generate word</h1>
+                    <form id="form">
+                        <input id="word" name="word" maxlength="100" pattern="[A-Za-z]+" required autofocus>
+                        <button type="submit">Generate</button>
+                    </form>
+                    <p id="status"></p>
+                    <img id="preview" alt="Generated word preview" hidden>
+                </main>
+                <script>
+                    const form = document.getElementById("form");
+                    const input = document.getElementById("word");
+                    const status = document.getElementById("status");
+                    const preview = document.getElementById("preview");
+                    let previousUrl;
+
+                    form.addEventListener("submit", async (event) => {
+                        event.preventDefault();
+                        const word = input.value.trim();
+                        if (!/^[A-Za-z]+$/.test(word) || word.length > 100) {
+                            status.textContent = "Enter a word containing only letters.";
+                            preview.hidden = true;
+                            return;
+                        }
+
+                        status.textContent = "Generating...";
+                        try {
+                            const response = await fetch(`/generate-word/${encodeURIComponent(word)}`);
+                            if (!response.ok) {
+                                throw new Error("The word could not be generated.");
+                            }
+
+                            const blob = await response.blob();
+                            if (previousUrl) {
+                                URL.revokeObjectURL(previousUrl);
+                            }
+                            previousUrl = URL.createObjectURL(blob);
+                            preview.src = previousUrl;
+                            preview.hidden = false;
+                            status.textContent = "";
+                        } catch (error) {
+                            status.textContent = error.message;
+                            preview.hidden = true;
+                        }
+                    });
+                </script>
+            </body>
+            </html>
+            """,
+            "text/html"));
+
         app.MapGet("/generate-word/{word}", (string word) =>
         {
             if (string.IsNullOrWhiteSpace(word) ||
@@ -35,8 +107,7 @@ public static class WordGenerator
             {
                 return Results.File(
                     Generate(word),
-                    "image/png",
-                    $"{word.ToLowerInvariant()}.png");
+                    "image/png");
             }
             catch (FileNotFoundException)
             {
