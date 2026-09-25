@@ -26,13 +26,13 @@ public static class EmojiId
     public const string ReactionThumbsDown = "<:thumbs_down:1521877749856337940>";
     public const string ReactionLaugh = "<:laugh:1526001338373112000>";
 
-    public const string RoleOne = "<:role_one:1549843341863161896>";
-    public const string RoleTwo = "<:role_two:1549841295877472406>";
-    public const string RoleThree = "<:role_three:1549839691887419482>";
+    public const string RoleOne = "<:one:1549843341863161896>";
+    public const string RoleTwo = "<:two:1549841295877472406>";
+    public const string RoleThree = "<:three:1549839691887419482>";
     
-    public const string One = "<:one:1552962252124987412>";
-    public const string Two = "<:two:1552962326976663642>";
-    public const string Three = "<:three:1552962462842753024>";
+    public const string One = "<:number_one:1552962252124987412>";
+    public const string Two = "<:number_two:1552962326976663642>";
+    public const string Three = "<:number_three:1552962462842753024>";
     
     public static readonly HashSet<string> RoleEmojis =
     [
