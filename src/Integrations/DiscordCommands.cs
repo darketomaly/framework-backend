@@ -128,6 +128,41 @@ public static class DiscordCommands
                 .WithRequired(false)
             );
 
+        var sendVoteMsgCommand = new SlashCommandBuilder()
+            .WithName("darksendvotemsg")
+            .WithDefaultMemberPermissions(GuildPermission.Administrator)
+            .WithDescription("Sends a message for voting")
+            .AddOption(new SlashCommandOptionBuilder()
+                .WithName("channel")
+                .WithDescription("Channel to send the vote message to.")
+                .WithType(ApplicationCommandOptionType.Channel)
+                .WithRequired(true)
+            )
+            .AddOption(new SlashCommandOptionBuilder()
+                .WithName("description")
+                .WithDescription("Description of the vote.")
+                .WithType(ApplicationCommandOptionType.String)
+                .WithRequired(true)
+            )
+            .AddOption(new SlashCommandOptionBuilder()
+                .WithName("option_one")
+                .WithDescription("First voting option.")
+                .WithType(ApplicationCommandOptionType.String)
+                .WithRequired(false)
+            )
+            .AddOption(new SlashCommandOptionBuilder()
+                .WithName("option_two")
+                .WithDescription("Second voting option.")
+                .WithType(ApplicationCommandOptionType.String)
+                .WithRequired(false)
+            )
+            .AddOption(new SlashCommandOptionBuilder()
+                .WithName("option_three")
+                .WithDescription("Third voting option.")
+                .WithType(ApplicationCommandOptionType.String)
+                .WithRequired(false)
+            );
+
         try
         {
             await client.Rest.BulkOverwriteGlobalCommands(new[]
@@ -137,7 +172,8 @@ public static class DiscordCommands
                 generateServerKeyCommand.Build(),
                 autoReactAnnouncementsChannelCommand.Build(),
                 autoReactMemesChannelCommand.Build(),
-                sendReactForRoleMsgCommand.Build()
+                sendReactForRoleMsgCommand.Build(),
+                sendVoteMsgCommand.Build()
             });
         }
         catch (HttpException ex)
@@ -172,6 +208,10 @@ public static class DiscordCommands
 
             case "darksendreactforrolemsg":
                 await HandleSendReactForRoleMsg(command);
+                break;
+
+            case "darksendvotemsg":
+                await HandleSendVoteMsg(command);
                 break;
         }
     }
@@ -516,5 +556,61 @@ public static class DiscordCommands
         }
 
         await command.FollowupAsync("React-for-role message sent.", ephemeral: true);
+    }
+
+    // ---------- /darksendvotemsg ----------
+
+    private static async Task HandleSendVoteMsg(SocketSlashCommand command)
+    {
+        await command.DeferAsync(ephemeral: true);
+
+        var channelOption = command.Data.Options.First(o => o.Name == "channel");
+        var description = command.Data.Options.First(o => o.Name == "description").Value as string;
+        var optionOne = command.Data.Options.FirstOrDefault(o => o.Name == "option_one")?.Value as string;
+        var optionTwo = command.Data.Options.FirstOrDefault(o => o.Name == "option_two")?.Value as string;
+        var optionThree = command.Data.Options.FirstOrDefault(o => o.Name == "option_three")?.Value as string;
+        var targetChannel = channelOption.Value as IMessageChannel;
+
+        if (targetChannel == null)
+        {
+            await command.FollowupAsync("That channel isn't a text channel I can post in.", ephemeral: true);
+            return;
+        }
+
+        var message = $"Please vote!\n\n{description}";
+
+        if (!string.IsNullOrWhiteSpace(optionOne))
+        {
+            message += $"\n{EmojiId.One} {optionOne}";
+        }
+
+        if (!string.IsNullOrWhiteSpace(optionTwo))
+        {
+            message += $"\n{EmojiId.Two} {optionTwo}";
+        }
+
+        if (!string.IsNullOrWhiteSpace(optionThree))
+        {
+            message += $"\n{EmojiId.Three} {optionThree}";
+        }
+
+        var sentMessage = await targetChannel.SendMessageAsync(message);
+
+        if (!string.IsNullOrWhiteSpace(optionOne))
+        {
+            await sentMessage.AddReactionAsync(Emote.Parse(EmojiId.One));
+        }
+
+        if (!string.IsNullOrWhiteSpace(optionTwo))
+        {
+            await sentMessage.AddReactionAsync(Emote.Parse(EmojiId.Two));
+        }
+
+        if (!string.IsNullOrWhiteSpace(optionThree))
+        {
+            await sentMessage.AddReactionAsync(Emote.Parse(EmojiId.Three));
+        }
+
+        await command.FollowupAsync("Vote message sent.", ephemeral: true);
     }
 }
