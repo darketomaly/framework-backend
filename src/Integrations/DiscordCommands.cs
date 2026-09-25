@@ -435,17 +435,17 @@ public static class DiscordCommands
 
         if (role1 != null)
         {
-            message += $"{EmojiId.One} <@&{role1.Id}>";
+            message += $"{EmojiId.RoleOne} <@&{role1.Id}>";
         }
         
         if (role2 != null)
         {
-            message += $"\n{EmojiId.Two} <@&{role2.Id}>";
+            message += $"\n{EmojiId.RoleTwo} <@&{role2.Id}>";
         }
         
         if (role3 != null)
         {
-            message += $"\n{EmojiId.Three} <@&{role3.Id}>";
+            message += $"\n{EmojiId.RoleThree} <@&{role3.Id}>";
         }
 
         IUserMessage? sentMessage;
@@ -481,37 +481,37 @@ public static class DiscordCommands
 
         if (role1 != null)
         {
-            await sentMessage.AddReactionAsync(Emote.Parse(EmojiId.One));
+            await sentMessage.AddReactionAsync(Emote.Parse(EmojiId.RoleOne));
         }
         else
         {
             if (!string.IsNullOrEmpty(rawMessageId))
             {
-                await sentMessage.RemoveAllReactionsForEmoteAsync(Emote.Parse(EmojiId.One));
+                await sentMessage.RemoveAllReactionsForEmoteAsync(Emote.Parse(EmojiId.RoleOne));
             }
         }
 
         if (role2 != null)
         {
-            await sentMessage.AddReactionAsync(Emote.Parse(EmojiId.Two));
+            await sentMessage.AddReactionAsync(Emote.Parse(EmojiId.RoleTwo));
         }
         else
         {
             if (!string.IsNullOrEmpty(rawMessageId))
             {
-                await sentMessage.RemoveAllReactionsForEmoteAsync(Emote.Parse(EmojiId.Two));
+                await sentMessage.RemoveAllReactionsForEmoteAsync(Emote.Parse(EmojiId.RoleTwo));
             }
         }
 
         if (role3 != null)
         {
-            await sentMessage.AddReactionAsync(Emote.Parse(EmojiId.Three));
+            await sentMessage.AddReactionAsync(Emote.Parse(EmojiId.RoleThree));
         }
         else
         {
             if (!string.IsNullOrEmpty(rawMessageId))
             {
-                await sentMessage.RemoveAllReactionsForEmoteAsync(Emote.Parse(EmojiId.Three));
+                await sentMessage.RemoveAllReactionsForEmoteAsync(Emote.Parse(EmojiId.RoleThree));
             }
         }
 
