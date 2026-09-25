@@ -577,7 +577,7 @@ public static class DiscordCommands
             return;
         }
 
-        var message = $"Please vote!\n\n{description}";
+        var message = $"Please vote!\n\n**{description}**";
 
         if (!string.IsNullOrWhiteSpace(optionOne))
         {
