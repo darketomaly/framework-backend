@@ -17,6 +17,10 @@ Use `/darkautoreactthumbs` or `darkautoreactlaugh` to have the bot automatically
 
 <img width="404" height="256" alt="image" src="https://github.com/user-attachments/assets/dc80c58d-bc19-4ef6-a54e-27efac9eef83" />
 
+<br>Use `darksendvotemsg` to send up to three options to a target channel for users to vote/react for.
+
+<img width="294" height="267" alt="image" src="https://github.com/user-attachments/assets/0e5039fa-2f95-46d4-8cf2-3d6018d06add" />
+
 <hr>
 
 # Discord relays
