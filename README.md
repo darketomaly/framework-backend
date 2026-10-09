@@ -81,7 +81,3 @@ Sends Plastic SCM json data as a formatted embed to a specific discord channel.
 1. Go to your GitHub repository -> Settings -> Webhooks -> Add webhook.
 2.  You can select the desired events, though usually the push event alone is enough.
 3.  Select content type as application/json with payload URL https://api.darketomaly.com/git-discord-webhook?channel=XXX&secret=XXX
-
-Git commit notifications are deduplicated across branches by commit SHA. The relay stores delivery state in
-the PostgreSQL database configured through `DATABASE_URL`; on Railway, attach a PostgreSQL service and expose
-its `DATABASE_URL` to this service. The `github_notified_commits` table is created automatically.
