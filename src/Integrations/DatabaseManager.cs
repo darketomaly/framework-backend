@@ -25,6 +25,8 @@ public static class DatabaseTable
 
 public static class DatabaseManager
 {
+    private const string GitNotifiedCommitsTable = "github_notified_commits";
+
     private static async Task<NpgsqlConnection?> Connect()
     {
         try
@@ -214,6 +216,117 @@ public static class DatabaseManager
         {
             Console.WriteLine($"PostgreSQL add/update failed: {exception.Message}");
             return DatabaseQueryExitCode.AddValueFailed;
+        }
+    }
+
+    public static async Task<(DatabaseQueryExitCode ExitCode, bool WasClaimed)> TryClaimGitCommit(
+        long repositoryId,
+        string commitSha)
+    {
+        await using var database = await Connect();
+
+        if (database is null)
+        {
+            return (DatabaseQueryExitCode.ConnectionFailed, false);
+        }
+
+        try
+        {
+            await using var createTableCommand = new NpgsqlCommand(
+                $"""
+                 CREATE TABLE IF NOT EXISTS {GitNotifiedCommitsTable} (
+                     repository_id BIGINT NOT NULL,
+                     commit_sha TEXT NOT NULL,
+                     claimed_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                     delivered_at TIMESTAMPTZ NULL,
+                     PRIMARY KEY (repository_id, commit_sha)
+                 )
+                 """,
+                database);
+            await createTableCommand.ExecuteNonQueryAsync();
+
+            await using var claimCommand = new NpgsqlCommand(
+                $"""
+                 INSERT INTO {GitNotifiedCommitsTable} (repository_id, commit_sha)
+                 VALUES (@repositoryId, @commitSha)
+                 ON CONFLICT (repository_id, commit_sha) DO UPDATE
+                 SET claimed_at = EXCLUDED.claimed_at
+                 WHERE {GitNotifiedCommitsTable}.delivered_at IS NULL
+                   AND {GitNotifiedCommitsTable}.claimed_at < NOW() - INTERVAL '5 minutes'
+                 RETURNING 1
+                 """,
+                database);
+            claimCommand.Parameters.AddWithValue("repositoryId", repositoryId);
+            claimCommand.Parameters.AddWithValue("commitSha", commitSha);
+
+            var wasClaimed = await claimCommand.ExecuteScalarAsync() is not null;
+            return (DatabaseQueryExitCode.QuerySuccess, wasClaimed);
+        }
+        catch (NpgsqlException exception)
+        {
+            Console.WriteLine($"PostgreSQL Git commit claim failed: {exception.Message}");
+            return (DatabaseQueryExitCode.QueryFailed, false);
+        }
+    }
+
+    public static async Task<DatabaseQueryExitCode> MarkGitCommitDelivered(long repositoryId, string commitSha)
+    {
+        await using var database = await Connect();
+
+        if (database is null)
+        {
+            return DatabaseQueryExitCode.ConnectionFailed;
+        }
+
+        try
+        {
+            await using var command = new NpgsqlCommand(
+                $"""
+                 UPDATE {GitNotifiedCommitsTable}
+                 SET delivered_at = NOW()
+                 WHERE repository_id = @repositoryId AND commit_sha = @commitSha
+                 """,
+                database);
+            command.Parameters.AddWithValue("repositoryId", repositoryId);
+            command.Parameters.AddWithValue("commitSha", commitSha);
+
+            await command.ExecuteNonQueryAsync();
+            return DatabaseQueryExitCode.QuerySuccess;
+        }
+        catch (NpgsqlException exception)
+        {
+            Console.WriteLine($"PostgreSQL Git commit delivery update failed: {exception.Message}");
+            return DatabaseQueryExitCode.QueryFailed;
+        }
+    }
+
+    public static async Task ReleaseGitCommitClaim(long repositoryId, string commitSha)
+    {
+        await using var database = await Connect();
+
+        if (database is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await using var command = new NpgsqlCommand(
+                $"""
+                 DELETE FROM {GitNotifiedCommitsTable}
+                 WHERE repository_id = @repositoryId
+                   AND commit_sha = @commitSha
+                   AND delivered_at IS NULL
+                 """,
+                database);
+            command.Parameters.AddWithValue("repositoryId", repositoryId);
+            command.Parameters.AddWithValue("commitSha", commitSha);
+
+            await command.ExecuteNonQueryAsync();
+        }
+        catch (NpgsqlException exception)
+        {
+            Console.WriteLine($"PostgreSQL Git commit claim release failed: {exception.Message}");
         }
     }
 }

@@ -295,6 +295,9 @@ public static class DiscordRelay
     {
         app.MapPost("/git-discord-webhook", async (HttpContext context) =>
         {
+            var claimedCommitIds = new List<string>();
+            long repositoryId = 0;
+
             // --- Get channel id ---
 
             var channelValidation = await IsValidChannelIdAsync(context, client);
@@ -336,22 +339,66 @@ public static class DiscordRelay
                         title = $"{EmojiId.GitCommit} New push on {repo} @ {branch}";
                         
                         var commits = GetJsonArrayProperty(json, "commits");
+                        var commitDescriptions = new List<string>();
+                        repositoryId = GetJsonPropertyInt64(json, "repository", "id");
+
+                        if (repositoryId == 0)
+                        {
+                            Console.WriteLine("GitHub push payload is missing a valid repository ID");
+                            return Results.BadRequest("GitHub push payload is missing a valid repository ID");
+                        }
 
                         for (var i = 0; i < commits.Length; i++)
                         {
                             var commit = commits[i];
+                            var commitId = GetJsonPropertyString(commit, "id");
+
+                            if (string.IsNullOrWhiteSpace(commitId))
+                            {
+                                Console.WriteLine("GitHub push payload contains a commit without an ID");
+                                await ReleaseGitCommitClaims(repositoryId, claimedCommitIds);
+                                return Results.BadRequest("GitHub push payload contains a commit without an ID");
+                            }
+
+                            var claimResult = await DatabaseManager.TryClaimGitCommit(repositoryId, commitId);
+
+                            if (claimResult.ExitCode != DatabaseQueryExitCode.QuerySuccess)
+                            {
+                                await ReleaseGitCommitClaims(repositoryId, claimedCommitIds);
+                                return Results.Problem("Unable to record Git commit delivery state");
+                            }
+
+                            if (!claimResult.WasClaimed)
+                            {
+                                continue;
+                            }
+
+                            claimedCommitIds.Add(commitId);
                             var msg = GetJsonPropertyString(commit, "message");
                             var commiter = GetJsonPropertyString(commit, "committer", "name");
 
-                            description += $"{EmojiId.GitCommit} {commiter}: {msg}\n\n";
+                            commitDescriptions.Add($"{EmojiId.GitCommit} {commiter}: {msg}\n\n");
+                        }
 
-                            if (description.Length > 4096)
+                        if (claimedCommitIds.Count == 0)
+                        {
+                            return Results.Ok();
+                        }
+
+                        for (var i = 0; i < commitDescriptions.Count; i++)
+                        {
+                            var commitDescription = commitDescriptions[i];
+
+                            if (description.Length + commitDescription.Length <= 4096)
                             {
-                                var otherCommits = commits.Length - i - 1;
-                                var suffix = $"\n... + {otherCommits} other commits";
-                                description = $"{description.Truncate(4096 - suffix.Length)}{suffix}";
-                                break;
+                                description += commitDescription;
+                                continue;
                             }
+
+                            var otherCommits = commitDescriptions.Count - i;
+                            var suffix = $"\n... + {otherCommits} other commits";
+                            description = $"{description.Truncate(4096 - suffix.Length)}{suffix}";
+                            break;
                         }
 
                         break;
@@ -383,10 +430,26 @@ public static class DiscordRelay
                 }
 
                 await channel.SendMessageAsync(embed: embed.Build());
+
+                foreach (var commitId in claimedCommitIds)
+                {
+                    var deliveryResult = await DatabaseManager.MarkGitCommitDelivered(repositoryId, commitId);
+
+                    if (deliveryResult != DatabaseQueryExitCode.QuerySuccess)
+                    {
+                        return Results.Problem("Unable to confirm Git commit delivery state");
+                    }
+                }
+
                 return Results.Ok();
             }
             catch (Exception e)
             {
+                if (repositoryId != 0)
+                {
+                    await ReleaseGitCommitClaims(repositoryId, claimedCommitIds);
+                }
+
                 Console.WriteLine($"Error processing git webhook: {e}");
                 return Results.Problem("Failed to process embed");
             }
@@ -424,6 +487,28 @@ public static class DiscordRelay
         }
 
         return [.. arrayElement.EnumerateArray()];
+    }
+
+    private static long GetJsonPropertyInt64(JsonElement element, params string[] propertyPath)
+    {
+        foreach (var propertyName in propertyPath)
+        {
+            if (element.ValueKind != JsonValueKind.Object ||
+                !element.TryGetProperty(propertyName, out element))
+            {
+                return 0;
+            }
+        }
+
+        return element.ValueKind == JsonValueKind.Number && element.TryGetInt64(out var value) ? value : 0;
+    }
+
+    private static async Task ReleaseGitCommitClaims(long repositoryId, IEnumerable<string> commitIds)
+    {
+        foreach (var commitId in commitIds)
+        {
+            await DatabaseManager.ReleaseGitCommitClaim(repositoryId, commitId);
+        }
     }
     
     private static string Truncate(this string value, int maxLength)
