@@ -313,7 +313,7 @@ public static class DiscordRelay
 
             using var reader = new StreamReader(context.Request.Body);
             string body = await reader.ReadToEndAsync();
-
+            
             try
             {
                 // --- Interpret data ---
@@ -405,6 +405,16 @@ public static class DiscordRelay
                     
                     case "deployment":
                         title = $"{EmojiId.GitDeploy} {repo} has been deployed";
+                        break;
+                    
+                    case "pull_request":
+                        var pullRequestNumber = GetJsonPropertyInt64(json, "number");
+                        var pullRequestAction = GetJsonPropertyString(json, "action");
+                        var headBranch = GetJsonPropertyString(json, "pull_request", "head", "ref");
+                        var baseBranch = GetJsonPropertyString(json, "pull_request", "base", "ref");
+
+                        title = $"{EmojiId.TaskReadyForReview} {repo} Pull review #{pullRequestNumber} {pullRequestAction}";
+                        description = $"{name} wants to merge {headBranch} into {baseBranch}.";
                         break;
                 }
                 
