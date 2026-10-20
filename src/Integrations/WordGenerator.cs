@@ -161,7 +161,7 @@ public static class WordGenerator
         var letters = new Dictionary<char, Image<Rgba32>>(26);
 
         var letterIndex = 0;
-        var glyphRows = FindGlyphRows(sheet);
+        var glyphRows = FindGlyphRows(sheet, GridRows);
         foreach (var (rowTop, rowBottom) in glyphRows)
         {
             var glyphRuns = FindGlyphRuns(sheet, rowTop, rowBottom + 1);
@@ -225,7 +225,7 @@ public static class WordGenerator
         }
     }
 
-    private static List<(int Left, int Right)> FindGlyphRuns(
+    internal static List<(int Left, int Right)> FindGlyphRuns(
         Image<Rgba32> sheet,
         int top,
         int bottom)
@@ -272,7 +272,9 @@ public static class WordGenerator
         return runs;
     }
 
-    private static List<(int Top, int Bottom)> FindGlyphRows(Image<Rgba32> sheet)
+    internal static List<(int Top, int Bottom)> FindGlyphRows(
+        Image<Rgba32> sheet,
+        int expectedRowCount)
     {
         var rows = new List<(int Top, int Bottom)>();
         var inRun = false;
@@ -311,15 +313,16 @@ public static class WordGenerator
             rows.Add((top, sheet.Height - 1));
         }
 
-        if (rows.Count != GridRows)
+        if (rows.Count != expectedRowCount)
         {
-            throw new InvalidOperationException("The sprite sheet does not contain four letter rows.");
+            throw new InvalidOperationException(
+                $"The sprite sheet does not contain {expectedRowCount} glyph rows.");
         }
 
         return rows;
     }
 
-    private static (int Top, int Bottom) FindGlyphVerticalBounds(
+    internal static (int Top, int Bottom) FindGlyphVerticalBounds(
         Image<Rgba32> sheet,
         int left,
         int right,
@@ -377,7 +380,7 @@ public static class WordGenerator
         return (top + bestTop, top + bestBottom);
     }
 
-    private static Image<Rgba32> TrimTransparentMargins(Image<Rgba32> image)
+    internal static Image<Rgba32> TrimTransparentMargins(Image<Rgba32> image)
     {
         var bounds = new Rectangle(image.Width, image.Height, 0, 0);
 

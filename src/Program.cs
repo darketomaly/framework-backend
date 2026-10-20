@@ -22,7 +22,7 @@ public class Program
 
         var app = builder.Build();
         app.UseCors("Website");
-        
+
         // Create the Discord client
         var discordClient = CreateDiscordClient();
 
@@ -39,7 +39,8 @@ public class Program
         Redirects.Configure(app);
         ContactEmail.Configure(app);
         WordGenerator.Configure(app);
-        
+        WtTextGenerator.Configure(app);
+
         app.Run();
     }
 
