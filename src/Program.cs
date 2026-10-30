@@ -30,9 +30,6 @@ public class Program
         app.UseCors();
         app.UseCors("Website");
 
-        // Ping test endpoint (Marco Polo)
-        app.MapGet("/ping", () => Results.Ok(new { message = "pong", time = DateTime.UtcNow }));
-
         // Create the Discord client
         var discordClient = CreateDiscordClient();
 
