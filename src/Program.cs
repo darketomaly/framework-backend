@@ -17,6 +17,10 @@ public class Program
                 {
                     policy.WithOrigins(origin).AllowAnyHeader().AllowAnyMethod();
                 }
+                else
+                {
+                    policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                }
             });
         });
 
@@ -34,6 +38,7 @@ public class Program
         DiscordCommands.Configure(discordClient);
         DiscordAutoReact.Configure(discordClient);
         DiscordRoleAssignment.Configure(discordClient);
+        DiscordMessageApi.Configure(app, discordClient);
 
         // Configure the rest of the integrations
         Redirects.Configure(app);
