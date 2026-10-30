@@ -11,25 +11,46 @@ public static class DiscordMessageApi
 
     public static void Configure(WebApplication app, DiscordSocketClient client)
     {
-        // Support both /discord/send and /api/discord/send
-        app.MapPost("/discord/send", (HttpContext context, SendMessageRequest req) => HandleSendMessage(context, req, client)).RequireCors("Website");
-        app.MapPost("/api/discord/send", (HttpContext context, SendMessageRequest req) => HandleSendMessage(context, req, client)).RequireCors("Website");
+        // Support both /discord/send and /api/discord/send with multipart/form-data or JSON
+        app.MapPost("/discord/send", (HttpContext context) => HandleSendMessage(context, client)).RequireCors("Website");
+        app.MapPost("/api/discord/send", (HttpContext context) => HandleSendMessage(context, client)).RequireCors("Website");
     }
 
-    private static async Task<IResult> HandleSendMessage(HttpContext context, SendMessageRequest req, DiscordSocketClient client)
+    private static async Task<IResult> HandleSendMessage(HttpContext context, DiscordSocketClient client)
     {
-        Console.WriteLine($"[DiscordMessageApi] Received POST request to send message. Target ChannelId: {req.ChannelId}");
+        string? channelIdStr = null;
+        string? content = null;
+        IFormFile? file = null;
 
-        if (string.IsNullOrWhiteSpace(req.ChannelId) || !ulong.TryParse(req.ChannelId, out var channelId))
+        if (context.Request.HasFormContentType)
+        {
+            var form = await context.Request.ReadFormAsync();
+            channelIdStr = form["channelId"];
+            content = form["content"];
+            file = form.Files.GetFile("file") ?? form.Files.FirstOrDefault();
+        }
+        else
+        {
+            var bodyReq = await context.Request.ReadFromJsonAsync<SendMessageRequest>();
+            if (bodyReq != null)
+            {
+                channelIdStr = bodyReq.ChannelId;
+                content = bodyReq.Content;
+            }
+        }
+
+        Console.WriteLine($"[DiscordMessageApi] Received POST request to send message. Target ChannelId: {channelIdStr}, HasFile: {file != null}");
+
+        if (string.IsNullOrWhiteSpace(channelIdStr) || !ulong.TryParse(channelIdStr, out var channelId))
         {
             Console.WriteLine("[DiscordMessageApi] Invalid or empty ChannelId provided.");
             return Results.BadRequest(new { error = "Valid channel ID is required" });
         }
 
-        if (string.IsNullOrWhiteSpace(req.Content))
+        if (string.IsNullOrWhiteSpace(content) && file == null)
         {
-            Console.WriteLine("[DiscordMessageApi] Empty message content provided.");
-            return Results.BadRequest(new { error = "Message content cannot be empty" });
+            Console.WriteLine("[DiscordMessageApi] Neither message content nor file attachment provided.");
+            return Results.BadRequest(new { error = "Message content or file attachment is required" });
         }
 
         // Verify caller's Discord authorization token
@@ -101,7 +122,27 @@ public static class DiscordMessageApi
 
         try
         {
-            var message = await targetChannel.SendMessageAsync(req.Content);
+            IUserMessage message;
+            if (file != null && file.Length > 0)
+            {
+                using var fileStream = file.OpenReadStream();
+                var safeFileName = Path.GetFileName(file.FileName);
+                if (string.IsNullOrWhiteSpace(safeFileName))
+                {
+                    safeFileName = "attachment.png";
+                }
+
+                message = await targetChannel.SendFileAsync(
+                    stream: fileStream,
+                    filename: safeFileName,
+                    text: content ?? string.Empty
+                );
+            }
+            else
+            {
+                message = await targetChannel.SendMessageAsync(content ?? string.Empty);
+            }
+
             Console.WriteLine($"[DiscordMessageApi] Successfully sent message {message.Id} to channel {channelId}.");
 
             return Results.Ok(new
