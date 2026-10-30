@@ -39,6 +39,7 @@ public class Program
         DiscordAutoReact.Configure(discordClient);
         DiscordRoleAssignment.Configure(discordClient);
         DiscordMessageApi.Configure(app, discordClient);
+        DiscordOAuthApi.Configure(app, discordClient);
 
         // Configure the rest of the integrations
         Redirects.Configure(app);
