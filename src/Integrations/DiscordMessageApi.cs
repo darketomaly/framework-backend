@@ -8,12 +8,12 @@ public static class DiscordMessageApi
     public static void Configure(WebApplication app, DiscordSocketClient client)
     {
         // Support both /discord/channels and /api/discord/channels
-        app.MapGet("/discord/channels", () => HandleGetChannels(client));
-        app.MapGet("/api/discord/channels", () => HandleGetChannels(client));
+        app.MapGet("/discord/channels", () => HandleGetChannels(client)).RequireCors("Website");
+        app.MapGet("/api/discord/channels", () => HandleGetChannels(client)).RequireCors("Website");
 
         // Support both /discord/send and /api/discord/send
-        app.MapPost("/discord/send", (SendMessageRequest req) => HandleSendMessage(req, client));
-        app.MapPost("/api/discord/send", (SendMessageRequest req) => HandleSendMessage(req, client));
+        app.MapPost("/discord/send", (SendMessageRequest req) => HandleSendMessage(req, client)).RequireCors("Website");
+        app.MapPost("/api/discord/send", (SendMessageRequest req) => HandleSendMessage(req, client)).RequireCors("Website");
     }
 
     private static IResult HandleGetChannels(DiscordSocketClient client)
