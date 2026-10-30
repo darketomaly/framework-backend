@@ -216,6 +216,7 @@ public static class DiscordMessageApi
         string? channelIdStr = null;
         string? messageIdStr = null;
         string? content = null;
+        bool removeAttachment = false;
         IFormFile? file = null;
 
         if (context.Request.HasFormContentType)
@@ -224,6 +225,10 @@ public static class DiscordMessageApi
             channelIdStr = form["channelId"];
             messageIdStr = form["messageId"];
             content = form["content"];
+            if (bool.TryParse(form["removeAttachment"], out var removeFlag))
+            {
+                removeAttachment = removeFlag;
+            }
             file = form.Files.GetFile("file") ?? form.Files.FirstOrDefault();
         }
         else
@@ -234,6 +239,7 @@ public static class DiscordMessageApi
                 channelIdStr = bodyReq.ChannelId;
                 messageIdStr = bodyReq.MessageId;
                 content = bodyReq.Content;
+                removeAttachment = bodyReq.RemoveAttachment ?? false;
             }
         }
 
@@ -300,11 +306,22 @@ public static class DiscordMessageApi
                     props.Attachments = new[] { fileAttachment };
                 });
             }
+            else if (removeAttachment)
+            {
+                await existingMessage.ModifyAsync(props =>
+                {
+                    if (hasNewText)
+                    {
+                        props.Content = content;
+                    }
+                    props.Attachments = Array.Empty<FileAttachment>();
+                });
+            }
             else
             {
                 if (!hasNewText)
                 {
-                    return Results.BadRequest(new { error = "You must provide new text, a new image, or both to edit." });
+                    return Results.BadRequest(new { error = "You must provide new text, a new image, or choose to remove the attachment to edit." });
                 }
 
                 await existingMessage.ModifyAsync(props =>
@@ -374,5 +391,5 @@ public static class DiscordMessageApi
     }
 
     public record SendMessageRequest(string? ChannelId, string? Content);
-    public record EditMessageRequest(string? ChannelId, string? MessageId, string? Content);
+    public record EditMessageRequest(string? ChannelId, string? MessageId, string? Content, bool? RemoveAttachment = false);
 }
