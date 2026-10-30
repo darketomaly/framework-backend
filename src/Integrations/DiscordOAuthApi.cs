@@ -113,21 +113,6 @@ public static class DiscordOAuthApi
             var userToken = authHeader.Substring("Bearer ".Length).Trim();
             var httpClient = httpClientFactory.CreateClient();
 
-            // Fetch user info to get their user ID
-            var userReq = new HttpRequestMessage(HttpMethod.Get, $"{DiscordApiBase}/users/@me");
-            userReq.Headers.Authorization = new AuthenticationHeaderValue("Bearer", userToken);
-            var userRes = await httpClient.SendAsync(userReq);
-            ulong userId = 0;
-            if (userRes.IsSuccessStatusCode)
-            {
-                var userJson = await userRes.Content.ReadAsStringAsync();
-                using var userDoc = JsonDocument.Parse(userJson);
-                if (userDoc.RootElement.TryGetProperty("id", out var uidProp))
-                {
-                    ulong.TryParse(uidProp.GetString(), out userId);
-                }
-            }
-
             // Fetch user guilds
             var userGuildsReq = new HttpRequestMessage(HttpMethod.Get, $"{DiscordApiBase}/users/@me/guilds");
             userGuildsReq.Headers.Authorization = new AuthenticationHeaderValue("Bearer", userToken);
@@ -151,10 +136,7 @@ public static class DiscordOAuthApi
                 var guildIdStr = userGuild.GetProperty("id").GetString();
                 if (!ulong.TryParse(guildIdStr, out var guildId)) continue;
 
-                // Check if bot is in this guild
-                var botGuild = client.GetGuild(guildId);
-                if (botGuild == null) continue;
-
+                // Rule 1: User must be Server Owner or have Administrator permission in this server
                 var isOwner = userGuild.TryGetProperty("owner", out var ownerProp) && ownerProp.GetBoolean();
                 ulong guildPermissions = 0;
                 if (userGuild.TryGetProperty("permissions", out var permProp) && ulong.TryParse(permProp.GetString(), out var parsedPerm))
@@ -163,37 +145,21 @@ public static class DiscordOAuthApi
                 }
 
                 var isGuildAdmin = isOwner || (guildPermissions & ADMINISTRATOR) == ADMINISTRATOR;
-                var botUser = botGuild.CurrentUser;
-                var guildUser = userId != 0 ? botGuild.GetUser(userId) : null;
+                if (!isGuildAdmin) continue;
 
+                // Rule 2: Bot must be present in this server
+                var botGuild = client.GetGuild(guildId);
+                if (botGuild == null) continue;
+
+                var botUser = botGuild.CurrentUser;
                 var channels = new List<object>();
 
+                // Rule 3: Bot must have permission to view and send messages in the channel
                 foreach (var channel in botGuild.TextChannels.OrderBy(c => c.Position))
                 {
-                    // 1. Check if bot has permission to view and send messages
                     var botPerms = botUser != null ? botUser.GetPermissions(channel) : default;
                     var botCanSend = botUser == null || (botPerms.ViewChannel && botPerms.SendMessages);
                     if (!botCanSend) continue;
-
-                    // 2. Check if user has permission to view and send messages
-                    bool userCanSend;
-                    if (isGuildAdmin)
-                    {
-                        userCanSend = true;
-                    }
-                    else if (guildUser != null)
-                    {
-                        var userPerms = guildUser.GetPermissions(channel);
-                        userCanSend = userPerms.ViewChannel && userPerms.SendMessages;
-                    }
-                    else
-                    {
-                        // Fallback to everyone role overwrite or basic guild permission
-                        var everyonePerms = channel.GetPermissionOverwrite(botGuild.EveryoneRole);
-                        userCanSend = everyonePerms?.SendMessages != PermValue.Deny;
-                    }
-
-                    if (!userCanSend) continue;
 
                     channels.Add(new
                     {
