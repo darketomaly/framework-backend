@@ -10,24 +10,28 @@ public class Program
         builder.Services.AddHttpClient();
         builder.Services.AddCors(options =>
         {
+            options.AddDefaultPolicy(policy =>
+            {
+                policy.SetIsOriginAllowed(_ => true)
+                      .AllowAnyHeader()
+                      .AllowAnyMethod()
+                      .AllowCredentials();
+            });
             options.AddPolicy("Website", policy =>
             {
-                var origin = Environment.GetEnvironmentVariable("WEBSITE_ORIGIN");
-                if (!string.IsNullOrWhiteSpace(origin))
-                {
-                    policy.WithOrigins(
-                        origin.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                    ).AllowAnyHeader().AllowAnyMethod();
-                }
-                else
-                {
-                    policy.SetIsOriginAllowed(_ => true).AllowAnyHeader().AllowAnyMethod();
-                }
+                policy.SetIsOriginAllowed(_ => true)
+                      .AllowAnyHeader()
+                      .AllowAnyMethod()
+                      .AllowCredentials();
             });
         });
 
         var app = builder.Build();
+        app.UseCors();
         app.UseCors("Website");
+
+        // Ping test endpoint (Marco Polo)
+        app.MapGet("/ping", () => Results.Ok(new { message = "pong", time = DateTime.UtcNow }));
 
         // Create the Discord client
         var discordClient = CreateDiscordClient();
