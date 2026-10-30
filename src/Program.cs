@@ -15,11 +15,13 @@ public class Program
                 var origin = Environment.GetEnvironmentVariable("WEBSITE_ORIGIN");
                 if (!string.IsNullOrWhiteSpace(origin))
                 {
-                    policy.WithOrigins(origin).AllowAnyHeader().AllowAnyMethod();
+                    policy.WithOrigins(
+                        origin.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                    ).AllowAnyHeader().AllowAnyMethod();
                 }
                 else
                 {
-                    policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                    policy.SetIsOriginAllowed(_ => true).AllowAnyHeader().AllowAnyMethod();
                 }
             });
         });

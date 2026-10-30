@@ -15,9 +15,11 @@ public static class DiscordOAuthApi
         // 1. GET /discord/auth/url - Return Discord OAuth2 authorize URL
         app.MapGet("/discord/auth/url", (HttpRequest request) =>
         {
+            Console.WriteLine("[DiscordOAuthApi] Received request for OAuth authorize URL.");
             var clientId = Environment.GetEnvironmentVariable("DISCORD_CLIENT_ID");
             if (string.IsNullOrWhiteSpace(clientId))
             {
+                Console.WriteLine("[DiscordOAuthApi] Missing DISCORD_CLIENT_ID on server.");
                 return Results.BadRequest(new { error = "DISCORD_CLIENT_ID environment variable is not configured on the backend." });
             }
 
