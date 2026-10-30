@@ -113,6 +113,21 @@ public static class DiscordOAuthApi
             var userToken = authHeader.Substring("Bearer ".Length).Trim();
             var httpClient = httpClientFactory.CreateClient();
 
+            // Fetch user info to get their user ID
+            var userReq = new HttpRequestMessage(HttpMethod.Get, $"{DiscordApiBase}/users/@me");
+            userReq.Headers.Authorization = new AuthenticationHeaderValue("Bearer", userToken);
+            var userRes = await httpClient.SendAsync(userReq);
+            ulong userId = 0;
+            if (userRes.IsSuccessStatusCode)
+            {
+                var userJson = await userRes.Content.ReadAsStringAsync();
+                using var userDoc = JsonDocument.Parse(userJson);
+                if (userDoc.RootElement.TryGetProperty("id", out var uidProp))
+                {
+                    ulong.TryParse(uidProp.GetString(), out userId);
+                }
+            }
+
             // Fetch user guilds
             var userGuildsReq = new HttpRequestMessage(HttpMethod.Get, $"{DiscordApiBase}/users/@me/guilds");
             userGuildsReq.Headers.Authorization = new AuthenticationHeaderValue("Bearer", userToken);
@@ -127,11 +142,7 @@ public static class DiscordOAuthApi
             var userGuildsJson = await userGuildsRes.Content.ReadAsStringAsync();
             using var userGuildsDoc = JsonDocument.Parse(userGuildsJson);
 
-            // Filter to servers where the user has Administrator or ManageMessages permission,
-            // or where the user is the owner, AND where the bot is also present!
             const ulong ADMINISTRATOR = 0x8;
-            const ulong MANAGE_MESSAGES = 0x2000;
-            const ulong SEND_MESSAGES = 0x800;
 
             var matchingGuilds = new List<object>();
 
@@ -140,44 +151,68 @@ public static class DiscordOAuthApi
                 var guildIdStr = userGuild.GetProperty("id").GetString();
                 if (!ulong.TryParse(guildIdStr, out var guildId)) continue;
 
-                var isOwner = userGuild.TryGetProperty("owner", out var ownerProp) && ownerProp.GetBoolean();
-                ulong permissions = 0;
-                if (userGuild.TryGetProperty("permissions", out var permProp))
-                {
-                    if (ulong.TryParse(permProp.GetString(), out var parsedPerm))
-                    {
-                        permissions = parsedPerm;
-                    }
-                }
-
-                var hasPermission = isOwner ||
-                                    (permissions & ADMINISTRATOR) == ADMINISTRATOR ||
-                                    (permissions & MANAGE_MESSAGES) == MANAGE_MESSAGES ||
-                                    (permissions & SEND_MESSAGES) == SEND_MESSAGES;
-
-                if (!hasPermission) continue;
-
-                // Check if bot is also in this guild
+                // Check if bot is in this guild
                 var botGuild = client.GetGuild(guildId);
                 if (botGuild == null) continue;
 
-                var channels = botGuild.TextChannels
-                    .OrderBy(c => c.Position)
-                    .Select(c => new
-                    {
-                        id = c.Id.ToString(),
-                        name = c.Name,
-                        category = c.Category?.Name
-                    })
-                    .ToList();
-
-                matchingGuilds.Add(new
+                var isOwner = userGuild.TryGetProperty("owner", out var ownerProp) && ownerProp.GetBoolean();
+                ulong guildPermissions = 0;
+                if (userGuild.TryGetProperty("permissions", out var permProp) && ulong.TryParse(permProp.GetString(), out var parsedPerm))
                 {
-                    id = botGuild.Id.ToString(),
-                    name = botGuild.Name,
-                    iconUrl = botGuild.IconUrl,
-                    channels = channels
-                });
+                    guildPermissions = parsedPerm;
+                }
+
+                var isGuildAdmin = isOwner || (guildPermissions & ADMINISTRATOR) == ADMINISTRATOR;
+                var botUser = botGuild.CurrentUser;
+                var guildUser = userId != 0 ? botGuild.GetUser(userId) : null;
+
+                var channels = new List<object>();
+
+                foreach (var channel in botGuild.TextChannels.OrderBy(c => c.Position))
+                {
+                    // 1. Check if bot has permission to view and send messages
+                    var botPerms = botUser != null ? botUser.GetPermissions(channel) : default;
+                    var botCanSend = botUser == null || (botPerms.ViewChannel && botPerms.SendMessages);
+                    if (!botCanSend) continue;
+
+                    // 2. Check if user has permission to view and send messages
+                    bool userCanSend;
+                    if (isGuildAdmin)
+                    {
+                        userCanSend = true;
+                    }
+                    else if (guildUser != null)
+                    {
+                        var userPerms = guildUser.GetPermissions(channel);
+                        userCanSend = userPerms.ViewChannel && userPerms.SendMessages;
+                    }
+                    else
+                    {
+                        // Fallback to everyone role overwrite or basic guild permission
+                        var everyonePerms = channel.GetPermissionOverwrite(botGuild.EveryoneRole);
+                        userCanSend = everyonePerms?.SendMessages != PermValue.Deny;
+                    }
+
+                    if (!userCanSend) continue;
+
+                    channels.Add(new
+                    {
+                        id = channel.Id.ToString(),
+                        name = channel.Name,
+                        category = channel.Category?.Name
+                    });
+                }
+
+                if (channels.Count > 0)
+                {
+                    matchingGuilds.Add(new
+                    {
+                        id = botGuild.Id.ToString(),
+                        name = botGuild.Name,
+                        iconUrl = botGuild.IconUrl,
+                        channels = channels
+                    });
+                }
             }
 
             return Results.Ok(matchingGuilds);
